@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/custom_textfield.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -117,27 +118,10 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              TextField(
+              CustomTextField(
+                hintText: 'Masukkan password Anda',
+                prefixIcon: Icons.lock_outline,
                 obscureText: true,
-                decoration: InputDecoration(
-                  hintText: 'Masukkan password Anda',
-                  prefixIcon: const Icon(Icons.lock_outline),
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 20),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade300,
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade300,
-                    ),
-                  ),
-                ),
               ),
 
               const SizedBox(height: 35),
