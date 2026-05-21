@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/custom_buttom_navbar.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -251,29 +252,9 @@ class DashboardScreen extends StatelessWidget {
       ),
 
       // BOTTOM NAVIGATION
-      bottomNavigationBar: Container(
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [
-              Color(0xFF2D9CDB),
-              Color(0xFF27AE60),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(40),
-        ),
-
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            navItem(Icons.settings_suggest, false),
-            navItem(Icons.emoji_events, false),
-            navItem(Icons.home, true),
-            navItem(Icons.gps_fixed, false),
-            navItem(Icons.history, false),
-          ],
-        ),
+      bottomNavigationBar: CustomBottomNavbar(
+        currentIndex: 0,
+        onTap: (index) {},
       ),
     );
   }
