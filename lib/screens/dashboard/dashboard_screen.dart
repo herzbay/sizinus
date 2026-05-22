@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/custom_buttom_navbar.dart';
+import '../settings/settings_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -62,7 +63,17 @@ class DashboardScreen extends StatelessWidget {
                 ),
 
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const SettingsScreen(),
+                      ),
+                    );
+                  },
+
                   icon: const Icon(
                     Icons.settings,
                     color: Colors.white,

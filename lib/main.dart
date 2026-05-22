@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
-// import 'screens/dashboard/dashboard_screen.dart';
-import 'screens/auth/login_screen.dart';
+import 'package:provider/provider.dart';
+
+import 'screens/dashboard/dashboard_screen.dart';
+
+import 'themes/app_theme.dart';
+import 'themes/theme_provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -11,10 +20,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final themeProvider =
+        Provider.of<ThemeProvider>(context);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+
       title: 'Sizinus Indonesia',
-      home: const LoginScreen(),
+
+      theme: AppTheme.lightTheme,
+
+      darkTheme: AppTheme.darkTheme,
+
+      themeMode: themeProvider.currentTheme,
+
+      home: const DashboardScreen(),
     );
   }
 }
