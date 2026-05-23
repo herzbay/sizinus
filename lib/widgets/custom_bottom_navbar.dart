@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../screens/dashboard/dashboard_screen.dart';
+import '../screens/reward/reward_screen.dart';
+
 class CustomBottomNavbar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
@@ -10,8 +13,41 @@ class CustomBottomNavbar extends StatelessWidget {
     required this.onTap,
   });
 
+  // NAVIGATION FUNCTION
+  void navigate(BuildContext context, int index) {
+
+    Widget screen;
+
+    switch (index) {
+
+      // BERANDA
+      case 0:
+        screen = const DashboardScreen();
+        break;
+
+      // REWARD
+      case 2:
+        screen = const RewardScreen();
+        break;
+
+      // DEFAULT
+      default:
+        screen = const DashboardScreen();
+    }
+
+    if (currentIndex == index) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => screen,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return Container(
       margin: const EdgeInsets.all(16),
 
@@ -44,24 +80,28 @@ class CustomBottomNavbar extends StatelessWidget {
           children: [
 
             navItem(
+              context: context,
               index: 0,
               icon: Icons.home_rounded,
               label: 'Beranda',
             ),
 
             navItem(
+              context: context,
               index: 1,
               icon: Icons.flag_rounded,
               label: 'Misi',
             ),
 
             navItem(
+              context: context,
               index: 2,
               icon: Icons.workspace_premium_rounded,
               label: 'Reward',
             ),
 
             navItem(
+              context: context,
               index: 3,
               icon: Icons.history_rounded,
               label: 'Riwayat',
@@ -73,6 +113,7 @@ class CustomBottomNavbar extends StatelessWidget {
   }
 
   Widget navItem({
+    required BuildContext context,
     required int index,
     required IconData icon,
     required String label,
@@ -81,7 +122,13 @@ class CustomBottomNavbar extends StatelessWidget {
     final bool isActive = currentIndex == index;
 
     return GestureDetector(
-      onTap: () => onTap(index),
+
+      onTap: () {
+
+        onTap(index);
+
+        navigate(context, index);
+      },
 
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),

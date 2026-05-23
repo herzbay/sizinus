@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../widgets/custom_buttom_navbar.dart';
+import '../../widgets/custom_bottom_navbar.dart';
 import '../settings/settings_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
