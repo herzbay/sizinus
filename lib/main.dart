@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'screens/dashboard/dashboard_screen.dart';
-
 import 'themes/app_theme.dart';
 import 'themes/theme_provider.dart';
 
+import 'routes/app_routes.dart';
+
+import 'screens/auth/login_screen.dart';
+import 'screens/auth/register_screen.dart';
+import 'screens/dashboard/dashboard_screen.dart';
+import 'screens/reward/reward_screen.dart';
+import 'screens/settings/settings_screen.dart';
+
 void main() {
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => ThemeProvider(),
@@ -25,6 +32,7 @@ class MyApp extends StatelessWidget {
         Provider.of<ThemeProvider>(context);
 
     return MaterialApp(
+
       debugShowCheckedModeBanner: false,
 
       title: 'Sizinus Indonesia',
@@ -35,7 +43,29 @@ class MyApp extends StatelessWidget {
 
       themeMode: themeProvider.currentTheme,
 
-      home: const DashboardScreen(),
+      // HALAMAN PERTAMA
+      initialRoute: AppRoutes.login,
+
+      // ROUTES
+      routes: {
+
+        // AUTH
+        AppRoutes.login: (context) =>
+            const LoginScreen(),
+
+        AppRoutes.register: (context) =>
+            const RegisterScreen(),
+
+        // MAIN
+        AppRoutes.dashboard: (context) =>
+            const DashboardScreen(),
+
+        AppRoutes.reward: (context) =>
+            const RewardScreen(),
+
+        AppRoutes.settings: (context) =>
+            const SettingsScreen(),
+      },
     );
   }
 }

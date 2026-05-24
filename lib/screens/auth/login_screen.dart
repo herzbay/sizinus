@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../routes/app_routes.dart';
 import 'register_screen.dart';
-import '../dashboard/dashboard_screen.dart';
 import '../../widgets/custom_textfield.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -116,11 +116,9 @@ class LoginScreen extends StatelessWidget {
                 height: 58,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
+                    Navigator.pushReplacementNamed(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const DashboardScreen(),
-                      ),
+                      AppRoutes.dashboard,
                     );
                   },
                   style: ElevatedButton.styleFrom(

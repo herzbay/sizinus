@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../screens/dashboard/dashboard_screen.dart';
-import '../screens/reward/reward_screen.dart';
+import '../routes/app_routes.dart';
 
 class CustomBottomNavbar extends StatelessWidget {
   final int currentIndex;
@@ -14,34 +12,32 @@ class CustomBottomNavbar extends StatelessWidget {
   });
 
   // NAVIGATION FUNCTION
-  void navigate(BuildContext context, int index) {
+  void navigate(
+    BuildContext context,
+    int index,
+  ) {
 
-    Widget screen;
+    String route;
 
     switch (index) {
 
-      // BERANDA
       case 0:
-        screen = const DashboardScreen();
+        route = AppRoutes.dashboard;
         break;
 
-      // REWARD
       case 2:
-        screen = const RewardScreen();
+        route = AppRoutes.reward;
         break;
 
-      // DEFAULT
       default:
-        screen = const DashboardScreen();
+        route = AppRoutes.dashboard;
     }
 
     if (currentIndex == index) return;
 
-    Navigator.pushReplacement(
+    Navigator.pushReplacementNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => screen,
-      ),
+      route,
     );
   }
 
