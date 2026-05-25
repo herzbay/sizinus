@@ -29,6 +29,10 @@ class CustomBottomNavbar extends StatelessWidget {
         route = AppRoutes.reward;
         break;
 
+      case 3:
+        route = AppRoutes.history;
+        break;
+
       default:
         route = AppRoutes.dashboard;
     }
