@@ -5,6 +5,7 @@ class AppRoutes {
   static const register = '/register';
 
   // MAIN
+  static const splash = '/';
   static const dashboard = '/dashboard';
   static const reward = '/reward';
   static const settings = '/settings';

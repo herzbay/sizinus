@@ -6,6 +6,7 @@ import 'themes/theme_provider.dart';
 
 import 'routes/app_routes.dart';
 
+import 'screens/splash/splash_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/dashboard/dashboard_screen.dart';
@@ -46,7 +47,7 @@ class MyApp extends StatelessWidget {
       themeMode: themeProvider.currentTheme,
 
       // HALAMAN PERTAMA
-      initialRoute: AppRoutes.login,
+      initialRoute: AppRoutes.splash,
 
       // ROUTES
       routes: {
@@ -59,6 +60,9 @@ class MyApp extends StatelessWidget {
             const RegisterScreen(),
 
         // MAIN
+        AppRoutes.splash: (context) =>
+            const SplashScreen(),
+
         AppRoutes.dashboard: (context) =>
             const DashboardScreen(),
 
