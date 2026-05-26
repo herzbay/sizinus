@@ -14,6 +14,7 @@ class SettingsScreen extends StatelessWidget {
         Provider.of<ThemeProvider>(context);
 
     return Scaffold(
+      extendBody: true,
 
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),

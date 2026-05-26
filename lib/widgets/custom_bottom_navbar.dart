@@ -41,6 +41,7 @@ class CustomBottomNavbar extends StatelessWidget {
         route = AppRoutes.dashboard;
     }
 
+    // AGAR TIDAK NAVIGATE KE HALAMAN YANG SAMA
     if (currentIndex == index) return;
 
     Navigator.pushReplacementNamed(
@@ -52,65 +53,94 @@ class CustomBottomNavbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Container(
-      margin: const EdgeInsets.all(16),
+    // DETECT SAFE AREA DEVICE
+    final bottomInset =
+        MediaQuery.of(context).padding.bottom;
 
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFF2D9CDB),
-            Color(0xFF27AE60),
-          ],
-        ),
+    return SafeArea(
 
-        borderRadius: BorderRadius.circular(30),
-
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+      top: false,
 
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 10,
+
+        // RESPONSIVE BOTTOM SPACE
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+
+          // AUTO ADJUST SESUAI DEVICE
+          bottom: bottomInset > 0
+              ? bottomInset
+              : 12,
         ),
 
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
+        child: Container(
 
-            navItem(
-              context: context,
-              index: 0,
-              icon: Icons.home_rounded,
-              label: 'Beranda',
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFF2D9CDB),
+                Color(0xFF27AE60),
+              ],
             ),
 
-            navItem(
-              context: context,
-              index: 1,
-              icon: Icons.flag_rounded,
-              label: 'Misi',
+            borderRadius:
+                BorderRadius.circular(30),
+
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(
+                  alpha: 0.12,
+                ),
+
+                blurRadius: 10,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10,
             ),
 
-            navItem(
-              context: context,
-              index: 2,
-              icon: Icons.workspace_premium_rounded,
-              label: 'Reward',
-            ),
+            child: Row(
+              mainAxisAlignment:
+                  MainAxisAlignment.spaceAround,
 
-            navItem(
-              context: context,
-              index: 3,
-              icon: Icons.history_rounded,
-              label: 'Riwayat',
+              children: [
+
+                navItem(
+                  context: context,
+                  index: 0,
+                  icon: Icons.home_rounded,
+                  label: 'Beranda',
+                ),
+
+                navItem(
+                  context: context,
+                  index: 1,
+                  icon: Icons.flag_rounded,
+                  label: 'Misi',
+                ),
+
+                navItem(
+                  context: context,
+                  index: 2,
+                  icon:
+                      Icons.workspace_premium_rounded,
+                  label: 'Reward',
+                ),
+
+                navItem(
+                  context: context,
+                  index: 3,
+                  icon: Icons.history_rounded,
+                  label: 'Riwayat',
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -123,7 +153,8 @@ class CustomBottomNavbar extends StatelessWidget {
     required String label,
   }) {
 
-    final bool isActive = currentIndex == index;
+    final bool isActive =
+        currentIndex == index;
 
     return GestureDetector(
 
@@ -135,7 +166,8 @@ class CustomBottomNavbar extends StatelessWidget {
       },
 
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
+        duration:
+            const Duration(milliseconds: 250),
 
         padding: const EdgeInsets.symmetric(
           horizontal: 14,
@@ -147,7 +179,8 @@ class CustomBottomNavbar extends StatelessWidget {
               ? Colors.white24
               : Colors.transparent,
 
-          borderRadius: BorderRadius.circular(18),
+          borderRadius:
+              BorderRadius.circular(18),
         ),
 
         child: Column(
@@ -167,6 +200,7 @@ class CustomBottomNavbar extends StatelessWidget {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 12,
+
                 fontWeight: isActive
                     ? FontWeight.bold
                     : FontWeight.w400,
