@@ -12,6 +12,7 @@ import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/reward/reward_screen.dart';
 import 'screens/settings/settings_screen.dart';
 import 'screens/history/history_screen.dart';
+import 'screens/mission/mission_screen.dart';
 
 void main() {
 
@@ -66,6 +67,9 @@ class MyApp extends StatelessWidget {
 
         AppRoutes.history: (context) =>
             const HistoryScreen(),
+
+        AppRoutes.mission: (context) =>
+            const MissionScreen(),
 
         AppRoutes.settings: (context) =>
             const SettingsScreen(),
