@@ -8,8 +8,6 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
-      resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xFFF5F5F5),
 
       // APP BAR
@@ -86,12 +84,15 @@ class DashboardScreen extends StatelessWidget {
       ),
 
       // BODY
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(
-          left: 18,
-          right: 18,
-          bottom: MediaQuery.of(context).padding.bottom + 100,
-        ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+
+          padding: const EdgeInsets.fromLTRB(
+            18,
+            18,
+            18,
+            24,
+          ),
         child: Column(
           children: [
             // PROFILE CARD
@@ -108,7 +109,7 @@ class DashboardScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 26),
+                    color: Colors.black.withValues(alpha: 0.12),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
                   ),
@@ -261,7 +262,8 @@ class DashboardScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 100),
-          ],
+            ],
+          ),
         ),
       ),
 
@@ -321,7 +323,7 @@ class DashboardScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 20),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 6,
             offset: const Offset(0, 4),
           )

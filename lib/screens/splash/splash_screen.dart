@@ -134,8 +134,6 @@ class _SplashScreenState
   Widget build(BuildContext context) {
 
     return Scaffold(
-      extendBody: true,
-      resizeToAvoidBottomInset: true,
 
       body: Container(
         width: double.infinity,

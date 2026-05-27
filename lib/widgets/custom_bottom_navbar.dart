@@ -53,9 +53,6 @@ class CustomBottomNavbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final bottomInset =
-        MediaQuery.of(context).padding.bottom;
-
     return SafeArea(
 
       top: false,
@@ -63,16 +60,6 @@ class CustomBottomNavbar extends StatelessWidget {
       child: Container(
 
         width: double.infinity,
-
-        margin: EdgeInsets.only(
-          left: 0,
-          right: 0,
-          bottom: bottomInset,
-        ),
-
-        padding: const EdgeInsets.symmetric(
-          vertical: 12,
-        ),
 
         decoration: BoxDecoration(
           gradient: const LinearGradient(
@@ -82,58 +69,60 @@ class CustomBottomNavbar extends StatelessWidget {
             ],
           ),
 
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(26),
-            topRight: Radius.circular(26),
-          ),
-
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(
                 alpha: 0.08,
               ),
 
-              blurRadius: 12,
+              blurRadius: 8,
               offset: const Offset(0, -2),
             ),
           ],
         ),
 
-        child: Row(
-          mainAxisAlignment:
-              MainAxisAlignment.spaceAround,
+        child: Padding(
 
-          children: [
+          padding: const EdgeInsets.symmetric(
+            vertical: 10,
+          ),
 
-            navItem(
-              context: context,
-              index: 0,
-              icon: Icons.home_rounded,
-              label: 'Beranda',
-            ),
+          child: Row(
+            mainAxisAlignment:
+                MainAxisAlignment.spaceAround,
 
-            navItem(
-              context: context,
-              index: 1,
-              icon: Icons.flag_rounded,
-              label: 'Misi',
-            ),
+            children: [
 
-            navItem(
-              context: context,
-              index: 2,
-              icon:
-                  Icons.workspace_premium_rounded,
-              label: 'Reward',
-            ),
+              navItem(
+                context: context,
+                index: 0,
+                icon: Icons.home_rounded,
+                label: 'Beranda',
+              ),
 
-            navItem(
-              context: context,
-              index: 3,
-              icon: Icons.history_rounded,
-              label: 'Riwayat',
-            ),
-          ],
+              navItem(
+                context: context,
+                index: 1,
+                icon: Icons.flag_rounded,
+                label: 'Misi',
+              ),
+
+              navItem(
+                context: context,
+                index: 2,
+                icon:
+                    Icons.workspace_premium_rounded,
+                label: 'Reward',
+              ),
+
+              navItem(
+                context: context,
+                index: 3,
+                icon: Icons.history_rounded,
+                label: 'Riwayat',
+              ),
+            ],
+          ),
         ),
       ),
     );

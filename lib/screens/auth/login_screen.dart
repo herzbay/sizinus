@@ -9,15 +9,15 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
-      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
-      body: SafeArea(
+        body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.only(
-            left: 18,
-            right: 18,
-            bottom: MediaQuery.of(context).padding.bottom + 100,
+
+          padding: const EdgeInsets.fromLTRB(
+            18,
+            18,
+            18,
+            24,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -14,8 +14,6 @@ class SettingsScreen extends StatelessWidget {
         Provider.of<ThemeProvider>(context);
 
     return Scaffold(
-      extendBody: true,
-      resizeToAvoidBottomInset: true,
 
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
@@ -67,12 +65,14 @@ class SettingsScreen extends StatelessWidget {
         ),
       ),
 
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(
-          left: 18,
-          right: 18,
-          bottom: MediaQuery.of(context).padding.bottom + 100,
-        ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(
+            18,
+            18,
+            18,
+            24,
+          ),
 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -292,6 +292,7 @@ class SettingsScreen extends StatelessWidget {
 
             const SizedBox(height: 120),
           ],
+        ),
         ),
       ),
 

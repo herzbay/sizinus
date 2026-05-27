@@ -9,8 +9,6 @@ class HistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      extendBody: true,
-      resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xFFF5F5F5),
 
       // APPBAR
@@ -72,13 +70,14 @@ class HistoryScreen extends StatelessWidget {
         ),
       ),
 
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(
-          left: 18,
-          right: 18,
-          bottom: MediaQuery.of(context).padding.bottom + 100,
-        ),
-
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(
+            18,
+            18,
+            18,
+            24,
+          ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -213,6 +212,7 @@ class HistoryScreen extends StatelessWidget {
 
             const SizedBox(height: 120),
           ],
+        ),
         ),
       ),
 
