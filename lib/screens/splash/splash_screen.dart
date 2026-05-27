@@ -135,6 +135,7 @@ class _SplashScreenState
 
     return Scaffold(
       extendBody: true,
+      resizeToAvoidBottomInset: true,
 
       body: Container(
         width: double.infinity,

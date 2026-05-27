@@ -10,6 +10,7 @@ class MissionScreen extends StatelessWidget {
 
     return Scaffold(
       extendBody: true,
+      resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xFFF5F5F5),
 
       // APPBAR
@@ -72,7 +73,11 @@ class MissionScreen extends StatelessWidget {
       ),
 
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(18),
+        padding: EdgeInsets.only(
+          left: 18,
+          right: 18,
+          bottom: MediaQuery.of(context).padding.bottom + 100,
+        ),
 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

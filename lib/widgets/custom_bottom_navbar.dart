@@ -53,7 +53,6 @@ class CustomBottomNavbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // DETECT SAFE AREA DEVICE
     final bottomInset =
         MediaQuery.of(context).padding.bottom;
 
@@ -61,86 +60,80 @@ class CustomBottomNavbar extends StatelessWidget {
 
       top: false,
 
-      child: Padding(
+      child: Container(
 
-        // RESPONSIVE BOTTOM SPACE
-        padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
+        width: double.infinity,
 
-          // AUTO ADJUST SESUAI DEVICE
-          bottom: bottomInset > 0
-              ? bottomInset
-              : 12,
+        margin: EdgeInsets.only(
+          left: 0,
+          right: 0,
+          bottom: bottomInset,
         ),
 
-        child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: 12,
+        ),
 
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [
-                Color(0xFF2D9CDB),
-                Color(0xFF27AE60),
-              ],
-            ),
-
-            borderRadius:
-                BorderRadius.circular(30),
-
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(
-                  alpha: 0.12,
-                ),
-
-                blurRadius: 10,
-                offset: const Offset(0, 5),
-              ),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [
+              Color(0xFF2D9CDB),
+              Color(0xFF27AE60),
             ],
           ),
 
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-            ),
-
-            child: Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceAround,
-
-              children: [
-
-                navItem(
-                  context: context,
-                  index: 0,
-                  icon: Icons.home_rounded,
-                  label: 'Beranda',
-                ),
-
-                navItem(
-                  context: context,
-                  index: 1,
-                  icon: Icons.flag_rounded,
-                  label: 'Misi',
-                ),
-
-                navItem(
-                  context: context,
-                  index: 2,
-                  icon:
-                      Icons.workspace_premium_rounded,
-                  label: 'Reward',
-                ),
-
-                navItem(
-                  context: context,
-                  index: 3,
-                  icon: Icons.history_rounded,
-                  label: 'Riwayat',
-                ),
-              ],
-            ),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(26),
+            topRight: Radius.circular(26),
           ),
+
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(
+                alpha: 0.08,
+              ),
+
+              blurRadius: 12,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+
+        child: Row(
+          mainAxisAlignment:
+              MainAxisAlignment.spaceAround,
+
+          children: [
+
+            navItem(
+              context: context,
+              index: 0,
+              icon: Icons.home_rounded,
+              label: 'Beranda',
+            ),
+
+            navItem(
+              context: context,
+              index: 1,
+              icon: Icons.flag_rounded,
+              label: 'Misi',
+            ),
+
+            navItem(
+              context: context,
+              index: 2,
+              icon:
+                  Icons.workspace_premium_rounded,
+              label: 'Reward',
+            ),
+
+            navItem(
+              context: context,
+              index: 3,
+              icon: Icons.history_rounded,
+              label: 'Riwayat',
+            ),
+          ],
         ),
       ),
     );
@@ -170,8 +163,8 @@ class CustomBottomNavbar extends StatelessWidget {
             const Duration(milliseconds: 250),
 
         padding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 8,
+          horizontal: 12,
+          vertical: 10,
         ),
 
         decoration: BoxDecoration(

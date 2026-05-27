@@ -9,6 +9,7 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
+      resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xFFF5F5F5),
 
       // APP BAR
@@ -86,7 +87,11 @@ class DashboardScreen extends StatelessWidget {
 
       // BODY
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(18),
+        padding: EdgeInsets.only(
+          left: 18,
+          right: 18,
+          bottom: MediaQuery.of(context).padding.bottom + 100,
+        ),
         child: Column(
           children: [
             // PROFILE CARD
