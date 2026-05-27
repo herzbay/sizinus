@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,8 @@ class _SplashScreenState
   late AnimationController _logoController;
   late AnimationController _textController;
   late AnimationController _loadingController;
+  late AnimationController _floatingController;
+  late AnimationController _bgController;
 
   late Animation<double> _logoScale;
   late Animation<double> _logoOpacity;
@@ -29,32 +32,44 @@ class _SplashScreenState
   void initState() {
     super.initState();
 
-    // LOGO CONTROLLER
+    // LOGO
     _logoController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800),
+      duration: const Duration(milliseconds: 1500),
     );
 
-    // TEXT CONTROLLER
+    // TEXT
     _textController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1000),
     );
 
-    // LOADING CONTROLLER
+    // LOADING
     _loadingController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 4),
     );
 
-    // ANIMATION
+    // FLOATING
+    _floatingController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
+
+    // BACKGROUND
+    _bgController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 6),
+    );
+
+    // ANIMATIONS
     _logoScale = Tween<double>(
-      begin: 0.6,
-      end: 1.0,
+      begin: 0.5,
+      end: 1,
     ).animate(
       CurvedAnimation(
         parent: _logoController,
-        curve: Curves.elasticOut,
+        curve: Curves.easeOutBack,
       ),
     );
 
@@ -79,11 +94,11 @@ class _SplashScreenState
     );
 
     _floatingAnimation = Tween<double>(
-      begin: -10,
-      end: 10,
+      begin: -8,
+      end: 8,
     ).animate(
       CurvedAnimation(
-        parent: _logoController,
+        parent: _floatingController,
         curve: Curves.easeInOut,
       ),
     );
@@ -93,29 +108,31 @@ class _SplashScreenState
 
   void startAnimation() async {
 
-    _logoController.repeat(
-      reverse: true,
-    );
-
     _logoController.forward();
-
-    await Future.delayed(
-      const Duration(milliseconds: 600),
-    );
 
     _textController.forward();
 
     _loadingController.forward();
 
-    // AUTO NAVIGATE
+    _floatingController.repeat(
+      reverse: true,
+    );
+
+    _bgController.repeat(
+      reverse: true,
+    );
+
     Timer(
       const Duration(seconds: 4),
       () {
 
-        Navigator.pushReplacementNamed(
-          context,
-          AppRoutes.login,
-        );
+        if (mounted) {
+
+          Navigator.pushReplacementNamed(
+            context,
+            AppRoutes.login,
+          );
+        }
       },
     );
   }
@@ -126,6 +143,8 @@ class _SplashScreenState
     _logoController.dispose();
     _textController.dispose();
     _loadingController.dispose();
+    _floatingController.dispose();
+    _bgController.dispose();
 
     super.dispose();
   }
@@ -135,201 +154,317 @@ class _SplashScreenState
 
     return Scaffold(
 
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
+      body: AnimatedBuilder(
+        animation: _bgController,
 
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+        builder: (context, child) {
 
-            colors: [
-              Color(0xFF1E88E5),
-              Color(0xFF00A86B),
-            ],
-          ),
-        ),
+          return Container(
+            width: double.infinity,
+            height: double.infinity,
 
-        child: SafeArea(
-          child: Column(
-            children: [
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
 
-              const Spacer(),
+                colors: [
 
-              // TITLE
-              FadeTransition(
-                opacity: _textOpacity,
+                  Color.lerp(
+                    const Color(0xFF1E88E5),
+                    const Color(0xFF1565C0),
+                    _bgController.value,
+                  )!,
 
-                child: const Padding(
-                  padding:
-                      EdgeInsets.symmetric(
-                    horizontal: 24,
-                  ),
+                  Color.lerp(
+                    const Color(0xFF00A86B),
+                    const Color(0xFF2ECC71),
+                    _bgController.value,
+                  )!,
+                ],
+              ),
+            ),
 
-                  child: Text(
-                    'Simulasi Perizinan Usaha UMKM',
+            child: Stack(
+              children: [
 
-                    textAlign: TextAlign.center,
-
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 34,
-                      fontWeight: FontWeight.bold,
-                      height: 1.3,
-                    ),
-                  ),
+                // PARTICLE EFFECT
+                ...List.generate(
+                  10,
+                  (index) => particle(index),
                 ),
-              ),
 
-              const SizedBox(height: 50),
-
-              // LOGO
-              AnimatedBuilder(
-                animation: _logoController,
-
-                builder: (context, child) {
-
-                  return Transform.translate(
-                    offset: Offset(
-                      0,
-                      _floatingAnimation.value,
-                    ),
-
-                    child: FadeTransition(
-                      opacity: _logoOpacity,
-
-                      child: ScaleTransition(
-                        scale: _logoScale,
-
-                        child: Container(
-                          padding:
-                              const EdgeInsets.all(28),
-
-                          decoration: BoxDecoration(
-                            color: Colors.white
-                                .withValues(alpha: 0.12),
-
-                            borderRadius:
-                                BorderRadius.circular(
-                              34,
-                            ),
-
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black
-                                    .withValues(
-                                  alpha: 0.18,
-                                ),
-
-                                blurRadius: 30,
-                                offset:
-                                    const Offset(0, 14),
-                              ),
-                            ],
-                          ),
-
-                          child: Image.asset(
-                            'assets/images/Logo_Sizinus.png',
-                            width: 180,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-
-              const Spacer(),
-
-              // LOADING TEXT
-              FadeTransition(
-                opacity: _textOpacity,
-
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(
-                    horizontal: 36,
-                  ),
-
-                  child: Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
-
+                SafeArea(
+                  child: Column(
                     children: [
 
-                      const Text(
-                        'Sedang Memuat...',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
+                      const Spacer(),
+
+                      // TITLE
+                      FadeTransition(
+                        opacity: _textOpacity,
+
+                        child: const Padding(
+                          padding:
+                              EdgeInsets.symmetric(
+                            horizontal: 24,
+                          ),
+
+                          child: Text(
+                            'Simulasi Perizinan Usaha',
+
+                            textAlign:
+                                TextAlign.center,
+
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30,
+                              fontWeight:
+                                  FontWeight.bold,
+                              height: 1.3,
+                            ),
+                          ),
                         ),
                       ),
 
+                      const SizedBox(height: 50),
+
+                      // LOGO
                       AnimatedBuilder(
-                        animation: _loadingController,
+                        animation:
+                            _floatingController,
 
-                        builder: (context, child) {
+                        builder:
+                            (context, child) {
 
-                          return Text(
-                            '${(_loadingController.value * 100).toInt()}%',
+                          return Transform.translate(
+                            offset: Offset(
+                              0,
+                              _floatingAnimation
+                                  .value,
+                            ),
 
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight:
-                                  FontWeight.bold,
+                            child: FadeTransition(
+                              opacity:
+                                  _logoOpacity,
+
+                              child:
+                                  ScaleTransition(
+                                scale:
+                                    _logoScale,
+
+                                child: Container(
+                                  padding:
+                                      const EdgeInsets
+                                          .all(28),
+
+                                  decoration:
+                                      BoxDecoration(
+                                    color: Colors
+                                        .white
+                                        .withValues(
+                                      alpha: 0.12,
+                                    ),
+
+                                    borderRadius:
+                                        BorderRadius
+                                            .circular(
+                                      34,
+                                    ),
+
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors
+                                            .black
+                                            .withValues(
+                                          alpha:
+                                              0.18,
+                                        ),
+
+                                        blurRadius:
+                                            30,
+
+                                        offset:
+                                            const Offset(
+                                          0,
+                                          14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  child:
+                                      Image.asset(
+                                    'assets/images/Logo_Sizinus.png',
+                                    width: 170,
+                                  ),
+                                ),
+                              ),
                             ),
                           );
                         },
                       ),
+
+                      const Spacer(),
+
+                      // LOADING TEXT
+                      FadeTransition(
+                        opacity: _textOpacity,
+
+                        child: Padding(
+                          padding:
+                              const EdgeInsets
+                                  .symmetric(
+                            horizontal: 36,
+                          ),
+
+                          child: Row(
+                            mainAxisAlignment:
+                                MainAxisAlignment
+                                    .spaceBetween,
+
+                            children: [
+
+                              const Text(
+                                'Sedang Memuat...',
+                                style: TextStyle(
+                                  color:
+                                      Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+
+                              AnimatedBuilder(
+                                animation:
+                                    _loadingController,
+
+                                builder:
+                                    (context,
+                                        child) {
+
+                                  return Text(
+                                    '${(_loadingController.value * 100).toInt()}%',
+
+                                    style:
+                                        const TextStyle(
+                                      color:
+                                          Colors
+                                              .white,
+
+                                      fontSize:
+                                          18,
+
+                                      fontWeight:
+                                          FontWeight
+                                              .bold,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      // PROGRESS BAR
+                      Padding(
+                        padding:
+                            const EdgeInsets
+                                .symmetric(
+                          horizontal: 36,
+                        ),
+
+                        child: ClipRRect(
+                          borderRadius:
+                              BorderRadius
+                                  .circular(
+                            30,
+                          ),
+
+                          child:
+                              AnimatedBuilder(
+                            animation:
+                                _loadingController,
+
+                            builder:
+                                (context,
+                                    child) {
+
+                              return LinearProgressIndicator(
+                                value:
+                                    _loadingController
+                                        .value,
+
+                                minHeight: 12,
+
+                                backgroundColor:
+                                    Colors.white24,
+
+                                valueColor:
+                                    const AlwaysStoppedAnimation(
+                                  Colors.white,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 60),
                     ],
                   ),
                 ),
-              ),
-
-              const SizedBox(height: 18),
-
-              // PROGRESS BAR
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(
-                  horizontal: 36,
-                ),
-
-                child: ClipRRect(
-                  borderRadius:
-                      BorderRadius.circular(30),
-
-                  child: AnimatedBuilder(
-                    animation: _loadingController,
-
-                    builder: (context, child) {
-
-                      return LinearProgressIndicator(
-                        value:
-                            _loadingController.value,
-
-                        minHeight: 12,
-
-                        backgroundColor:
-                            Colors.white24,
-
-                        valueColor:
-                            const AlwaysStoppedAnimation(
-                          Colors.white,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 70),
-            ],
-          ),
-        ),
+              ],
+            ),
+          );
+        },
       ),
+    );
+  }
+
+  Widget particle(int index) {
+
+    final random = Random(index);
+
+    final size =
+        random.nextDouble() * 8 + 4;
+
+    final left =
+        random.nextDouble() * 400;
+
+    final top =
+        random.nextDouble() * 800;
+
+    return AnimatedBuilder(
+      animation: _bgController,
+
+      builder: (context, child) {
+
+        return Positioned(
+          left: left,
+          top: top +
+              (_bgController.value * 20),
+
+          child: Opacity(
+            opacity: 0.15,
+
+            child: Container(
+              width: size,
+              height: size,
+
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius:
+                    BorderRadius.circular(
+                  100,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
