@@ -12,72 +12,116 @@ class DashboardScreen extends StatelessWidget {
 
       // APP BAR
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
+        preferredSize: const Size.fromHeight(78),
+
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF2D9CDB),
-                Color(0xFF27AE60),
-              ],
-            ),
+
+          decoration: BoxDecoration(
+            color: Colors.white,
+
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(
+                  alpha: 0.05,
+                ),
+
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
+
           child: SafeArea(
-            child: Row(
-              children: [
-                // Logo
-                Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
+            child: Padding(
+
+              padding: const EdgeInsets.symmetric(
+                horizontal: 18,
+              ),
+
+              child: Row(
+                children: [
+
+                  // LOGO
+                  Container(
+                    width: 46,
+                    height: 46,
+
+                    padding: const EdgeInsets.all(6),
+
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+
+                      borderRadius:
+                          BorderRadius.circular(14),
+                    ),
+
+                    child: Image.asset(
+                      'assets/images/Logo_Sizinus.png',
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.business_center,
-                    color: Color(0xFF2D9CDB),
+
+                  const SizedBox(width: 12),
+
+                  // TITLE
+                  Column(
+                    mainAxisAlignment:
+                        MainAxisAlignment.center,
+
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+
+                    children: const [
+
+                      Text(
+                        'SIZINUS',
+
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1565C0),
+                          letterSpacing: 1,
+                        ),
+                      ),
+
+                      SizedBox(height: 2),
+
+                      Text(
+                        'Sizinus Indonesia',
+
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
 
-                const SizedBox(width: 12),
+                  const Spacer(),
 
-                const Text(
-                  'SIZINUS',
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-
-                const Spacer(),
-
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.notifications,
+                  // NOTIFICATION
+                  topIconButton(
+                    icon: Icons.notifications_none_rounded,
                     color: Colors.orange,
-                    size: 30,
+                    onTap: () {},
                   ),
-                ),
 
-                IconButton(
-                  onPressed: () {
+                  const SizedBox(width: 10),
 
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.settings,
-                    );
-                  },
+                  // SETTINGS
+                  topIconButton(
+                    icon: Icons.settings_outlined,
+                    color: Colors.blueAccent,
 
-                  icon: const Icon(
-                    Icons.settings,
-                    color: Colors.white,
-                    size: 30,
+                    onTap: () {
+
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.settings,
+                      );
+                    },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -382,6 +426,52 @@ class DashboardScreen extends StatelessWidget {
             color: Colors.blueAccent,
           ),
         ],
+      ),
+    );
+  }
+
+  // TOP ICON BUTTON
+  Widget topIconButton({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+
+    return GestureDetector(
+
+      onTap: onTap,
+
+      child: Container(
+        width: 46,
+        height: 46,
+
+        decoration: BoxDecoration(
+          color: Colors.white,
+
+          borderRadius:
+              BorderRadius.circular(14),
+
+          border: Border.all(
+            color: Colors.grey.shade200,
+          ),
+
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(
+                alpha: 0.04,
+              ),
+
+              blurRadius: 5,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+
+        child: Icon(
+          icon,
+          color: color,
+          size: 24,
+        ),
       ),
     );
   }
