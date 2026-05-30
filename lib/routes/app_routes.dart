@@ -6,6 +6,7 @@ class AppRoutes {
 
   // MAIN
   static const splash = '/';
+  static const onboarding = '/onboarding';
   static const dashboard = '/dashboard';
   static const reward = '/reward';
   static const settings = '/settings';

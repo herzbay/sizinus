@@ -130,7 +130,7 @@ class _SplashScreenState
 
           Navigator.pushReplacementNamed(
             context,
-            AppRoutes.login,
+            AppRoutes.onboarding,
           );
         }
       },

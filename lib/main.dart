@@ -7,6 +7,7 @@ import 'themes/theme_provider.dart';
 import 'routes/app_routes.dart';
 
 import 'screens/splash/splash_screen.dart';
+import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/dashboard/dashboard_screen.dart';
@@ -62,6 +63,9 @@ class MyApp extends StatelessWidget {
         // MAIN
         AppRoutes.splash: (context) =>
             const SplashScreen(),
+
+        AppRoutes.onboarding: (context) =>
+        const OnboardingScreen(),
 
         AppRoutes.dashboard: (context) =>
             const DashboardScreen(),
