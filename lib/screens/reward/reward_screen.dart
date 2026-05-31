@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../widgets/custom_bottom_navbar.dart';
+import '../../widgets/custom_topbar.dart';
 
 class RewardScreen extends StatelessWidget {
   const RewardScreen({super.key});
@@ -12,73 +13,7 @@ class RewardScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF5F5F5),
 
       // APPBAR
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80),
-
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF0F6DA1),
-                Color(0xFF007A3D),
-              ],
-            ),
-          ),
-
-          child: SafeArea(
-            child: Row(
-              children: [
-
-                CircleAvatar(
-                  radius: 26,
-                  backgroundColor: Colors.white24,
-
-                  child: const Icon(
-                    Icons.shield,
-                    color: Colors.white,
-                    size: 32,
-                  ),
-                ),
-
-                const SizedBox(width: 14),
-
-                const Text(
-                  'SIZINUS',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-
-                const Spacer(),
-
-                IconButton(
-                  onPressed: () {},
-
-                  icon: const Icon(
-                    Icons.notifications_none,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                ),
-
-                IconButton(
-                  onPressed: () {},
-
-                  icon: const Icon(
-                    Icons.settings,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      appBar: const CustomTopBar(),
 
       body: SafeArea(
         child: SingleChildScrollView(

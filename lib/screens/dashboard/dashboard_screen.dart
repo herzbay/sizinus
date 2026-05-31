@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../routes/app_routes.dart';
 import '../../widgets/custom_bottom_navbar.dart';
+import '../../widgets/custom_topbar.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -11,121 +11,7 @@ class DashboardScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF5F5F5),
 
       // APP BAR
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(78),
-
-        child: Container(
-
-          decoration: BoxDecoration(
-            color: Colors.white,
-
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(
-                  alpha: 0.05,
-                ),
-
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-
-          child: SafeArea(
-            child: Padding(
-
-              padding: const EdgeInsets.symmetric(
-                horizontal: 18,
-              ),
-
-              child: Row(
-                children: [
-
-                  // LOGO
-                  Container(
-                    width: 46,
-                    height: 46,
-
-                    padding: const EdgeInsets.all(6),
-
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade50,
-
-                      borderRadius:
-                          BorderRadius.circular(14),
-                    ),
-
-                    child: Image.asset(
-                      'assets/images/Logo_Sizinus.png',
-                    ),
-                  ),
-
-                  const SizedBox(width: 12),
-
-                  // TITLE
-                  Column(
-                    mainAxisAlignment:
-                        MainAxisAlignment.center,
-
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
-
-                    children: const [
-
-                      Text(
-                        'SIZINUS',
-
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF1565C0),
-                          letterSpacing: 1,
-                        ),
-                      ),
-
-                      SizedBox(height: 2),
-
-                      Text(
-                        'Sizinus Indonesia',
-
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const Spacer(),
-
-                  // NOTIFICATION
-                  topIconButton(
-                    icon: Icons.notifications_none_rounded,
-                    color: Colors.orange,
-                    onTap: () {},
-                  ),
-
-                  const SizedBox(width: 10),
-
-                  // SETTINGS
-                  topIconButton(
-                    icon: Icons.settings_outlined,
-                    color: Colors.blueAccent,
-
-                    onTap: () {
-
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.settings,
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+      appBar: const CustomTopBar(),
 
       // BODY
       body: SafeArea(

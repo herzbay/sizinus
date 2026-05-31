@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../themes/theme_provider.dart';
 import '../../widgets/custom_bottom_navbar.dart';
+import '../../widgets/custom_topbar.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -15,55 +16,7 @@ class SettingsScreen extends StatelessWidget {
 
     return Scaffold(
 
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
-
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF2D9CDB),
-                Color(0xFF27AE60),
-              ],
-            ),
-          ),
-
-          child: SafeArea(
-            child: Row(
-              children: [
-
-                Container(
-                  width: 42,
-                  height: 42,
-
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-
-                  child: const Icon(
-                    Icons.business_center,
-                    color: Color(0xFF2D9CDB),
-                  ),
-                ),
-
-                const SizedBox(width: 12),
-
-                const Text(
-                  'SIZINUS',
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      appBar: const CustomTopBar(),
 
       body: SafeArea(
         child: SingleChildScrollView(
