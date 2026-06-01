@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../routes/app_routes.dart';
 import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/custom_topbar.dart';
 
@@ -175,6 +177,14 @@ class DashboardScreen extends StatelessWidget {
               subtitle: 'Pahami setiap alur perizinan',
               xp: '+50 XP',
               icon: Icons.edit_document,
+
+              onTap: () {
+
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.simulationList,
+                );
+              },
             ),
 
             dashboardMenu(
@@ -244,74 +254,114 @@ class DashboardScreen extends StatelessWidget {
     required String subtitle,
     required String xp,
     required IconData icon,
+    VoidCallback? onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 18),
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 6,
-            offset: const Offset(0, 4),
-          )
-        ],
-      ),
 
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(
+          bottom: 18,
+        ),
 
-                const SizedBox(height: 10),
+        padding: const EdgeInsets.all(18),
 
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black87,
-                  ),
-                ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius:
+              BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(
+                alpha: 0.08,
+              ),
 
-                const SizedBox(height: 18),
+              blurRadius: 6,
 
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.greenAccent.shade100,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '💡 $xp',
+              offset: const Offset(
+                0,
+                4,
+              ),
+            ),
+          ],
+        ),
+
+        child: Row(
+          children: [
+
+            Expanded(
+              child: Column(
+
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
+
+                children: [
+
+                  Text(
+                    title,
+
                     style: const TextStyle(
-                      fontWeight: FontWeight.w500,
+                      fontSize: 22,
+                      fontWeight:
+                          FontWeight.bold,
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
 
-          Icon(
-            icon,
-            size: 48,
-            color: Colors.blueAccent,
-          ),
-        ],
+                  const SizedBox(
+                    height: 10,
+                  ),
+
+                  Text(
+                    subtitle,
+
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 18,
+                  ),
+
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 6,
+                    ),
+
+                    decoration: BoxDecoration(
+                      color:
+                          Colors.greenAccent.shade100,
+
+                      borderRadius:
+                          BorderRadius.circular(
+                        20,
+                      ),
+                    ),
+
+                    child: Text(
+                      '💡 $xp',
+
+                      style: const TextStyle(
+                        fontWeight:
+                            FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Icon(
+              icon,
+              size: 48,
+              color: Colors.blueAccent,
+            ),
+          ],
+        ),
       ),
     );
   }
