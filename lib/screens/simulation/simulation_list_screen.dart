@@ -1,149 +1,291 @@
 import 'package:flutter/material.dart';
 
 import '../../widgets/custom_topbar.dart';
-import '../../widgets/custom_bottom_navbar.dart';
 import '../../routes/app_routes.dart';
 
-class SimulationListScreen
-    extends StatelessWidget {
-
+class SimulationListScreen extends StatelessWidget {
   const SimulationListScreen({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       appBar: const CustomTopBar(),
 
-      body: Padding(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(18),
 
-        padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
 
-        child: Column(
+            children: [
 
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
-
-          children: [
-
-            const Text(
-              'Simulasi Perizinan',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            const Text(
-              'Pelajari proses perizinan usaha melalui simulasi interaktif.',
-            ),
-
-            const SizedBox(height: 24),
-
-            Card(
-              elevation: 3,
-
-              shape:
-                  RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(20),
+              const Text(
+                'Simulasi Perizinan',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
 
-              child: InkWell(
+              const SizedBox(height: 8),
 
-                borderRadius:
-                    BorderRadius.circular(20),
+              const Text(
+                'Pelajari proses perizinan usaha melalui simulasi interaktif.',
+                style: TextStyle(
+                  color: Colors.black54,
+                ),
+              ),
 
-                onTap: () {
+              const SizedBox(height: 24),
 
-                  Navigator.pushNamed(
-                    context,
-                    AppRoutes.nibDetail,
-                  );
-                },
+              // CARD NIB
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
 
-                child: Padding(
+                  borderRadius:
+                      BorderRadius.circular(24),
 
-                  padding:
-                      const EdgeInsets.all(20),
+                  border: Border.all(
+                    color: const Color(
+                      0xFF2D9CDB,
+                    ),
+                    width: 1.2,
+                  ),
 
-                  child: Row(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(
+                        alpha: 0.06,
+                      ),
 
-                    children: [
+                      blurRadius: 10,
 
-                      Container(
-                        width: 60,
-                        height: 60,
+                      offset: const Offset(
+                        0,
+                        4,
+                      ),
+                    ),
+                  ],
+                ),
 
-                        decoration:
-                            BoxDecoration(
-                          color:
-                              Colors.blue.shade50,
+                child: InkWell(
+                  borderRadius:
+                      BorderRadius.circular(24),
 
-                          borderRadius:
-                              BorderRadius.circular(
-                            16,
+                  onTap: () {
+
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.nibDetail,
+                    );
+                  },
+
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+
+                    child: Row(
+                      children: [
+
+                        // ICON NIB
+                        Container(
+                          width: 90,
+                          height: 90,
+
+                          padding:
+                              const EdgeInsets.all(
+                            10,
+                          ),
+
+                          decoration:
+                              BoxDecoration(
+                            color:
+                                Colors.blue.shade50,
+
+                            borderRadius:
+                                BorderRadius
+                                    .circular(
+                              18,
+                            ),
+                          ),
+
+                          child: Image.asset(
+                            'assets/images/icon_nib.png',
+                            fit: BoxFit.contain,
                           ),
                         ),
 
-                        child: const Icon(
-                          Icons.badge,
-                          size: 32,
+                        const SizedBox(width: 18),
+
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment
+                                    .start,
+
+                            children: [
+
+                              const Text(
+                                'Nomor Induk Berusaha (NIB)',
+
+                                style: TextStyle(
+                                  color:
+                                      Color(
+                                    0xFF1565C0,
+                                  ),
+
+                                  fontSize: 20,
+
+                                  fontWeight:
+                                      FontWeight
+                                          .bold,
+                                ),
+                              ),
+
+                              const SizedBox(
+                                height: 8,
+                              ),
+
+                              const Text(
+                                'Simulasi pembuatan NIB online berdasarkan alur OSS Indonesia.',
+
+                                style: TextStyle(
+                                  color:
+                                      Colors.black87,
+
+                                  fontSize: 14,
+
+                                  height: 1.4,
+                                ),
+                              ),
+
+                              const SizedBox(
+                                height: 14,
+                              ),
+
+                              Container(
+                                padding:
+                                    const EdgeInsets
+                                        .symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+
+                                decoration:
+                                    BoxDecoration(
+                                  color:
+                                      const Color(
+                                    0xFFEAF7EE,
+                                  ),
+
+                                  borderRadius:
+                                      BorderRadius
+                                          .circular(
+                                    20,
+                                  ),
+                                ),
+
+                                child: Row(
+                                  mainAxisSize:
+                                      MainAxisSize
+                                          .min,
+
+                                  children: [
+
+                                    Image.asset(
+                                      'assets/images/icon_xp.png',
+                                      width: 22,
+                                      height: 22,
+                                    ),
+
+                                    const SizedBox(
+                                      width: 6,
+                                    ),
+
+                                    Text(
+                                      '+150',
+
+                                      style:
+                                          TextStyle(
+                                        color: const Color(0xFF000000),
+
+                                        fontWeight:
+                                            FontWeight
+                                                .bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(width: 10),
+
+                        const Icon(
+                          Icons.arrow_forward_ios,
                           color:
                               Color(0xFF2D9CDB),
+                          size: 20,
                         ),
-                      ),
-
-                      const SizedBox(width: 16),
-
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment
-                                  .start,
-
-                          children: [
-
-                            Text(
-                              'Nomor Induk Berusaha (NIB)',
-
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight:
-                                    FontWeight.bold,
-                              ),
-                            ),
-
-                            SizedBox(height: 4),
-
-                            Text(
-                              'Simulasi OSS Detail',
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const Icon(
-                        Icons.arrow_forward_ios,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
 
-      bottomNavigationBar:
-          CustomBottomNavbar(
-        currentIndex: 1,
-        onTap: (index) {},
+              const Spacer(),
+
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 6,
+                ),
+
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 55,
+
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+
+                    style:
+                        ElevatedButton.styleFrom(
+                      backgroundColor:
+                          const Color(
+                        0xFF2D9CDB,
+                      ),
+
+                      shape:
+                          RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius
+                                .circular(
+                          14,
+                        ),
+                      ),
+                    ),
+
+                    child: const Text(
+                      'Kembali',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight:
+                            FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

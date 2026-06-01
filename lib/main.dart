@@ -15,6 +15,8 @@ import 'screens/reward/reward_screen.dart';
 import 'screens/settings/settings_screen.dart';
 import 'screens/history/history_screen.dart';
 import 'screens/mission/mission_screen.dart';
+import 'screens/simulation/simulation_list_screen.dart';
+import 'screens/simulation/nib_detail_screen.dart';
 
 void main() {
 
@@ -81,6 +83,12 @@ class MyApp extends StatelessWidget {
 
         AppRoutes.settings: (context) =>
             const SettingsScreen(),
+
+        AppRoutes.simulationList: (context) =>
+            const SimulationListScreen(),
+
+        AppRoutes.nibDetail: (context) =>
+            const NibDetailScreen(),
       },
     );
   }
