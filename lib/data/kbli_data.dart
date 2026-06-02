@@ -1,110 +1,281 @@
 class KbliData {
 
-  static const Map<String, List<String>>
-      data = {
+  static const Map<String,
+      List<Map<String, String>>> data = {
 
     'Kuliner': [
 
-      '56101 - Restoran',
+      {
+        'code': '56101 - Restoran',
+        'description':
+            'Mencakup usaha penyediaan makanan dan minuman lengkap yang disajikan kepada pelanggan untuk dikonsumsi di tempat.',
+      },
 
-      '56102 - Rumah Makan',
+      {
+        'code': '56102 - Rumah Makan',
+        'description':
+            'Mencakup usaha rumah makan dengan berbagai jenis hidangan yang disediakan bagi masyarakat umum.',
+      },
 
-      '56103 - Kedai Makanan',
+      {
+        'code': '56103 - Kedai Makanan',
+        'description':
+            'Mencakup usaha penyediaan makanan sederhana seperti warung makan dan kedai makanan.',
+      },
 
-      '56301 - Kafe',
+      {
+        'code': '56301 - Kafe',
+        'description':
+            'Mencakup usaha penyediaan minuman dan makanan ringan dengan konsep kafe.',
+      },
 
-      '56210 - Jasa Boga',
+      {
+        'code': '56210 - Jasa Boga',
+        'description':
+            'Mencakup usaha penyediaan makanan berdasarkan pesanan untuk acara tertentu.',
+      },
     ],
 
     'Perdagangan': [
 
-      '47111 - Perdagangan Eceran Umum',
+      {
+        'code': '47111 - Perdagangan Eceran Umum',
+        'description':
+            'Mencakup usaha perdagangan eceran berbagai barang kebutuhan sehari-hari.',
+      },
 
-      '47192 - Minimarket',
+      {
+        'code': '47192 - Minimarket',
+        'description':
+            'Mencakup usaha minimarket yang menjual kebutuhan pokok dan barang konsumsi.',
+      },
 
-      '47711 - Perdagangan Pakaian',
+      {
+        'code': '47711 - Perdagangan Pakaian',
+        'description':
+            'Mencakup usaha perdagangan eceran pakaian dan aksesoris.',
+      },
 
-      '47911 - Perdagangan Online',
+      {
+        'code': '47911 - Perdagangan Online',
+        'description':
+            'Mencakup perdagangan barang melalui internet atau platform digital.',
+      },
     ],
 
     'Jasa': [
 
-      '70209 - Konsultasi Manajemen',
+      {
+        'code': '70209 - Konsultasi Manajemen',
+        'description':
+            'Mencakup layanan konsultasi manajemen bisnis dan organisasi.',
+      },
 
-      '74141 - Desain Grafis',
+      {
+        'code': '74141 - Desain Grafis',
+        'description':
+            'Mencakup jasa desain visual untuk kebutuhan promosi dan komunikasi.',
+      },
 
-      '74142 - Fotografi',
+      {
+        'code': '74142 - Fotografi',
+        'description':
+            'Mencakup jasa fotografi komersial maupun pribadi.',
+      },
 
-      '96021 - Barbershop',
+      {
+        'code': '96021 - Barbershop',
+        'description':
+            'Mencakup usaha jasa potong rambut pria.',
+      },
 
-      '96022 - Salon',
+      {
+        'code': '96022 - Salon',
+        'description':
+            'Mencakup usaha jasa perawatan dan kecantikan rambut.',
+      },
     ],
 
     'Teknologi': [
 
-      '62011 - Aktivitas Pemrograman',
+      {
+        'code':
+            '62011 - Aktivitas Pemrograman Komputer',
+        'description':
+            'Mencakup kegiatan pengembangan perangkat lunak, website, aplikasi mobile dan sistem informasi.',
+      },
 
-      '62012 - Konsultasi Komputer',
+      {
+        'code':
+            '62012 - Konsultasi Komputer',
+        'description':
+            'Mencakup layanan konsultasi teknologi informasi dan sistem komputer.',
+      },
 
-      '62013 - Pengelolaan Website',
+      {
+        'code':
+            '62013 - Pengelolaan Website',
+        'description':
+            'Mencakup pengelolaan dan pemeliharaan website milik klien.',
+      },
 
-      '63122 - Portal Web',
+      {
+        'code':
+            '63122 - Portal Web',
+        'description':
+            'Mencakup usaha penyediaan portal informasi berbasis internet.',
+      },
     ],
 
     'Manufaktur': [
 
-      '10779 - Industri Makanan Ringan',
+      {
+        'code':
+            '10779 - Industri Makanan Ringan',
+        'description':
+            'Mencakup industri pengolahan makanan ringan dan camilan.',
+      },
 
-      '14111 - Industri Pakaian Jadi',
+      {
+        'code':
+            '14111 - Industri Pakaian Jadi',
+        'description':
+            'Mencakup usaha produksi pakaian jadi.',
+      },
 
-      '16221 - Industri Furnitur',
+      {
+        'code':
+            '16221 - Industri Furnitur',
+        'description':
+            'Mencakup usaha pembuatan furnitur dan mebel.',
+      },
     ],
 
     'Pertanian': [
 
-      '01111 - Budidaya Padi',
+      {
+        'code':
+            '01111 - Budidaya Padi',
+        'description':
+            'Mencakup kegiatan budidaya tanaman padi.',
+      },
 
-      '01133 - Budidaya Sayuran',
+      {
+        'code':
+            '01133 - Budidaya Sayuran',
+        'description':
+            'Mencakup kegiatan budidaya berbagai jenis sayuran.',
+      },
 
-      '03221 - Budidaya Ikan Air Tawar',
+      {
+        'code':
+            '03221 - Budidaya Ikan Air Tawar',
+        'description':
+            'Mencakup usaha budidaya ikan air tawar.',
+      },
     ],
 
     'Kesehatan': [
 
-      '86103 - Klinik Swasta',
+      {
+        'code':
+            '86103 - Klinik Swasta',
+        'description':
+            'Mencakup pelayanan kesehatan melalui klinik swasta.',
+      },
 
-      '86901 - Praktik Dokter Umum',
+      {
+        'code':
+            '86901 - Praktik Dokter Umum',
+        'description':
+            'Mencakup pelayanan kesehatan oleh dokter umum.',
+      },
 
-      '47721 - Apotek',
+      {
+        'code':
+            '47721 - Apotek',
+        'description':
+            'Mencakup usaha perdagangan obat-obatan dan produk kesehatan.',
+      },
     ],
 
     'Pendidikan': [
 
-      '85121 - Kursus Bahasa',
+      {
+        'code':
+            '85121 - Kursus Bahasa',
+        'description':
+            'Mencakup penyelenggaraan kursus bahasa asing maupun lokal.',
+      },
 
-      '85122 - Bimbingan Belajar',
+      {
+        'code':
+            '85122 - Bimbingan Belajar',
+        'description':
+            'Mencakup layanan bimbingan belajar akademik.',
+      },
 
-      '85499 - Pelatihan Lainnya',
+      {
+        'code':
+            '85499 - Pelatihan Lainnya',
+        'description':
+            'Mencakup berbagai kegiatan pelatihan nonformal.',
+      },
     ],
 
     'Pariwisata': [
 
-      '55110 - Hotel',
+      {
+        'code':
+            '55110 - Hotel',
+        'description':
+            'Mencakup usaha penyediaan akomodasi hotel.',
+      },
 
-      '79111 - Agen Wisata',
+      {
+        'code':
+            '79111 - Agen Wisata',
+        'description':
+            'Mencakup usaha agen perjalanan wisata.',
+      },
 
-      '79121 - Tour Guide',
+      {
+        'code':
+            '79121 - Tour Guide',
+        'description':
+            'Mencakup jasa pemandu wisata.',
+      },
     ],
 
     'Usaha Lainnya': [
 
-      '73100 - Periklanan',
+      {
+        'code':
+            '73100 - Periklanan',
+        'description':
+            'Mencakup jasa promosi dan periklanan.',
+      },
 
-      '77210 - Rental Kendaraan',
+      {
+        'code':
+            '77210 - Rental Kendaraan',
+        'description':
+            'Mencakup usaha penyewaan kendaraan.',
+      },
 
-      '82301 - Event Organizer',
+      {
+        'code':
+            '82301 - Event Organizer',
+        'description':
+            'Mencakup jasa penyelenggaraan acara.',
+      },
 
-      '96091 - Laundry',
+      {
+        'code':
+            '96091 - Laundry',
+        'description':
+            'Mencakup usaha jasa pencucian pakaian.',
+      },
     ],
   };
 }
