@@ -8,6 +8,7 @@ import '../../../models/simulation/simulation_data.dart';
 import 'steps/step_1_business_category_screen.dart';
 import 'steps/step_2_kbli_screen.dart';
 import 'steps/step_3_risk_validation_screen.dart';
+import 'steps/step_4_business_license_screen.dart';
 
 class NibStepperScreen extends StatefulWidget {
   const NibStepperScreen({
@@ -170,6 +171,42 @@ class _NibStepperScreenState
                 riskLevel;
           },
         );
+
+      case 4:
+        return Step4BusinessLicenseScreen(
+
+          simulationData:
+              simulationData,
+
+          onChanged: ({
+            required businessRunning,
+            required hasNpwp,
+            required businessName,
+            required businessDescription,
+            required employeeCount,
+          }) {
+
+            simulationData
+                    .businessRunning =
+                businessRunning;
+
+            simulationData
+                    .hasNpwp =
+                hasNpwp;
+
+            simulationData
+                    .businessName =
+                businessName;
+
+            simulationData
+                    .businessDescription =
+                businessDescription;
+
+            simulationData
+                    .employeeCount =
+                employeeCount;
+          },
+        );  
 
       default:
         return const Center(
@@ -392,7 +429,13 @@ class _NibStepperScreenState
                           ),
                         );
 
-                        // NEXT STEP 4
+                      // NEXT STEP 4
+                      setState(() {
+
+                        currentStep = 4;
+
+                        unlockedStep = 4;
+                      });  
                       }
                     },
 
