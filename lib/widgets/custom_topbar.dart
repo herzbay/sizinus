@@ -5,7 +5,12 @@ import '../routes/app_routes.dart';
 class CustomTopBar extends StatelessWidget
     implements PreferredSizeWidget {
 
-  const CustomTopBar({super.key});
+  final bool showBackButton;
+
+  const CustomTopBar({
+    super.key,
+    this.showBackButton = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +19,6 @@ class CustomTopBar extends StatelessWidget
       preferredSize: preferredSize,
 
       child: Container(
-
         decoration: BoxDecoration(
           color: Colors.white,
 
@@ -32,7 +36,6 @@ class CustomTopBar extends StatelessWidget
 
         child: SafeArea(
           child: Padding(
-
             padding:
                 const EdgeInsets.symmetric(
               horizontal: 18,
@@ -44,33 +47,65 @@ class CustomTopBar extends StatelessWidget
               child: Row(
                 children: [
 
+                  // BACK BUTTON
+                  if (showBackButton)
+
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+
+                      child: Container(
+                        width: 46,
+                        height: 46,
+
+                        decoration: BoxDecoration(
+                          color:
+                              Colors.blue.shade50,
+
+                          borderRadius:
+                              BorderRadius.circular(
+                            14,
+                          ),
+                        ),
+
+                        child: const Icon(
+                          Icons.arrow_back_ios_new,
+                          color:
+                              Color(0xFF1565C0),
+                        ),
+                      ),
+                    )
+
                   // LOGO
-                  Container(
-                    width: 46,
-                    height: 46,
+                  else
 
-                    padding:
-                        const EdgeInsets.all(6),
+                    Container(
+                      width: 46,
+                      height: 46,
 
-                    decoration: BoxDecoration(
-                      color:
-                          Colors.blue.shade50,
+                      padding:
+                          const EdgeInsets.all(6),
 
-                      borderRadius:
-                          BorderRadius.circular(
-                        14,
+                      decoration: BoxDecoration(
+                        color:
+                            Colors.blue.shade50,
+
+                        borderRadius:
+                            BorderRadius.circular(
+                          14,
+                        ),
+                      ),
+
+                      child: Image.asset(
+                        'assets/images/Logo_Sizinus.png',
                       ),
                     ),
-
-                    child: Image.asset(
-                      'assets/images/Logo_Sizinus.png',
-                    ),
-                  ),
 
                   const SizedBox(width: 12),
 
                   // TITLE
-                  const Column(
+                  Column(
                     mainAxisAlignment:
                         MainAxisAlignment.center,
 
@@ -80,9 +115,11 @@ class CustomTopBar extends StatelessWidget
                     children: [
 
                       Text(
-                        'SIZINUS',
+                        showBackButton
+                            ? 'Kembali'
+                            : 'SIZINUS',
 
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight:
                               FontWeight.bold,
@@ -94,12 +131,14 @@ class CustomTopBar extends StatelessWidget
                         ),
                       ),
 
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
 
                       Text(
-                        'Simulasi Perizinan Usaha',
+                        showBackButton
+                            ? 'Halaman Sebelumnya'
+                            : 'Simulasi Perizinan Usaha',
 
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 12,
                           color: Colors.black54,
                         ),
@@ -109,33 +148,35 @@ class CustomTopBar extends StatelessWidget
 
                   const Spacer(),
 
-                  // NOTIFICATION
-                  _topIconButton(
-                    icon: Icons
-                        .notifications_none_rounded,
+                  // HANYA TAMPIL DI HALAMAN UTAMA
+                  if (!showBackButton) ...[
 
-                    color: Colors.orange,
+                    _topIconButton(
+                      icon:
+                          Icons.notifications_none_rounded,
 
-                    onTap: () {},
-                  ),
+                      color: Colors.orange,
 
-                  const SizedBox(width: 10),
+                      onTap: () {},
+                    ),
 
-                  // SETTINGS
-                  _topIconButton(
-                    icon:
-                        Icons.settings_outlined,
+                    const SizedBox(width: 10),
 
-                    color: Colors.blueAccent,
+                    _topIconButton(
+                      icon:
+                          Icons.settings_outlined,
 
-                    onTap: () {
+                      color: Colors.blueAccent,
 
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.settings,
-                      );
-                    },
-                  ),
+                      onTap: () {
+
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.settings,
+                        );
+                      },
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -152,7 +193,6 @@ class CustomTopBar extends StatelessWidget
   }) {
 
     return GestureDetector(
-
       onTap: onTap,
 
       child: Container(

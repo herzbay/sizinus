@@ -11,7 +11,7 @@ class SimulationListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomTopBar(),
+      appBar: const CustomTopBar(showBackButton: true,),
 
       body: SafeArea(
         child: Padding(
@@ -233,52 +233,6 @@ class SimulationListScreen extends StatelessWidget {
                           size: 20,
                         ),
                       ],
-                    ),
-                  ),
-                ),
-              ),
-
-              const Spacer(),
-
-              Padding(
-                padding: const EdgeInsets.only(
-                  bottom: 6,
-                ),
-
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 55,
-
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-
-                    style:
-                        ElevatedButton.styleFrom(
-                      backgroundColor:
-                          const Color(
-                        0xFF2D9CDB,
-                      ),
-
-                      shape:
-                          RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius
-                                .circular(
-                          14,
-                        ),
-                      ),
-                    ),
-
-                    child: const Text(
-                      'Kembali',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight:
-                            FontWeight.bold,
-                      ),
                     ),
                   ),
                 ),
