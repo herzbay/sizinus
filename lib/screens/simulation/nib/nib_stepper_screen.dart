@@ -9,6 +9,7 @@ import 'steps/step_1_business_category_screen.dart';
 import 'steps/step_2_kbli_screen.dart';
 import 'steps/step_3_risk_validation_screen.dart';
 import 'steps/step_4_business_license_screen.dart';
+import 'steps/step_5_business_location_screen.dart';
 
 class NibStepperScreen extends StatefulWidget {
   const NibStepperScreen({
@@ -208,6 +209,27 @@ class _NibStepperScreenState
           },
         );  
 
+      case 5:
+
+        return Step5BusinessLocationScreen(
+
+          onChanged: ({
+            required sameAddress,
+            required locationDetermined,
+            required buildingConstruction,
+          }) {
+
+            simulationData.sameAddress =
+                sameAddress;
+
+            simulationData.locationDetermined =
+                locationDetermined;
+
+            simulationData.buildingConstruction =
+                buildingConstruction;
+          },
+        );  
+
       default:
         return const Center(
           child: Text(
@@ -293,12 +315,10 @@ class _NibStepperScreenState
                       // STEP 1
                       if (currentStep == 1) {
 
-                        if (simulationData
-                                .businessCategory ==
+                        if (simulationData.businessCategory ==
                             null) {
 
-                          ScaffoldMessenger.of(
-                                  context)
+                          ScaffoldMessenger.of(context)
                               .showSnackBar(
 
                             const SnackBar(
@@ -314,7 +334,6 @@ class _NibStepperScreenState
                         setState(() {
 
                           currentStep = 2;
-
                           unlockedStep = 2;
                         });
 
@@ -324,15 +343,12 @@ class _NibStepperScreenState
                       // STEP 2
                       if (currentStep == 2) {
 
-                        if (simulationData
-                                .businessType ==
-                            null ||
-                            simulationData
-                                .businessType!
+                        if (simulationData.businessType ==
+                                null ||
+                            simulationData.businessType!
                                 .isEmpty) {
 
-                          ScaffoldMessenger.of(
-                                  context)
+                          ScaffoldMessenger.of(context)
                               .showSnackBar(
 
                             const SnackBar(
@@ -345,15 +361,11 @@ class _NibStepperScreenState
                           return;
                         }
 
-                        if (simulationData
-                                .kbli ==
-                            null ||
-                            simulationData
-                                .kbli!
-                                .isEmpty) {
+                        if (simulationData.kbli ==
+                                null ||
+                            simulationData.kbli!.isEmpty) {
 
-                          ScaffoldMessenger.of(
-                                  context)
+                          ScaffoldMessenger.of(context)
                               .showSnackBar(
 
                             const SnackBar(
@@ -367,14 +379,13 @@ class _NibStepperScreenState
                         }
 
                         if (simulationData
-                                .businessScope ==
-                            null ||
+                                    .businessScope ==
+                                null ||
                             simulationData
                                 .businessScope!
                                 .isEmpty) {
 
-                          ScaffoldMessenger.of(
-                                  context)
+                          ScaffoldMessenger.of(context)
                               .showSnackBar(
 
                             const SnackBar(
@@ -390,7 +401,6 @@ class _NibStepperScreenState
                         setState(() {
 
                           currentStep = 3;
-
                           unlockedStep = 3;
                         });
 
@@ -400,12 +410,10 @@ class _NibStepperScreenState
                       // STEP 3
                       if (currentStep == 3) {
 
-                        if (simulationData
-                                .riskLevel ==
+                        if (simulationData.riskLevel ==
                             null) {
 
-                          ScaffoldMessenger.of(
-                                  context)
+                          ScaffoldMessenger.of(context)
                               .showSnackBar(
 
                             const SnackBar(
@@ -418,24 +426,160 @@ class _NibStepperScreenState
                           return;
                         }
 
-                        ScaffoldMessenger.of(
-                                context)
+                        setState(() {
+
+                          currentStep = 4;
+                          unlockedStep = 4;
+                        });
+
+                        return;
+                      }
+
+                      // STEP 4
+                      if (currentStep == 4) {
+
+                        if (simulationData
+                                .businessRunning ==
+                            null ||
+                            simulationData
+                                .businessRunning!
+                                .isEmpty) {
+
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(
+
+                            const SnackBar(
+                              content: Text(
+                                'Pilih status usaha',
+                              ),
+                            ),
+                          );
+
+                          return;
+                        }
+
+                        if (simulationData.hasNpwp ==
+                                null ||
+                            simulationData.hasNpwp!
+                                .isEmpty) {
+
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(
+
+                            const SnackBar(
+                              content: Text(
+                                'Pilih status NPWP',
+                              ),
+                            ),
+                          );
+
+                          return;
+                        }
+
+                        if (simulationData
+                                .businessName ==
+                            null ||
+                            simulationData
+                                .businessName!
+                                .trim()
+                                .isEmpty) {
+
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(
+
+                            const SnackBar(
+                              content: Text(
+                                'Nama usaha wajib diisi',
+                              ),
+                            ),
+                          );
+
+                          return;
+                        }
+
+                        setState(() {
+
+                          currentStep = 5;
+                          unlockedStep = 5;
+                        });
+
+                        return;
+                      }
+
+                      // STEP 5
+                      if (currentStep == 5) {
+
+                        if (simulationData
+                                .sameAddress ==
+                            null ||
+                            simulationData
+                                .sameAddress!
+                                .isEmpty) {
+
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(
+
+                            const SnackBar(
+                              content: Text(
+                                'Pilih alamat usaha',
+                              ),
+                            ),
+                          );
+
+                          return;
+                        }
+
+                        if (simulationData
+                                .locationDetermined ==
+                            null ||
+                            simulationData
+                                .locationDetermined!
+                                .isEmpty) {
+
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(
+
+                            const SnackBar(
+                              content: Text(
+                                'Pilih status lokasi usaha',
+                              ),
+                            ),
+                          );
+
+                          return;
+                        }
+
+                        if (simulationData
+                                .buildingConstruction ==
+                            null ||
+                            simulationData
+                                .buildingConstruction!
+                                .isEmpty) {
+
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(
+
+                            const SnackBar(
+                              content: Text(
+                                'Pilih pembangunan gedung',
+                              ),
+                            ),
+                          );
+
+                          return;
+                        }
+
+                        ScaffoldMessenger.of(context)
                             .showSnackBar(
 
                           const SnackBar(
                             content: Text(
-                              'Step 3 berhasil disimpan',
+                              'Step 6 Produk/Jasa akan dibuat berikutnya',
                             ),
                           ),
                         );
 
-                      // NEXT STEP 4
-                      setState(() {
-
-                        currentStep = 4;
-
-                        unlockedStep = 4;
-                      });  
+                        return;
                       }
                     },
 

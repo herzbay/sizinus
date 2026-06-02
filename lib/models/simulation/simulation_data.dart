@@ -32,6 +32,13 @@ class SimulationData {
 
   int? employeeCount;
 
+  // STEP 5
+  String? sameAddress;
+
+  String? locationDetermined;
+
+  String? buildingConstruction;
+
   // PROGRESS
   int currentStep;
 
