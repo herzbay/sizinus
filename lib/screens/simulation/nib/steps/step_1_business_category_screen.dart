@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 class Step1BusinessCategoryScreen
     extends StatefulWidget {
 
+  final Function(String) onSelected;
+
   const Step1BusinessCategoryScreen({
     super.key,
+    required this.onSelected,
   });
 
   @override
@@ -118,6 +121,10 @@ class _Step1BusinessCategoryScreenState
               selectedCategory =
                   item['title'];
             });
+
+            widget.onSelected(
+              item['title']!,
+            );
           },
 
           child: AnimatedContainer(
@@ -170,30 +177,26 @@ class _Step1BusinessCategoryScreenState
 
               child: Column(
                 mainAxisAlignment:
-                    MainAxisAlignment
-                        .center,
+                    MainAxisAlignment.center,
 
                 children: [
 
-                  ClipRRect(
-                    borderRadius:
-                        BorderRadius
-                            .circular(
-                      18,
-                    ),
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius:
+                          BorderRadius.circular(
+                        18,
+                      ),
 
-                    child: Image.asset(
-                      item['icon']!,
-
-                      width: 110,
-                      height: 110,
-
-                      fit: BoxFit.cover,
+                      child: Image.asset(
+                        item['icon']!,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
 
                   const SizedBox(
-                    height: 12,
+                    height: 10,
                   ),
 
                   Text(
@@ -204,11 +207,10 @@ class _Step1BusinessCategoryScreenState
 
                     style:
                         const TextStyle(
-                      fontSize: 16,
+                      fontSize: 15,
 
                       fontWeight:
-                          FontWeight
-                              .bold,
+                          FontWeight.bold,
                     ),
                   ),
                 ],
