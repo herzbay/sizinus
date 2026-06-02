@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../routes/app_routes.dart';
 import '../../widgets/custom_topbar.dart';
 
 class NibDetailScreen extends StatelessWidget {
@@ -225,8 +226,10 @@ class NibDetailScreen extends StatelessWidget {
 
                   child: ElevatedButton(
                     onPressed: () {
-
-                      // STEP 1
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.nibStepper,
+                      );
                     },
 
                     style:

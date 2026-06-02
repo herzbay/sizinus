@@ -15,4 +15,8 @@ class AppRoutes {
 
   static const simulationList = '/simulation-list';
   static const nibDetail = '/nib-detail';
+
+  static const nibStepper = '/nib-stepper';
+  static const step1BusinessCategory = '/step1-business-category';
+  
 }
