@@ -86,106 +86,137 @@ class _Step1BusinessCategoryScreenState
   @override
   Widget build(BuildContext context) {
 
-    return Column(
-      children: [
+    return GridView.builder(
 
-        Expanded(
-          child: GridView.builder(
+      itemCount: categories.length,
 
-            itemCount:
-                categories.length,
+      gridDelegate:
+          const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
 
-            gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 14,
-              mainAxisSpacing: 14,
-              childAspectRatio: 1,
+        crossAxisSpacing: 14,
+        mainAxisSpacing: 14,
+
+        childAspectRatio: 0.85,
+      ),
+
+      itemBuilder: (context, index) {
+
+        final item =
+            categories[index];
+
+        final bool isSelected =
+            selectedCategory ==
+                item['title'];
+
+        return GestureDetector(
+
+          onTap: () {
+
+            setState(() {
+
+              selectedCategory =
+                  item['title'];
+            });
+          },
+
+          child: AnimatedContainer(
+            duration:
+                const Duration(
+              milliseconds: 250,
             ),
 
-            itemBuilder:
-                (context, index) {
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? Colors.blue.shade50
+                  : Colors.white,
 
-              final item =
-                  categories[index];
+              borderRadius:
+                  BorderRadius.circular(
+                22,
+              ),
 
-              final isSelected =
-                  selectedCategory ==
-                      item['title'];
+              border: Border.all(
+                color: isSelected
+                    ? const Color(
+                        0xFF2D9CDB,
+                      )
+                    : Colors.grey.shade300,
 
-              return GestureDetector(
+                width:
+                    isSelected ? 2 : 1,
+              ),
 
-                onTap: () {
-
-                  setState(() {
-
-                    selectedCategory =
-                        item['title'];
-                  });
-                },
-
-                child: Container(
-
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-
-                    borderRadius:
-                        BorderRadius.circular(
-                      20,
-                    ),
-
-                    border: Border.all(
-                      color: isSelected
-                          ? const Color(
-                              0xFF2D9CDB,
-                            )
-                          : Colors.grey
-                              .shade300,
-
-                      width:
-                          isSelected
-                              ? 2
-                              : 1,
-                    ),
+              boxShadow: [
+                BoxShadow(
+                  color:
+                      Colors.black.withValues(
+                    alpha: 0.04,
                   ),
 
-                  child: Column(
+                  blurRadius: 8,
 
-                    mainAxisAlignment:
-                        MainAxisAlignment
-                            .center,
-
-                    children: [
-
-                      Image.asset(
-                        item['icon']!,
-                        width: 70,
-                        height: 70,
-                      ),
-
-                      const SizedBox(
-                        height: 10,
-                      ),
-
-                      Text(
-                        item['title']!,
-                        textAlign:
-                            TextAlign.center,
-
-                        style:
-                            const TextStyle(
-                          fontWeight:
-                              FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
+                  offset:
+                      const Offset(0, 3),
                 ),
-              );
-            },
+              ],
+            ),
+
+            child: Padding(
+              padding:
+                  const EdgeInsets.all(
+                12,
+              ),
+
+              child: Column(
+                mainAxisAlignment:
+                    MainAxisAlignment
+                        .center,
+
+                children: [
+
+                  ClipRRect(
+                    borderRadius:
+                        BorderRadius
+                            .circular(
+                      18,
+                    ),
+
+                    child: Image.asset(
+                      item['icon']!,
+
+                      width: 110,
+                      height: 110,
+
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 12,
+                  ),
+
+                  Text(
+                    item['title']!,
+
+                    textAlign:
+                        TextAlign.center,
+
+                    style:
+                        const TextStyle(
+                      fontSize: 16,
+
+                      fontWeight:
+                          FontWeight
+                              .bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 }
