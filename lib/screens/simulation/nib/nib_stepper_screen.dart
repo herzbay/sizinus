@@ -7,6 +7,7 @@ import '../../../models/simulation/simulation_data.dart';
 
 import 'steps/step_1_business_category_screen.dart';
 import 'steps/step_2_kbli_screen.dart';
+import 'steps/step_3_risk_validation_screen.dart';
 
 class NibStepperScreen extends StatefulWidget {
   const NibStepperScreen({
@@ -28,7 +29,9 @@ class _NibStepperScreenState
 
   int unlockedStep = 1;
 
+  // TITLE
   String getStepTitle() {
+
     switch (currentStep) {
 
       case 1:
@@ -37,12 +40,35 @@ class _NibStepperScreenState
       case 2:
         return 'Pengembangan KBLI';
 
+      case 3:
+        return 'Validasi Risiko';
+
+      case 4:
+        return 'Perizinan Usaha';
+
+      case 5:
+        return 'Lokasi Usaha';
+
+      case 6:
+        return 'Produk / Jasa';
+
+      case 7:
+        return 'Draft NIB';
+
+      case 8:
+        return 'Pernyataan';
+
+      case 9:
+        return 'NIB Terbit';
+
       default:
         return 'Simulasi NIB';
     }
   }
 
+  // SUBTITLE
   String getStepSubtitle() {
+
     switch (currentStep) {
 
       case 1:
@@ -51,8 +77,106 @@ class _NibStepperScreenState
       case 2:
         return 'Lengkapi informasi KBLI sesuai bidang usaha yang dipilih.';
 
+      case 3:
+        return 'Masukkan data usaha untuk menentukan tingkat risiko usaha.';
+
+      case 4:
+        return 'Lengkapi informasi perizinan usaha.';
+
+      case 5:
+        return 'Lengkapi lokasi usaha.';
+
+      case 6:
+        return 'Tambahkan produk atau jasa yang ditawarkan.';
+
+      case 7:
+        return 'Periksa draft NIB yang akan diterbitkan.';
+
+      case 8:
+        return 'Baca dan setujui pernyataan.';
+
+      case 9:
+        return 'Selamat, simulasi NIB berhasil diselesaikan.';
+
       default:
         return '';
+    }
+  }
+
+  Widget buildCurrentStep() {
+
+    switch (currentStep) {
+
+      case 1:
+        return Step1BusinessCategoryScreen(
+          onSelected: (value) {
+
+            simulationData
+                .businessCategory = value;
+          },
+        );
+
+      case 2:
+        return Step2KbliScreen(
+
+          category:
+              simulationData
+                  .businessCategory!,
+
+          onChanged: ({
+            required businessType,
+            required kbli,
+            required businessScope,
+          }) {
+
+            simulationData
+                .businessType =
+                businessType;
+
+            simulationData
+                .kbli =
+                kbli;
+
+            simulationData
+                .businessScope =
+                businessScope;
+          },
+        );
+
+      case 3:
+        return Step3RiskValidationScreen(
+
+          onChanged: ({
+            required landArea,
+            required landUnit,
+            required capital,
+            required businessScale,
+            required riskLevel,
+          }) {
+
+            simulationData.landArea =
+                landArea;
+
+            simulationData.landUnit =
+                landUnit;
+
+            simulationData.capital =
+                capital;
+
+            simulationData.businessScale =
+                businessScale;
+
+            simulationData.riskLevel =
+                riskLevel;
+          },
+        );
+
+      default:
+        return const Center(
+          child: Text(
+            'Step selanjutnya sedang dikembangkan',
+          ),
+        );
     }
   }
 
@@ -76,7 +200,6 @@ class _NibStepperScreenState
 
             children: [
 
-              // PROGRESS STEPPER
               NibProgressStepper(
                 currentStep: currentStep,
                 unlockedStep: unlockedStep,
@@ -84,7 +207,6 @@ class _NibStepperScreenState
 
               const SizedBox(height: 24),
 
-              // TITLE
               Text(
                 getStepTitle(),
 
@@ -110,46 +232,9 @@ class _NibStepperScreenState
 
               const SizedBox(height: 20),
 
-              // STEP CONTENT
               Expanded(
-
-                child: currentStep == 1
-
-                    ? Step1BusinessCategoryScreen(
-
-                        onSelected: (value) {
-
-                          simulationData
-                              .businessCategory =
-                              value;
-                        },
-                      )
-
-                    : Step2KbliScreen(
-
-                        category:
-                            simulationData
-                                .businessCategory!,
-
-                        onChanged: ({
-                          required businessType,
-                          required kbli,
-                          required businessScope,
-                        }) {
-
-                          simulationData
-                              .businessType =
-                              businessType;
-
-                          simulationData
-                              .kbli =
-                              kbli;
-
-                          simulationData
-                              .businessScope =
-                              businessScope;
-                        },
-                      ),
+                child:
+                    buildCurrentStep(),
               ),
 
               Padding(
@@ -159,7 +244,9 @@ class _NibStepperScreenState
                 ),
 
                 child: SizedBox(
-                  width: double.infinity,
+                  width:
+                      double.infinity,
+
                   height: 55,
 
                   child: ElevatedButton(
@@ -247,7 +334,6 @@ class _NibStepperScreenState
                             null ||
                             simulationData
                                 .businessScope!
-                                .trim()
                                 .isEmpty) {
 
                           ScaffoldMessenger.of(
@@ -256,7 +342,7 @@ class _NibStepperScreenState
 
                             const SnackBar(
                               content: Text(
-                                'Isi ruang lingkup usaha',
+                                'Pilih ruang lingkup usaha',
                               ),
                             ),
                           );
@@ -264,21 +350,36 @@ class _NibStepperScreenState
                           return;
                         }
 
-                        debugPrint(
-                          'Kategori : ${simulationData.businessCategory}',
-                        );
+                        setState(() {
 
-                        debugPrint(
-                          'Jenis Usaha : ${simulationData.businessType}',
-                        );
+                          currentStep = 3;
 
-                        debugPrint(
-                          'KBLI : ${simulationData.kbli}',
-                        );
+                          unlockedStep = 3;
+                        });
 
-                        debugPrint(
-                          'Lingkup : ${simulationData.businessScope}',
-                        );
+                        return;
+                      }
+
+                      // STEP 3
+                      if (currentStep == 3) {
+
+                        if (simulationData
+                                .riskLevel ==
+                            null) {
+
+                          ScaffoldMessenger.of(
+                                  context)
+                              .showSnackBar(
+
+                            const SnackBar(
+                              content: Text(
+                                'Lakukan validasi risiko terlebih dahulu',
+                              ),
+                            ),
+                          );
+
+                          return;
+                        }
 
                         ScaffoldMessenger.of(
                                 context)
@@ -286,13 +387,12 @@ class _NibStepperScreenState
 
                           const SnackBar(
                             content: Text(
-                              'Step 2 berhasil disimpan',
+                              'Step 3 berhasil disimpan',
                             ),
                           ),
                         );
 
-                        // NEXT STEP:
-                        // VALIDASI RISIKO
+                        // NEXT STEP 4
                       }
                     },
 
@@ -313,14 +413,18 @@ class _NibStepperScreenState
                     ),
 
                     child: Text(
-                      currentStep == 2
-                          ? 'Simpan & Lanjut'
+
+                      currentStep == 9
+                          ? 'Selesai'
                           : 'Lanjut',
 
                       style: const TextStyle(
-                        color: Colors.white,
+                        color:
+                            Colors.white,
+
                         fontWeight:
                             FontWeight.bold,
+
                         fontSize: 16,
                       ),
                     ),
