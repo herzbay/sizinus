@@ -10,6 +10,7 @@ import 'steps/step_2_kbli_screen.dart';
 import 'steps/step_3_risk_validation_screen.dart';
 import 'steps/step_4_business_license_screen.dart';
 import 'steps/step_5_business_location_screen.dart';
+import 'steps/step_6_product_service_screen.dart';
 
 class NibStepperScreen extends StatefulWidget {
   const NibStepperScreen({
@@ -229,6 +230,40 @@ class _NibStepperScreenState
                 buildingConstruction;
           },
         );  
+
+      case 6:
+      return Step6ProductServiceScreen(
+
+        onChanged: ({
+          required productName,
+          required productionCapacity,
+          required capacityUnit,
+          required hasSni,
+          required halalProcess,
+          required hasHalalCertificate,
+        }) {
+
+          simulationData.productName =
+              productName;
+
+          simulationData
+                  .productionCapacity =
+              productionCapacity;
+
+          simulationData.capacityUnit =
+              capacityUnit;
+
+          simulationData.hasSni =
+              hasSni;
+
+          simulationData.halalProcess =
+              halalProcess;
+
+          simulationData
+                  .hasHalalCertificate =
+              hasHalalCertificate;
+        },
+      );  
 
       default:
         return const Center(
@@ -569,12 +604,62 @@ class _NibStepperScreenState
                           return;
                         }
 
+                       setState(() {
+
+                        currentStep = 6;
+
+                        unlockedStep = 6;
+                      });
+
+                      return;
+                      }
+
+                      // STEP 6
+                      if (currentStep == 6) {
+
+                        if (simulationData.productName ==
+                                null ||
+                            simulationData.productName!
+                                .trim()
+                                .isEmpty) {
+
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(
+
+                            const SnackBar(
+                              content: Text(
+                                'Nama produk/jasa wajib diisi',
+                              ),
+                            ),
+                          );
+
+                          return;
+                        }
+
+                        if (simulationData.capacityUnit ==
+                                null ||
+                            simulationData.capacityUnit!
+                                .isEmpty) {
+
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(
+
+                            const SnackBar(
+                              content: Text(
+                                'Pilih satuan kapasitas',
+                              ),
+                            ),
+                          );
+
+                          return;
+                        }
+
                         ScaffoldMessenger.of(context)
                             .showSnackBar(
 
                           const SnackBar(
                             content: Text(
-                              'Step 6 Produk/Jasa akan dibuat berikutnya',
+                              'Step 7 Draft NIB akan dibuat berikutnya',
                             ),
                           ),
                         );

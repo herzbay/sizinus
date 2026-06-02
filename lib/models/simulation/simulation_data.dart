@@ -39,6 +39,19 @@ class SimulationData {
 
   String? buildingConstruction;
 
+  // STEP 6
+  String? productName;
+
+  int? productionCapacity;
+
+  String? capacityUnit;
+
+  String? hasSni;
+
+  String? halalProcess;
+
+  String? hasHalalCertificate;
+
   // PROGRESS
   int currentStep;
 
