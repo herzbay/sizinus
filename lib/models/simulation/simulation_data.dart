@@ -52,6 +52,9 @@ class SimulationData {
 
   String? hasHalalCertificate;
 
+  // STEP 7
+  bool nibDraftGenerated;
+
   // PROGRESS
   int currentStep;
 
@@ -80,5 +83,7 @@ class SimulationData {
     this.currentStep = 1,
 
     this.unlockedStep = 1,
+
+    this.nibDraftGenerated = false,
   });
 }

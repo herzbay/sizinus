@@ -11,6 +11,7 @@ import 'steps/step_3_risk_validation_screen.dart';
 import 'steps/step_4_business_license_screen.dart';
 import 'steps/step_5_business_location_screen.dart';
 import 'steps/step_6_product_service_screen.dart';
+import 'steps/step_7_draft_nib_screen.dart';
 
 class NibStepperScreen extends StatefulWidget {
   const NibStepperScreen({
@@ -263,6 +264,12 @@ class _NibStepperScreenState
                   .hasHalalCertificate =
               hasHalalCertificate;
         },
+      );
+
+      case 7:
+      return Step7DraftNibScreen(
+        simulationData:
+            simulationData,
       );  
 
       default:
@@ -654,15 +661,25 @@ class _NibStepperScreenState
                           return;
                         }
 
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(
+                        setState(() {
 
-                          const SnackBar(
-                            content: Text(
-                              'Step 7 Draft NIB akan dibuat berikutnya',
-                            ),
-                          ),
-                        );
+                          currentStep = 7;
+
+                          unlockedStep = 7;
+                        });
+
+                        return;
+                      }
+
+                      // STEP 7
+                      if (currentStep == 7) {
+
+                        setState(() {
+
+                          currentStep = 8;
+
+                          unlockedStep = 8;
+                        });
 
                         return;
                       }
