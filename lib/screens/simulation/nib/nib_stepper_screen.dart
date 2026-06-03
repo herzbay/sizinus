@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../widgets/custom_topbar.dart';
 import '../../../widgets/nib_progress_stepper.dart';
+import '../../../widgets/dialogs/nib_published_dialog.dart';
 
 import '../../../models/simulation/simulation_data.dart';
 
@@ -12,6 +13,7 @@ import 'steps/step_4_business_license_screen.dart';
 import 'steps/step_5_business_location_screen.dart';
 import 'steps/step_6_product_service_screen.dart';
 import 'steps/step_7_draft_nib_screen.dart';
+import 'nib_reward_screen.dart';
 
 class NibStepperScreen extends StatefulWidget {
   const NibStepperScreen({
@@ -59,12 +61,6 @@ class _NibStepperScreenState
       case 7:
         return 'Draft NIB';
 
-      case 8:
-        return 'Pernyataan';
-
-      case 9:
-        return 'NIB Terbit';
-
       default:
         return 'Simulasi NIB';
     }
@@ -95,12 +91,6 @@ class _NibStepperScreenState
 
       case 7:
         return 'Periksa draft NIB yang akan diterbitkan.';
-
-      case 8:
-        return 'Baca dan setujui pernyataan.';
-
-      case 9:
-        return 'Selamat, simulasi NIB berhasil diselesaikan.';
 
       default:
         return '';
@@ -674,12 +664,34 @@ class _NibStepperScreenState
                       // STEP 7
                       if (currentStep == 7) {
 
-                        setState(() {
+                        showDialog(
 
-                          currentStep = 8;
+                          context: context,
 
-                          unlockedStep = 8;
-                        });
+                          barrierDismissible: false,
+
+                          builder: (_) {
+
+                            return NibPublishedDialog(
+
+                              onContinue: () {
+
+                                Navigator.pop(context);
+
+                                Navigator.push(
+
+                                  context,
+
+                                  MaterialPageRoute(
+
+                                    builder: (_) =>
+                                        const NibRewardScreen(),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        );
 
                         return;
                       }
@@ -688,9 +700,12 @@ class _NibStepperScreenState
                     style:
                         ElevatedButton.styleFrom(
                       backgroundColor:
-                          const Color(
-                        0xFF2D9CDB,
-                      ),
+
+                      currentStep == 7
+                          ? Colors.green
+                          : const Color(
+                              0xFF2D9CDB,
+                            ),
 
                       shape:
                           RoundedRectangleBorder(
@@ -703,8 +718,8 @@ class _NibStepperScreenState
 
                     child: Text(
 
-                      currentStep == 9
-                          ? 'Selesai'
+                      currentStep == 7
+                          ? 'Simpan & Terbitkan'
                           : 'Lanjut',
 
                       style: const TextStyle(

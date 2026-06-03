@@ -55,6 +55,13 @@ class SimulationData {
   // STEP 7
   bool nibDraftGenerated;
 
+  // COMPLETION
+  bool nibCompleted;
+
+  DateTime? nibCompletedAt;
+
+  int nibCompletedCount;
+
   // PROGRESS
   int currentStep;
 
@@ -80,10 +87,42 @@ class SimulationData {
 
     this.riskLevel,
 
+    this.businessRunning,
+
+    this.hasNpwp,
+
+    this.businessName,
+
+    this.businessDescription,
+
+    this.employeeCount,
+
+    this.sameAddress,
+
+    this.locationDetermined,
+
+    this.buildingConstruction,
+
+    this.productName,
+
+    this.productionCapacity,
+
+    this.capacityUnit,
+
+    this.hasSni,
+
+    this.halalProcess,
+
+    this.hasHalalCertificate,
+
     this.currentStep = 1,
 
     this.unlockedStep = 1,
 
     this.nibDraftGenerated = false,
+
+    this.nibCompleted = false,
+
+    this.nibCompletedCount = 0,
   });
 }
