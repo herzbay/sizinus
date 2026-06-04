@@ -24,7 +24,7 @@ class NibDetailScreen extends StatelessWidget {
               Container(
                 width: double.infinity,
 
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(18),
 
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -58,8 +58,8 @@ class NibDetailScreen extends StatelessWidget {
                   children: [
 
                     Container(
-                      width: 120,
-                      height: 120,
+                      width: 80,
+                      height: 80,
 
                       padding:
                           const EdgeInsets.all(
@@ -77,12 +77,18 @@ class NibDetailScreen extends StatelessWidget {
                         ),
                       ),
 
-                      child: Image.asset(
-                        'assets/images/icon_nib.png',
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          'assets/images/icon_nib.png',
+                          fit: BoxFit.cover,
+                        ),
                       ),
+
+                      
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 12),
 
                     const Text(
                       'Nomor Induk Berusaha',
@@ -90,7 +96,7 @@ class NibDetailScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
 
                       style: TextStyle(
-                        fontSize: 26,
+                        fontSize: 22,
                         fontWeight:
                             FontWeight.bold,
 
@@ -100,7 +106,7 @@ class NibDetailScreen extends StatelessWidget {
                       ),
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 6),
 
                     const Text(
                       'Pelajari proses penerbitan NIB berdasarkan alur OSS Indonesia melalui simulasi interaktif.',
@@ -137,7 +143,6 @@ class NibDetailScreen extends StatelessWidget {
                       color: Colors.black.withValues(
                         alpha: 0.05,
                       ),
-
                       blurRadius: 8,
                     ),
                   ],
@@ -149,7 +154,7 @@ class NibDetailScreen extends StatelessWidget {
                     infoRow(
                       Icons.schedule,
                       'Durasi',
-                      '15 - 20 Menit',
+                      '10 - 20 Menit',
                     ),
 
                     const Divider(),
@@ -157,55 +162,128 @@ class NibDetailScreen extends StatelessWidget {
                     infoRow(
                       Icons.list_alt,
                       'Tahapan',
-                      '9 Langkah',
+                      '7 Langkah',
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // HADIAH CARD
+              Container(
+                width: double.infinity,
+
+                padding: const EdgeInsets.all(20),
+
+                decoration: BoxDecoration(
+                  color: Colors.amber.shade50,
+
+                  borderRadius:
+                      BorderRadius.circular(20),
+
+                  border: Border.all(
+                    color: Colors.amber.shade200,
+                  ),
+                ),
+
+                child: Column(
+                  children: [
+
+                    const SizedBox(height: 2),
+
+                    Image.asset(
+                      'assets/images/icon_hadiah.png',
+                      width: 150,
+                      height: 150,
                     ),
 
-                    const Divider(),
+                    const SizedBox(height: 2),
 
                     Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment.center,
+
                       children: [
 
-                        const Icon(
-                          Icons.stars,
-                          color: Colors.orange,
+                        Container(
+                          padding:
+                              const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+
+                            borderRadius:
+                                BorderRadius.circular(
+                              20,
+                            ),
+                          ),
+
+                          child: Row(
+                            children: [
+
+                              Image.asset(
+                                'assets/images/icon_xp.png',
+                                width: 24,
+                                height: 24,
+                              ),
+
+                              const SizedBox(width: 6),
+
+                              const Text(
+                                '+200 Poin',
+                                style: TextStyle(
+                                  fontWeight:
+                                      FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
 
                         const SizedBox(width: 12),
 
-                        const Expanded(
-                          child: Text(
-                            'Reward',
-                            style: TextStyle(
-                              fontSize: 16,
+                        Container(
+                          padding:
+                              const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+
+                            borderRadius:
+                                BorderRadius.circular(
+                              20,
                             ),
                           ),
-                        ),
 
-                        Image.asset(
-                          'assets/images/icon_xp.png',
-                          width: 24,
-                          height: 24,
-                        ),
+                          child: Row(
+                            children: [
 
-                        const SizedBox(width: 6),
+                              Image.asset(
+                                'assets/images/icon_lencana.png',
+                                width: 24,
+                                height: 24,
+                              ),
 
-                        const Text(
-                          '+150',
-                          style: TextStyle(
-                            fontWeight:
-                                FontWeight.bold,
-                            color: Colors.green,
+                              const SizedBox(width: 6),
+
+                              const Text(
+                                '+1 Lencana',
+                                style: TextStyle(
+                                  fontWeight:
+                                      FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
-                    ),
-
-                    const Divider(),
-
-                    infoRow(
-                      Icons.workspace_premium,
-                      'Badge',
-                      'First NIB',
                     ),
                   ],
                 ),
