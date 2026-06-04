@@ -10,23 +10,40 @@ class SimulationListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    // nanti ambil dari database
+    const int currentStep = 0;
+    const int totalStep = 7;
+
+    final double progress =
+        currentStep / totalStep;
+
     return Scaffold(
-      appBar: const CustomTopBar(showBackButton: true,),
+
+      appBar: const CustomTopBar(
+        showBackButton: true,
+      ),
 
       body: SafeArea(
+
         child: Padding(
+
           padding: const EdgeInsets.all(18),
 
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
 
             children: [
 
               const Text(
                 'Simulasi Perizinan',
+
                 style: TextStyle(
                   fontSize: 28,
-                  fontWeight: FontWeight.bold,
+                  fontWeight:
+                      FontWeight.bold,
                 ),
               ),
 
@@ -34,6 +51,7 @@ class SimulationListScreen extends StatelessWidget {
 
               const Text(
                 'Pelajari proses perizinan usaha melalui simulasi interaktif.',
+
                 style: TextStyle(
                   color: Colors.black54,
                 ),
@@ -45,9 +63,10 @@ class SimulationListScreen extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-
                   borderRadius:
-                      BorderRadius.circular(24),
+                      BorderRadius.circular(
+                    24,
+                  ),
 
                   border: Border.all(
                     color: const Color(
@@ -57,14 +76,17 @@ class SimulationListScreen extends StatelessWidget {
                   ),
 
                   boxShadow: [
+
                     BoxShadow(
-                      color: Colors.black.withValues(
+                      color:
+                          Colors.black.withValues(
                         alpha: 0.06,
                       ),
 
                       blurRadius: 10,
 
-                      offset: const Offset(
+                      offset:
+                          const Offset(
                         0,
                         4,
                       ),
@@ -72,168 +94,356 @@ class SimulationListScreen extends StatelessWidget {
                   ],
                 ),
 
-                child: InkWell(
-                  borderRadius:
-                      BorderRadius.circular(24),
+                child: Padding(
 
-                  onTap: () {
+                  padding:
+                      const EdgeInsets.all(
+                    20,
+                  ),
 
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.nibDetail,
-                    );
-                  },
+                  child: Column(
 
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
 
-                    child: Row(
-                      children: [
+                    children: [
 
-                        // ICON NIB
-                        Container(
-                          width: 90,
-                          height: 90,
+                      // HEADER
+                      Row(
 
-                          padding:
-                              const EdgeInsets.all(
-                            10,
-                          ),
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
 
-                          decoration:
-                              BoxDecoration(
-                            color:
-                                Colors.blue.shade50,
+                        children: [
 
-                            borderRadius:
-                                BorderRadius
-                                    .circular(
-                              18,
+                          Expanded(
+
+                            child: Column(
+
+                              crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .start,
+
+                              children: [
+
+                                const Text(
+                                  'Nomor Induk Berusaha (NIB)',
+
+                                  style: TextStyle(
+                                    color:
+                                        Color(
+                                      0xFF1565C0,
+                                    ),
+
+                                    fontSize: 22,
+
+                                    fontWeight:
+                                        FontWeight.bold,
+                                  ),
+                                ),
+
+                                const SizedBox(
+                                  height: 8,
+                                ),
+
+                                const Text(
+
+                                  'Simulasi pembuatan NIB berdasarkan alur OSS Indonesia.',
+
+                                  style: TextStyle(
+                                    fontSize: 14,
+
+                                    color:
+                                        Colors.black87,
+
+                                    height: 1.5,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
 
-                          child: Image.asset(
-                            'assets/images/icon_nib.png',
-                            fit: BoxFit.contain,
+                          const SizedBox(
+                            width: 12,
                           ),
+
+                          Container(
+
+                            width: 72,
+                            height: 72,
+
+                            padding:
+                                const EdgeInsets.all(
+                              6,
+                            ),
+
+                            decoration:
+                                BoxDecoration(
+
+                              color:
+                                  Colors.blue.shade50,
+
+                              borderRadius:
+                                  BorderRadius.circular(
+                                18,
+                              ),
+                            ),
+
+                            child: ClipRRect(
+
+                              borderRadius:
+                                  BorderRadius.circular(
+                                14,
+                              ),
+
+                              child: Image.asset(
+                                'assets/images/icon_nib.png',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(
+                        height: 18,
+                      ),
+
+                      // PROGRESS
+                      const Text(
+
+                        'Progress Simulasi',
+
+                        style: TextStyle(
+                          fontSize: 13,
+
+                          fontWeight:
+                              FontWeight.w600,
+                        ),
+                      ),
+
+                      const SizedBox(
+                        height: 8,
+                      ),
+
+                      ClipRRect(
+
+                        borderRadius:
+                            BorderRadius.circular(
+                          20,
                         ),
 
-                        const SizedBox(width: 18),
+                        child:
+                            LinearProgressIndicator(
 
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment
-                                    .start,
+                          value:
+                              progress,
 
-                            children: [
+                          minHeight: 8,
 
-                              const Text(
-                                'Nomor Induk Berusaha (NIB)',
+                          backgroundColor:
+                              const Color(
+                            0xFFE5E7EB,
+                          ),
 
-                                style: TextStyle(
-                                  color:
-                                      Color(
-                                    0xFF1565C0,
-                                  ),
-
-                                  fontSize: 20,
-
-                                  fontWeight:
-                                      FontWeight
-                                          .bold,
-                                ),
-                              ),
-
-                              const SizedBox(
-                                height: 8,
-                              ),
-
-                              const Text(
-                                'Simulasi pembuatan NIB online berdasarkan alur OSS Indonesia.',
-
-                                style: TextStyle(
-                                  color:
-                                      Colors.black87,
-
-                                  fontSize: 14,
-
-                                  height: 1.4,
-                                ),
-                              ),
-
-                              const SizedBox(
-                                height: 14,
-                              ),
-
-                              Container(
-                                padding:
-                                    const EdgeInsets
-                                        .symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-
-                                decoration:
-                                    BoxDecoration(
-                                  color:
-                                      const Color(
-                                    0xFFEAF7EE,
-                                  ),
-
-                                  borderRadius:
-                                      BorderRadius
-                                          .circular(
-                                    20,
-                                  ),
-                                ),
-
-                                child: Row(
-                                  mainAxisSize:
-                                      MainAxisSize
-                                          .min,
-
-                                  children: [
-
-                                    Image.asset(
-                                      'assets/images/icon_xp.png',
-                                      width: 22,
-                                      height: 22,
-                                    ),
-
-                                    const SizedBox(
-                                      width: 6,
-                                    ),
-
-                                    Text(
-                                      '+150',
-
-                                      style:
-                                          TextStyle(
-                                        color: const Color(0xFF000000),
-
-                                        fontWeight:
-                                            FontWeight
-                                                .bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          valueColor:
+                              const AlwaysStoppedAnimation(
+                            Color(
+                              0xFF2D9CDB,
+                            ),
                           ),
                         ),
+                      ),
 
-                        const SizedBox(width: 10),
+                      const SizedBox(
+                        height: 6,
+                      ),
 
-                        const Icon(
-                          Icons.arrow_forward_ios,
+                      Align(
+
+                        alignment:
+                            Alignment.centerRight,
+
+                        child: Text(
+
+                          '$currentStep / $totalStep Langkah',
+
+                          style:
+                              const TextStyle(
+                            fontSize: 12,
+
+                            color:
+                                Colors.black54,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(
+                        height: 16,
+                      ),
+
+                      // XP
+                      Container(
+
+                        padding:
+                            const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+
+                        decoration: BoxDecoration(
+
                           color:
-                              Color(0xFF2D9CDB),
-                          size: 20,
+                              const Color(
+                            0xFFEAF7EE,
+                          ),
+
+                          borderRadius:
+                              BorderRadius.circular(
+                            20,
+                          ),
                         ),
-                      ],
-                    ),
+
+                        child: Row(
+
+                          mainAxisSize:
+                              MainAxisSize.min,
+
+                          children: [
+
+                            Image.asset(
+                              'assets/images/icon_xp.png',
+
+                              width: 22,
+                              height: 22,
+                            ),
+
+                            const SizedBox(
+                              width: 8,
+                            ),
+
+                            const Text(
+
+                              '+200 XP',
+
+                              style: TextStyle(
+                                fontWeight:
+                                    FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(
+                        height: 10,
+                      ),
+
+                      // BADGE
+                      Container(
+
+                        padding:
+                            const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+
+                        decoration: BoxDecoration(
+
+                          color:
+                              const Color(
+                            0xFFFFF8E1,
+                          ),
+
+                          borderRadius:
+                              BorderRadius.circular(
+                            20,
+                          ),
+                        ),
+
+                        child: Row(
+
+                          mainAxisSize:
+                              MainAxisSize.min,
+
+                          children: [
+
+                            Image.asset(
+                              'assets/images/icon_lencana.png',
+
+                              width: 22,
+                              height: 22,
+                            ),
+
+                            const SizedBox(
+                              width: 8,
+                            ),
+
+                            const Text(
+
+                              '+1 Lencana',
+
+                              style: TextStyle(
+                                fontWeight:
+                                    FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(
+                        height: 18,
+                      ),
+
+                      SizedBox(
+
+                        width: double.infinity,
+
+                        height: 48,
+
+                        child: ElevatedButton(
+
+                          onPressed: () {
+
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.nibDetail,
+                            );
+                          },
+
+                          style:
+                              ElevatedButton.styleFrom(
+
+                            backgroundColor:
+                                const Color(
+                              0xFF2D9CDB,
+                            ),
+
+                            shape:
+                                RoundedRectangleBorder(
+
+                              borderRadius:
+                                  BorderRadius.circular(
+                                12,
+                              ),
+                            ),
+                          ),
+
+                          child: const Text(
+
+                            'Mulai Simulasi',
+
+                            style: TextStyle(
+                              color: Colors.white,
+
+                              fontWeight:
+                                  FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
