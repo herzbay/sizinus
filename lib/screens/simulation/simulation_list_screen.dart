@@ -447,6 +447,73 @@ class SimulationListScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
+              const SizedBox(height: 18),
+
+              Container(
+                width: double.infinity,
+
+                padding: const EdgeInsets.all(16),
+
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+
+                  borderRadius:
+                      BorderRadius.circular(16),
+
+                  border: Border.all(
+                    color: Colors.blue.shade200,
+                  ),
+                ),
+
+                child: const Row(
+
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
+
+                  children: [
+
+                    Icon(
+                      Icons.info_outline,
+                      color: Color(0xFF2D9CDB),
+                    ),
+
+                    SizedBox(width: 12),
+
+                    Expanded(
+
+                      child: Column(
+
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
+
+                        children: [
+
+                          Text(
+                            'Informasi Penting',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight:
+                                  FontWeight.bold,
+                            ),
+                          ),
+
+                          SizedBox(height: 6),
+
+                          Text(
+                            'Saat ini fitur simulasi perizinan hanya difokuskan pada pembuatan NIB.',
+
+                            style: TextStyle(
+                              height: 1.4,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
