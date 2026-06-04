@@ -324,7 +324,7 @@ class SimulationListScreen extends StatelessWidget {
 
                             const Text(
 
-                              '+200 XP',
+                              '+200 Poin',
 
                               style: TextStyle(
                                 fontWeight:
