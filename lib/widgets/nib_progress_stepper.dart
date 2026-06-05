@@ -4,70 +4,81 @@ class NibProgressStepper extends StatelessWidget {
 
   final int currentStep;
   final int unlockedStep;
+  final Function(int step) onStepTap;
 
   const NibProgressStepper({
     super.key,
     required this.currentStep,
     required this.unlockedStep,
+    required this.onStepTap,
   });
+
+  static const int totalStep = 7;
 
   @override
   Widget build(BuildContext context) {
 
     return Column(
       children: [
+        Text(
+          'Langkah $currentStep dari $totalStep',
+
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 12),
 
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-
           child: Row(
             children: [
 
-              for (int i = 1; i <= 9; i++) ...[
+              for (int i = 1;
+                  i <= totalStep;
+                  i++) ...[
 
                 _buildStep(i),
 
-                if (i != 9)
+                if (i != totalStep)
                   Container(
                     width: 30,
                     height: 3,
 
-                    color: i < currentStep
-                        ? Colors.green
-                        : Colors.grey.shade300,
+                    color:
+                        i < currentStep
+                            ? Colors.green
+                            : Colors.grey.shade300,
                   ),
               ],
 
               const SizedBox(width: 8),
 
               Container(
-                width: 40,
-                height: 40,
 
-                decoration: BoxDecoration(
-                  color: currentStep == 9
-                      ? Colors.amber
-                      : Colors.grey.shade300,
+                width: 42,
+                height: 42,
+
+                decoration:
+                    BoxDecoration(
+
+                  color:
+                      unlockedStep ==
+                              totalStep
+                          ? Colors.amber
+                          : Colors.grey.shade300,
 
                   shape: BoxShape.circle,
                 ),
 
                 child: const Icon(
-                  Icons.emoji_events,
+                  Icons.card_giftcard,
                   color: Colors.white,
                 ),
               ),
             ],
-          ),
-        ),
-
-        const SizedBox(height: 16),
-
-        Text(
-          'Langkah $currentStep dari 9',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
           ),
         ),
       ],
@@ -76,88 +87,85 @@ class NibProgressStepper extends StatelessWidget {
 
   Widget _buildStep(int step) {
 
-    bool completed = step < currentStep;
+    final bool completed =
+        step < currentStep;
 
-    bool active = step == currentStep;
+    final bool active =
+        step == currentStep;
 
-    bool locked = step > unlockedStep;
+    final bool locked =
+        step > unlockedStep;
 
-    if (locked) {
-      return Container(
-        width: 40,
-        height: 40,
+    return GestureDetector(
+
+      onTap: locked
+          ? null
+          : () {
+              onStepTap(step);
+            },
+
+      child: AnimatedContainer(
+
+        duration:
+            const Duration(
+          milliseconds: 200,
+        ),
+
+        width: active ? 46 : 40,
+        height: active ? 46 : 40,
 
         decoration: BoxDecoration(
-          color: Colors.grey.shade300,
+
+          color: locked
+              ? Colors.grey.shade300
+              : completed
+                  ? Colors.green
+                  : active
+                      ? const Color(
+                          0xFF2D9CDB,
+                        )
+                      : Colors.white,
+
           shape: BoxShape.circle,
-        ),
 
-        child: const Icon(
-          Icons.lock,
-          size: 18,
-          color: Colors.grey,
-        ),
-      );
-    }
-
-    if (completed) {
-      return Container(
-        width: 40,
-        height: 40,
-
-        decoration: const BoxDecoration(
-          color: Colors.green,
-          shape: BoxShape.circle,
-        ),
-
-        child: const Icon(
-          Icons.check,
-          color: Colors.white,
-        ),
-      );
-    }
-
-    if (active) {
-      return Container(
-        width: 44,
-        height: 44,
-
-        decoration: const BoxDecoration(
-          color: Color(0xFF2D9CDB),
-          shape: BoxShape.circle,
+          border:
+              active || completed || locked
+                  ? null
+                  : Border.all(
+                      color: Colors.grey.shade400,
+                    ),
         ),
 
         child: Center(
-          child: Text(
-            '$step',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      );
-    }
 
-    return Container(
-      width: 40,
-      height: 40,
+          child: locked
 
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
+              ? const Icon(
+                  Icons.lock,
+                  size: 18,
+                  color: Colors.grey,
+                )
 
-        border: Border.all(
-          color: Colors.grey.shade400,
-        ),
-      ),
+              : completed
 
-      child: Center(
-        child: Text(
-          '$step',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+                  ? const Icon(
+                      Icons.check,
+                      color: Colors.white,
+                    )
+
+                  : Text(
+
+                      '$step',
+
+                      style: TextStyle(
+                        color: active
+                            ? Colors.white
+                            : Colors.black,
+
+                        fontWeight:
+                            FontWeight.bold,
+                      ),
+                    ),
         ),
       ),
     );

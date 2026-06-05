@@ -294,6 +294,14 @@ class _NibStepperScreenState
               NibProgressStepper(
                 currentStep: currentStep,
                 unlockedStep: unlockedStep,
+
+                onStepTap: (step) {
+                  if (step <= unlockedStep) {
+                    setState(() {
+                      currentStep = step;
+                    });
+                  }
+                },
               ),
 
               const SizedBox(height: 24),
