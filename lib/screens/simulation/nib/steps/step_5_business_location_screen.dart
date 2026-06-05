@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 class Step5BusinessLocationScreen
     extends StatefulWidget {
 
+  final String? initialSameAddress;
+
+  final String? initialLocationDetermined;
+
+  final String? initialBuildingConstruction;
+
   final Function({
     required String sameAddress,
     required String locationDetermined,
@@ -12,6 +18,9 @@ class Step5BusinessLocationScreen
   const Step5BusinessLocationScreen({
     super.key,
     required this.onChanged,
+    this.initialSameAddress,
+    this.initialLocationDetermined,
+    this.initialBuildingConstruction,
   });
 
   @override
@@ -29,6 +38,21 @@ class _Step5BusinessLocationScreenState
   String? locationDetermined;
 
   String? buildingConstruction;
+
+  @override
+  void initState() {
+
+    super.initState();
+
+    sameAddress =
+        widget.initialSameAddress;
+
+    locationDetermined =
+        widget.initialLocationDetermined;
+
+    buildingConstruction =
+        widget.initialBuildingConstruction;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +186,9 @@ class _Step5BusinessLocationScreenState
           Container(
 
             padding:
-                const EdgeInsets.all(18),
+                const EdgeInsets.all(
+              18,
+            ),
 
             decoration: BoxDecoration(
 
@@ -195,7 +221,9 @@ class _Step5BusinessLocationScreenState
                 const SizedBox(width: 12),
 
                 Expanded(
+
                   child: Column(
+
                     crossAxisAlignment:
                         CrossAxisAlignment.start,
 
@@ -210,10 +238,12 @@ class _Step5BusinessLocationScreenState
                         ),
                       ),
 
-                      const SizedBox(height: 10),
+                      const SizedBox(
+                        height: 10,
+                      ),
 
                       const Text(
-                        'Pada aplikasi OSS Indonesia sebenarnya Anda akan diminta mengisi data lokasi usaha berikut:',
+                        'Pada OSS, pengguna akan diminta mengisi data lokasi usaha berikut:',
                         style: TextStyle(
                           color:
                               Colors.black87,
@@ -221,22 +251,37 @@ class _Step5BusinessLocationScreenState
                         ),
                       ),
 
-                      const SizedBox(height: 10),
+                      const SizedBox(
+                        height: 10,
+                      ),
 
-                      const Text('• Provinsi'),
-                      const Text('• Kabupaten/Kota'),
-                      const Text('• Kecamatan'),
-                      const Text('• Desa/Kelurahan'),
-                      const Text('• Kode Pos'),
-                      const Text('• Alamat Lengkap'),
+                      const Text(
+                          '• Provinsi'),
+                      const Text(
+                          '• Kabupaten/Kota'),
+                      const Text(
+                          '• Kecamatan'),
+                      const Text(
+                          '• Desa/Kelurahan'),
+                      const Text(
+                          '• Kode Pos'),
+                      const Text(
+                          '• Alamat Lengkap'),
 
-                      const SizedBox(height: 12),
+                      const SizedBox(
+                        height: 12,
+                      ),
 
                       Container(
-                        padding:
-                            const EdgeInsets.all(10),
 
-                        decoration: BoxDecoration(
+                        padding:
+                            const EdgeInsets.all(
+                          10,
+                        ),
+
+                        decoration:
+                            BoxDecoration(
+
                           color:
                               Colors.white70,
 
@@ -249,23 +294,31 @@ class _Step5BusinessLocationScreenState
                         child: const Row(
 
                           crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                              CrossAxisAlignment
+                                  .start,
 
                           children: [
 
                             Icon(
-                              Icons.shield_outlined,
+                              Icons
+                                  .shield_outlined,
                               size: 18,
-                              color: Colors.blue,
+                              color:
+                                  Colors.blue,
                             ),
 
-                            SizedBox(width: 8),
+                            SizedBox(
+                              width: 8,
+                            ),
 
                             Expanded(
+
                               child: Text(
-                                'Data tersebut tidak ditampilkan dalam simulasi untuk menjaga privasi pengguna.',
-                                style: TextStyle(
-                                  fontSize: 13,
+                                'Data lokasi tidak ditampilkan dalam simulasi untuk menjaga privasi pengguna.',
+                                style:
+                                    TextStyle(
+                                  fontSize:
+                                      13,
                                 ),
                               ),
                             ),
@@ -366,14 +419,18 @@ class _Step5BusinessLocationScreenState
           Colors.grey.shade100,
 
       side: BorderSide(
+
         color: selected
+
             ? const Color(
                 0xFF2D9CDB,
               )
+
             : Colors.grey.shade300,
       ),
 
       labelStyle: TextStyle(
+
         color: selected
             ? Colors.white
             : Colors.black87,
@@ -382,13 +439,16 @@ class _Step5BusinessLocationScreenState
             FontWeight.w600,
       ),
 
-      onSelected: (_) => onTap(),
+      onSelected: (_) {
+        onTap();
+      },
     );
   }
 
   void updateParent() {
 
     widget.onChanged(
+
       sameAddress:
           sameAddress ?? '',
 

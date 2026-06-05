@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 import '../../../../data/kbli_data.dart';
 
 class Step2KbliScreen extends StatefulWidget {
+
   final String category;
+
+  final String? initialBusinessType;
+
+  final String? initialKbli;
+
+  final String? initialScope;
 
   final Function({
     required String businessType,
@@ -15,6 +22,9 @@ class Step2KbliScreen extends StatefulWidget {
     super.key,
     required this.category,
     required this.onChanged,
+    this.initialBusinessType,
+    this.initialKbli,
+    this.initialScope,
   });
 
   @override
@@ -45,6 +55,52 @@ class _Step2KbliScreenState
   ];
 
   @override
+  void initState() {
+
+    super.initState();
+
+    selectedBusinessType =
+        widget.initialBusinessType;
+
+    selectedKbli =
+        widget.initialKbli;
+
+    selectedScope =
+        widget.initialScope;
+
+    _loadDescription();
+  }
+
+  void _loadDescription() {
+
+    if (selectedKbli == null) {
+      return;
+    }
+
+    final kbliList =
+        KbliData.data[
+            widget.category] ??
+        [];
+
+    try {
+
+      final item =
+          kbliList.firstWhere(
+        (element) =>
+            element['code'] ==
+            selectedKbli,
+      );
+
+      selectedDescription =
+          item['description'];
+
+    } catch (_) {
+
+      selectedDescription = null;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     final kbliList =
@@ -73,19 +129,44 @@ class _Step2KbliScreenState
           const SizedBox(height: 8),
 
           DropdownButtonFormField<String>(
+
             initialValue:
                 selectedBusinessType,
 
             decoration:
                 InputDecoration(
+
               filled: true,
               fillColor: Colors.white,
 
-              border:
+              enabledBorder:
                   OutlineInputBorder(
+
                 borderRadius:
                     BorderRadius.circular(
                   14,
+                ),
+
+                borderSide:
+                    const BorderSide(
+                  color:
+                      Color(0xFF2D9CDB),
+                ),
+              ),
+
+              focusedBorder:
+                  OutlineInputBorder(
+
+                borderRadius:
+                    BorderRadius.circular(
+                  14,
+                ),
+
+                borderSide:
+                    const BorderSide(
+                  color:
+                      Color(0xFF2D9CDB),
+                  width: 2,
                 ),
               ),
             ),
@@ -125,19 +206,44 @@ class _Step2KbliScreenState
           const SizedBox(height: 8),
 
           DropdownButtonFormField<String>(
+
             initialValue:
                 selectedKbli,
 
             decoration:
                 InputDecoration(
+
               filled: true,
               fillColor: Colors.white,
 
-              border:
+              enabledBorder:
                   OutlineInputBorder(
+
                 borderRadius:
                     BorderRadius.circular(
                   14,
+                ),
+
+                borderSide:
+                    const BorderSide(
+                  color:
+                      Color(0xFF2D9CDB),
+                ),
+              ),
+
+              focusedBorder:
+                  OutlineInputBorder(
+
+                borderRadius:
+                    BorderRadius.circular(
+                  14,
+                ),
+
+                borderSide:
+                    const BorderSide(
+                  color:
+                      Color(0xFF2D9CDB),
+                  width: 2,
                 ),
               ),
             ),
@@ -147,6 +253,7 @@ class _Step2KbliScreenState
 
               return DropdownMenuItem<
                   String>(
+
                 value:
                     item['code'],
 
@@ -180,6 +287,7 @@ class _Step2KbliScreenState
 
           // DESKRIPSI KBLI
           if (selectedDescription != null)
+
             Container(
 
               margin:
@@ -194,6 +302,7 @@ class _Step2KbliScreenState
 
               decoration:
                   BoxDecoration(
+
                 color:
                     Colors.blue.shade50,
 
@@ -209,6 +318,7 @@ class _Step2KbliScreenState
               ),
 
               child: Row(
+
                 crossAxisAlignment:
                     CrossAxisAlignment
                         .start,
@@ -225,8 +335,10 @@ class _Step2KbliScreenState
                   ),
 
                   Expanded(
+
                     child: Text(
                       selectedDescription!,
+
                       style:
                           const TextStyle(
                         height: 1.5,
@@ -251,19 +363,44 @@ class _Step2KbliScreenState
           const SizedBox(height: 8),
 
           DropdownButtonFormField<String>(
+
             initialValue:
                 selectedScope,
 
             decoration:
                 InputDecoration(
+
               filled: true,
               fillColor: Colors.white,
 
-              border:
+              enabledBorder:
                   OutlineInputBorder(
+
                 borderRadius:
                     BorderRadius.circular(
                   14,
+                ),
+
+                borderSide:
+                    const BorderSide(
+                  color:
+                      Color(0xFF2D9CDB),
+                ),
+              ),
+
+              focusedBorder:
+                  OutlineInputBorder(
+
+                borderRadius:
+                    BorderRadius.circular(
+                  14,
+                ),
+
+                borderSide:
+                    const BorderSide(
+                  color:
+                      Color(0xFF2D9CDB),
+                  width: 2,
                 ),
               ),
             ),
@@ -290,6 +427,8 @@ class _Step2KbliScreenState
               _updateParent();
             },
           ),
+
+          const SizedBox(height: 12),
         ],
       ),
     );
@@ -298,6 +437,7 @@ class _Step2KbliScreenState
   void _updateParent() {
 
     widget.onChanged(
+
       businessType:
           selectedBusinessType ?? '',
 

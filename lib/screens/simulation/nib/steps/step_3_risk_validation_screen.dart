@@ -5,6 +5,16 @@ import 'package:intl/intl.dart';
 class Step3RiskValidationScreen
     extends StatefulWidget {
 
+  final double? initialLandArea;
+
+  final String? initialLandUnit;
+
+  final double? initialCapital;
+
+  final String? initialBusinessScale;
+
+  final String? initialRiskLevel;
+
   final Function({
     required double landArea,
     required String landUnit,
@@ -16,6 +26,11 @@ class Step3RiskValidationScreen
   const Step3RiskValidationScreen({
     super.key,
     required this.onChanged,
+    this.initialLandArea,
+    this.initialLandUnit,
+    this.initialCapital,
+    this.initialBusinessScale,
+    this.initialRiskLevel,
   });
 
   @override
@@ -33,7 +48,7 @@ class _Step3RiskValidationScreenState
     locale: 'id_ID',
     symbol: 'Rp ',
     decimalDigits: 0,
-  );        
+  );
 
   final TextEditingController
       landAreaController =
@@ -53,6 +68,41 @@ class _Step3RiskValidationScreenState
     'm²',
     'ha',
   ];
+
+  @override
+  void initState() {
+
+    super.initState();
+
+    if (widget.initialLandArea !=
+        null) {
+
+      landAreaController.text =
+          widget.initialLandArea!
+              .toString();
+    }
+
+    if (widget.initialCapital !=
+        null) {
+
+      capitalController.text =
+          NumberFormat.decimalPattern(
+        'id_ID',
+      ).format(
+        widget.initialCapital!
+            .toInt(),
+      );
+    }
+
+    selectedUnit =
+        widget.initialLandUnit;
+
+    businessScale =
+        widget.initialBusinessScale;
+
+    riskLevel =
+        widget.initialRiskLevel;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +128,7 @@ class _Step3RiskValidationScreenState
           const SizedBox(height: 8),
 
           TextFormField(
+
             controller:
                 landAreaController,
 
@@ -86,17 +137,41 @@ class _Step3RiskValidationScreenState
 
             decoration:
                 InputDecoration(
+
               hintText:
                   'Contoh: 500',
 
               filled: true,
               fillColor: Colors.white,
 
-              border:
+              enabledBorder:
                   OutlineInputBorder(
+
                 borderRadius:
                     BorderRadius.circular(
                   14,
+                ),
+
+                borderSide:
+                    const BorderSide(
+                  color:
+                      Color(0xFF2D9CDB),
+                ),
+              ),
+
+              focusedBorder:
+                  OutlineInputBorder(
+
+                borderRadius:
+                    BorderRadius.circular(
+                  14,
+                ),
+
+                borderSide:
+                    const BorderSide(
+                  color:
+                      Color(0xFF2D9CDB),
+                  width: 2,
                 ),
               ),
             ),
@@ -106,7 +181,7 @@ class _Step3RiskValidationScreenState
 
           // SATUAN
           const Text(
-            'Satuan',
+            'Satuan Lahan',
             style: TextStyle(
               fontWeight:
                   FontWeight.bold,
@@ -116,19 +191,44 @@ class _Step3RiskValidationScreenState
           const SizedBox(height: 8),
 
           DropdownButtonFormField<String>(
+
             initialValue:
                 selectedUnit,
 
             decoration:
                 InputDecoration(
+
               filled: true,
               fillColor: Colors.white,
 
-              border:
+              enabledBorder:
                   OutlineInputBorder(
+
                 borderRadius:
                     BorderRadius.circular(
                   14,
+                ),
+
+                borderSide:
+                    const BorderSide(
+                  color:
+                      Color(0xFF2D9CDB),
+                ),
+              ),
+
+              focusedBorder:
+                  OutlineInputBorder(
+
+                borderRadius:
+                    BorderRadius.circular(
+                  14,
+                ),
+
+                borderSide:
+                    const BorderSide(
+                  color:
+                      Color(0xFF2D9CDB),
+                  width: 2,
                 ),
               ),
             ),
@@ -156,7 +256,7 @@ class _Step3RiskValidationScreenState
 
           // MODAL USAHA
           const Text(
-            'Modal Usaha (Rp)',
+            'Modal Usaha',
             style: TextStyle(
               fontWeight:
                   FontWeight.bold,
@@ -166,7 +266,9 @@ class _Step3RiskValidationScreenState
           const SizedBox(height: 8),
 
           TextFormField(
-            controller: capitalController,
+
+            controller:
+                capitalController,
 
             keyboardType:
                 TextInputType.number,
@@ -176,44 +278,81 @@ class _Step3RiskValidationScreenState
                   .digitsOnly,
             ],
 
-            decoration: InputDecoration(
-              hintText: 'Rp 25.000.000',
+            decoration:
+                InputDecoration(
+
+              hintText:
+                  'Rp 25.000.000',
 
               filled: true,
               fillColor: Colors.white,
 
-              prefixIcon: const Icon(
-                Icons.payments_outlined,
+              prefixIcon:
+                  const Icon(
+                Icons
+                    .payments_outlined,
               ),
 
-              border: OutlineInputBorder(
+              enabledBorder:
+                  OutlineInputBorder(
+
                 borderRadius:
                     BorderRadius.circular(
                   14,
+                ),
+
+                borderSide:
+                    const BorderSide(
+                  color:
+                      Color(0xFF2D9CDB),
+                ),
+              ),
+
+              focusedBorder:
+                  OutlineInputBorder(
+
+                borderRadius:
+                    BorderRadius.circular(
+                  14,
+                ),
+
+                borderSide:
+                    const BorderSide(
+                  color:
+                      Color(0xFF2D9CDB),
+                  width: 2,
                 ),
               ),
             ),
 
             onChanged: (value) {
 
-              if (value.isEmpty) return;
+              if (value.isEmpty) {
+                return;
+              }
 
               final number =
                   int.parse(
-                value.replaceAll('.', ''),
+                value.replaceAll(
+                  '.',
+                  '',
+                ),
               );
 
               final formatted =
-                  NumberFormat.decimalPattern(
+                  NumberFormat
+                      .decimalPattern(
                 'id_ID',
               ).format(number);
 
               capitalController.value =
                   TextEditingValue(
+
                 text: formatted,
 
                 selection:
-                    TextSelection.collapsed(
+                    TextSelection
+                        .collapsed(
                   offset:
                       formatted.length,
                 ),
@@ -224,8 +363,10 @@ class _Step3RiskValidationScreenState
           const SizedBox(height: 24),
 
           SizedBox(
+
             width: double.infinity,
-            height: 50,
+
+            height: 52,
 
             child: ElevatedButton(
 
@@ -234,15 +375,27 @@ class _Step3RiskValidationScreenState
 
               style:
                   ElevatedButton.styleFrom(
+
                 backgroundColor:
                     Colors.orange,
+
+                shape:
+                    RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(
+                    14,
+                  ),
+                ),
               ),
 
               child: const Text(
+
                 'Validasi Risiko',
+
                 style: TextStyle(
                   color:
                       Colors.white,
+
                   fontWeight:
                       FontWeight.bold,
                 ),
@@ -264,6 +417,7 @@ class _Step3RiskValidationScreenState
 
               decoration:
                   BoxDecoration(
+
                 color:
                     Colors.green.shade50,
 
@@ -273,7 +427,8 @@ class _Step3RiskValidationScreenState
                 ),
 
                 border: Border.all(
-                  color: Colors.green,
+                  color:
+                      Colors.green,
                 ),
               ),
 
@@ -295,6 +450,8 @@ class _Step3RiskValidationScreenState
                 ],
               ),
             ),
+
+          const SizedBox(height: 12),
         ],
       ),
     );
@@ -306,6 +463,7 @@ class _Step3RiskValidationScreenState
   ) {
 
     return Row(
+
       mainAxisAlignment:
           MainAxisAlignment
               .spaceBetween,
@@ -316,6 +474,7 @@ class _Step3RiskValidationScreenState
 
         Text(
           value,
+
           style:
               const TextStyle(
             fontWeight:
@@ -329,16 +488,11 @@ class _Step3RiskValidationScreenState
   void validateRisk() {
 
     if (landAreaController.text
-        .isEmpty) {
-      return;
-    }
+            .isEmpty ||
+        selectedUnit == null ||
+        capitalController.text
+            .isEmpty) {
 
-    if (selectedUnit == null) {
-      return;
-    }
-
-    if (capitalController.text
-        .isEmpty) {
       return;
     }
 
@@ -350,10 +504,12 @@ class _Step3RiskValidationScreenState
     final double capital =
         double.parse(
       capitalController.text
-          .replaceAll('.', ''),
+          .replaceAll(
+        '.',
+        '',
+      ),
     );
 
-    // SKALA USAHA
     if (capital <=
         1000000000) {
 
@@ -372,7 +528,6 @@ class _Step3RiskValidationScreenState
           'Menengah';
     }
 
-    // RISIKO
     if (landArea < 1000 &&
         capital <
             1000000000) {
@@ -387,12 +542,17 @@ class _Step3RiskValidationScreenState
     }
 
     widget.onChanged(
+
       landArea: landArea,
+
       landUnit:
           selectedUnit!,
+
       capital: capital,
+
       businessScale:
           businessScale!,
+
       riskLevel:
           riskLevel!,
     );

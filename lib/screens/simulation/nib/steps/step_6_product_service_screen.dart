@@ -5,6 +5,18 @@ import '../../../../core/theme/input_style.dart';
 class Step6ProductServiceScreen
     extends StatefulWidget {
 
+  final String? initialProductName;
+
+  final int? initialProductionCapacity;
+
+  final String? initialCapacityUnit;
+
+  final String? initialHasSni;
+
+  final String? initialHalalProcess;
+
+  final String? initialHasHalalCertificate;
+
   final Function({
     required String productName,
     required int productionCapacity,
@@ -17,6 +29,13 @@ class Step6ProductServiceScreen
   const Step6ProductServiceScreen({
     super.key,
     required this.onChanged,
+
+    this.initialProductName,
+    this.initialProductionCapacity,
+    this.initialCapacityUnit,
+    this.initialHasSni,
+    this.initialHalalProcess,
+    this.initialHasHalalCertificate,
   });
 
   @override
@@ -29,11 +48,11 @@ class _Step6ProductServiceScreenState
     extends State<
         Step6ProductServiceScreen> {
 
-  final productController =
-      TextEditingController();
+  late TextEditingController
+      productController;
 
-  final capacityController =
-      TextEditingController();
+  late TextEditingController
+      capacityController;
 
   String? selectedUnit;
 
@@ -59,6 +78,52 @@ class _Step6ProductServiceScreenState
 
     'Layanan',
   ];
+
+  @override
+  void initState() {
+
+    super.initState();
+
+    productController =
+        TextEditingController(
+      text:
+          widget.initialProductName ??
+              '',
+    );
+
+    capacityController =
+        TextEditingController(
+      text: widget
+                  .initialProductionCapacity !=
+              null
+          ? widget
+              .initialProductionCapacity
+              .toString()
+          : '',
+    );
+
+    selectedUnit =
+        widget.initialCapacityUnit;
+
+    hasSni =
+        widget.initialHasSni;
+
+    halalProcess =
+        widget.initialHalalProcess;
+
+    hasHalalCertificate =
+        widget.initialHasHalalCertificate;
+  }
+
+  @override
+  void dispose() {
+
+    productController.dispose();
+
+    capacityController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,9 +188,11 @@ class _Step6ProductServiceScreenState
 
             decoration:
                 AppInputStyle.decoration(
-              hint: 'Contoh: 1000',
+              hint:
+                  'Contoh: 1000',
               icon:
-                  Icons.production_quantity_limits,
+                  Icons
+                      .production_quantity_limits,
             ),
 
             onChanged: (_) =>
@@ -180,9 +247,12 @@ class _Step6ProductServiceScreenState
           const SizedBox(height: 24),
 
           buildQuestion(
+
             title:
                 'Apakah sudah memiliki SNI?',
-            value: hasSni,
+
+            value:
+                hasSni,
 
             onSelected:
                 (value) {
@@ -200,8 +270,10 @@ class _Step6ProductServiceScreenState
           const SizedBox(height: 24),
 
           buildQuestion(
+
             title:
                 'Apakah bahan atau proses produksi halal?',
+
             value:
                 halalProcess,
 
@@ -221,8 +293,10 @@ class _Step6ProductServiceScreenState
           const SizedBox(height: 24),
 
           buildQuestion(
+
             title:
                 'Apakah sudah memiliki sertifikat halal?',
+
             value:
                 hasHalalCertificate,
 
@@ -283,7 +357,7 @@ class _Step6ProductServiceScreenState
 
                   child: Text(
 
-                    'Pada aplikasi OSS Indonesia sebenarnya Anda dapat menambahkan lebih dari satu produk atau jasa.\n\n'
+                    'Pada OSS sebenarnya Anda dapat menambahkan lebih dari satu produk atau jasa.\n\n'
                     'Dalam simulasi ini cukup ditambahkan satu produk/jasa utama untuk mempermudah proses pembelajaran.',
 
                     style: TextStyle(
@@ -304,8 +378,11 @@ class _Step6ProductServiceScreenState
   }
 
   Widget buildQuestion({
+
     required String title,
+
     required String? value,
+
     required Function(String)
         onSelected,
   }) {
@@ -329,11 +406,13 @@ class _Step6ProductServiceScreenState
         const SizedBox(height: 10),
 
         Wrap(
+
           spacing: 12,
 
           children: [
 
             buildChoiceChip(
+
               label: 'Ya',
 
               selected:
@@ -348,6 +427,7 @@ class _Step6ProductServiceScreenState
             ),
 
             buildChoiceChip(
+
               label: 'Tidak',
 
               selected:
@@ -368,8 +448,11 @@ class _Step6ProductServiceScreenState
   }
 
   Widget buildChoiceChip({
+
     required String label,
+
     required bool selected,
+
     required VoidCallback onTap,
   }) {
 

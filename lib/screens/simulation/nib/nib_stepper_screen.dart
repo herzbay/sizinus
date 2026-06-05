@@ -5,6 +5,7 @@ import '../../../widgets/nib_progress_stepper.dart';
 import '../../../widgets/dialogs/nib_published_dialog.dart';
 
 import '../../../models/simulation/simulation_data.dart';
+import '../../../services/simulation/local_simulation_storage.dart';
 
 import 'steps/step_1_business_category_screen.dart';
 import 'steps/step_2_kbli_screen.dart';
@@ -25,11 +26,59 @@ class NibStepperScreen extends StatefulWidget {
       _NibStepperScreenState();
 }
 
+
+
 class _NibStepperScreenState
     extends State<NibStepperScreen> {
 
-  final SimulationData simulationData =
+    @override
+    void initState() {
+      super.initState();
+
+      _loadSimulation();
+    }
+
+    Future<void> _loadSimulation() async {
+
+      final data =
+          await storage.load();
+
+      if (data != null) {
+
+        simulationData = data;
+
+        currentStep =
+            data.currentStep;
+
+        unlockedStep =
+            data.unlockedStep;
+      }
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+
+    Future<void> _saveSimulation() async {
+
+      simulationData.currentStep =
+          currentStep;
+
+      simulationData.unlockedStep =
+          unlockedStep;
+
+      await storage.save(
+        simulationData,
+      );
+    }    
+
+  SimulationData simulationData =
       SimulationData();
+
+  final LocalSimulationStorage storage =
+      LocalSimulationStorage();
+
+  bool isLoading = true;
 
   int currentStep = 1;
 
@@ -103,10 +152,20 @@ class _NibStepperScreenState
 
       case 1:
         return Step1BusinessCategoryScreen(
-          onSelected: (value) {
+
+          selectedCategory:
+              simulationData
+                  .businessCategory,
+
+          onSelected: (value) async {
 
             simulationData
-                .businessCategory = value;
+                .businessCategory =
+                value;
+
+            await _saveSimulation();
+
+            setState(() {});
           },
         );
 
@@ -115,30 +174,59 @@ class _NibStepperScreenState
 
           category:
               simulationData
-                  .businessCategory!,
+                  .businessCategory ??
+              '',
+
+          initialBusinessType:
+              simulationData
+                  .businessType,
+
+          initialKbli:
+              simulationData
+                  .kbli,
+
+          initialScope:
+              simulationData
+                  .businessScope,
 
           onChanged: ({
             required businessType,
             required kbli,
             required businessScope,
-          }) {
+          }) async {
 
-            simulationData
-                .businessType =
+            simulationData.businessType =
                 businessType;
 
-            simulationData
-                .kbli =
+            simulationData.kbli =
                 kbli;
 
-            simulationData
-                .businessScope =
+            simulationData.businessScope =
                 businessScope;
+
+            await _saveSimulation();
+
+            setState(() {});
           },
         );
 
       case 3:
         return Step3RiskValidationScreen(
+
+          initialLandArea:
+              simulationData.landArea,
+
+          initialLandUnit:
+              simulationData.landUnit,
+
+          initialCapital:
+              simulationData.capital,
+
+          initialBusinessScale:
+              simulationData.businessScale,
+
+          initialRiskLevel:
+              simulationData.riskLevel,
 
           onChanged: ({
             required landArea,
@@ -146,7 +234,7 @@ class _NibStepperScreenState
             required capital,
             required businessScale,
             required riskLevel,
-          }) {
+          }) async {
 
             simulationData.landArea =
                 landArea;
@@ -162,6 +250,10 @@ class _NibStepperScreenState
 
             simulationData.riskLevel =
                 riskLevel;
+
+            await _saveSimulation();
+
+            setState(() {});
           },
         );
 
@@ -177,39 +269,46 @@ class _NibStepperScreenState
             required businessName,
             required businessDescription,
             required employeeCount,
-          }) {
+          }) async {
 
-            simulationData
-                    .businessRunning =
+            simulationData.businessRunning =
                 businessRunning;
 
-            simulationData
-                    .hasNpwp =
+            simulationData.hasNpwp =
                 hasNpwp;
 
-            simulationData
-                    .businessName =
+            simulationData.businessName =
                 businessName;
 
-            simulationData
-                    .businessDescription =
+            simulationData.businessDescription =
                 businessDescription;
 
-            simulationData
-                    .employeeCount =
+            simulationData.employeeCount =
                 employeeCount;
+
+            await _saveSimulation();
+
+            setState(() {});
           },
         );  
 
       case 5:
-
         return Step5BusinessLocationScreen(
+
+          initialSameAddress:
+              simulationData.sameAddress,
+
+          initialLocationDetermined:
+              simulationData.locationDetermined,
+
+          initialBuildingConstruction:
+              simulationData.buildingConstruction,
 
           onChanged: ({
             required sameAddress,
             required locationDetermined,
             required buildingConstruction,
-          }) {
+          }) async {
 
             simulationData.sameAddress =
                 sameAddress;
@@ -219,42 +318,66 @@ class _NibStepperScreenState
 
             simulationData.buildingConstruction =
                 buildingConstruction;
+
+            await _saveSimulation();
+
+            setState(() {});
           },
-        );  
+        ); 
 
       case 6:
-      return Step6ProductServiceScreen(
+        return Step6ProductServiceScreen(
 
-        onChanged: ({
-          required productName,
-          required productionCapacity,
-          required capacityUnit,
-          required hasSni,
-          required halalProcess,
-          required hasHalalCertificate,
-        }) {
+          initialProductName:
+              simulationData.productName,
 
-          simulationData.productName =
-              productName;
+          initialProductionCapacity:
+              simulationData.productionCapacity,
 
-          simulationData
-                  .productionCapacity =
-              productionCapacity;
+          initialCapacityUnit:
+              simulationData.capacityUnit,
 
-          simulationData.capacityUnit =
-              capacityUnit;
+          initialHasSni:
+              simulationData.hasSni,
 
-          simulationData.hasSni =
-              hasSni;
+          initialHalalProcess:
+              simulationData.halalProcess,
 
-          simulationData.halalProcess =
-              halalProcess;
+          initialHasHalalCertificate:
+              simulationData.hasHalalCertificate,
 
-          simulationData
-                  .hasHalalCertificate =
-              hasHalalCertificate;
-        },
-      );
+          onChanged: ({
+            required productName,
+            required productionCapacity,
+            required capacityUnit,
+            required hasSni,
+            required halalProcess,
+            required hasHalalCertificate,
+          }) async {
+
+            simulationData.productName =
+                productName;
+
+            simulationData.productionCapacity =
+                productionCapacity;
+
+            simulationData.capacityUnit =
+                capacityUnit;
+
+            simulationData.hasSni =
+                hasSni;
+
+            simulationData.halalProcess =
+                halalProcess;
+
+            simulationData.hasHalalCertificate =
+                hasHalalCertificate;
+
+            await _saveSimulation();
+
+            setState(() {});
+          },
+        );
 
       case 7:
       return Step7DraftNibScreen(
@@ -265,7 +388,7 @@ class _NibStepperScreenState
       default:
         return const Center(
           child: Text(
-            'Step selanjutnya sedang dikembangkan',
+            '',
           ),
         );
     }
@@ -273,6 +396,15 @@ class _NibStepperScreenState
 
   @override
   Widget build(BuildContext context) {
+
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(
+          child:
+              CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Scaffold(
 
@@ -295,11 +427,12 @@ class _NibStepperScreenState
                 currentStep: currentStep,
                 unlockedStep: unlockedStep,
 
-                onStepTap: (step) {
+                onStepTap: (step) async {
                   if (step <= unlockedStep) {
                     setState(() {
                       currentStep = step;
                     });
+                    await _saveSimulation();
                   }
                 },
               ),
@@ -332,8 +465,7 @@ class _NibStepperScreenState
               const SizedBox(height: 20),
 
               Expanded(
-                child:
-                    buildCurrentStep(),
+                child: buildCurrentStep(),
               ),
 
               Padding(
@@ -350,7 +482,7 @@ class _NibStepperScreenState
 
                   child: ElevatedButton(
 
-                    onPressed: () {
+                    onPressed: () async {
 
                       // STEP 1
                       if (currentStep == 1) {
@@ -377,6 +509,7 @@ class _NibStepperScreenState
                           unlockedStep = 2;
                         });
 
+                        await _saveSimulation();
                         return;
                       }
 
@@ -443,6 +576,7 @@ class _NibStepperScreenState
                           currentStep = 3;
                           unlockedStep = 3;
                         });
+                        await _saveSimulation();
 
                         return;
                       }
@@ -471,6 +605,7 @@ class _NibStepperScreenState
                           currentStep = 4;
                           unlockedStep = 4;
                         });
+                        await _saveSimulation();
 
                         return;
                       }
@@ -542,6 +677,7 @@ class _NibStepperScreenState
                           currentStep = 5;
                           unlockedStep = 5;
                         });
+                        await _saveSimulation();
 
                         return;
                       }
@@ -615,6 +751,7 @@ class _NibStepperScreenState
 
                         unlockedStep = 6;
                       });
+                      await _saveSimulation();
 
                       return;
                       }
@@ -666,32 +803,40 @@ class _NibStepperScreenState
                           unlockedStep = 7;
                         });
 
+                        simulationData.nibDraftGenerated = true;
+                        await _saveSimulation();
+
                         return;
                       }
 
                       // STEP 7
                       if (currentStep == 7) {
 
+                        simulationData.nibCompleted = true;
+
+                        simulationData.currentStep = 7;
+
+                        simulationData.unlockedStep = 7;
+
+                        simulationData.nibCompletedAt =
+                            DateTime.now();
+
+                        simulationData.nibCompletedCount++;
+
+                        await _saveSimulation();
+
                         showDialog(
-
+                          // ignore: use_build_context_synchronously
                           context: context,
-
                           barrierDismissible: false,
-
                           builder: (_) {
-
                             return NibPublishedDialog(
-
                               onContinue: () {
-
                                 Navigator.pop(context);
 
                                 Navigator.push(
-
                                   context,
-
                                   MaterialPageRoute(
-
                                     builder: (_) =>
                                         const NibRewardScreen(),
                                   ),

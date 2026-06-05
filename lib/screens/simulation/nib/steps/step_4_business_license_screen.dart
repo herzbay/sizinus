@@ -49,6 +49,48 @@ class _Step4BusinessLicenseScreenState
           TextEditingController();
 
   @override
+  void initState() {
+
+    super.initState();
+
+    businessRunning =
+        widget.simulationData
+            .businessRunning;
+
+    hasNpwp =
+        widget.simulationData
+            .hasNpwp;
+
+    businessNameController.text =
+        widget.simulationData
+                .businessName ??
+            '';
+
+    descriptionController.text =
+        widget.simulationData
+                .businessDescription ??
+            '';
+
+    employeeController.text =
+        widget.simulationData
+                .employeeCount
+                ?.toString() ??
+            '';
+  }
+
+  @override
+  void dispose() {
+
+    businessNameController.dispose();
+
+    descriptionController.dispose();
+
+    employeeController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     return SingleChildScrollView(
@@ -60,19 +102,29 @@ class _Step4BusinessLicenseScreenState
 
         children: [
 
-          // CARD HASIL VALIDASI
+          // HASIL VALIDASI RISIKO
           Container(
 
             padding:
-                const EdgeInsets.all(18),
+                const EdgeInsets.all(
+              18,
+            ),
 
-            decoration: BoxDecoration(
+            decoration:
+                BoxDecoration(
 
               gradient:
                   const LinearGradient(
+
                 colors: [
-                  Color(0xFF2D9CDB),
-                  Color(0xFF27AE60),
+
+                  Color(
+                    0xFF2D9CDB,
+                  ),
+
+                  Color(
+                    0xFF27AE60,
+                  ),
                 ],
               ),
 
@@ -94,10 +146,12 @@ class _Step4BusinessLicenseScreenState
                 ),
 
                 const Padding(
+
                   padding:
                       EdgeInsets.symmetric(
                     vertical: 10,
                   ),
+
                   child: Divider(
                     color:
                         Colors.white30,
@@ -116,7 +170,7 @@ class _Step4BusinessLicenseScreenState
 
           const SizedBox(height: 24),
 
-          // USAHA BERJALAN
+          // USAHA SUDAH BERJALAN
           const Text(
             'Apakah usaha ini sudah berjalan?',
             style: TextStyle(
@@ -128,12 +182,15 @@ class _Step4BusinessLicenseScreenState
           const SizedBox(height: 10),
 
           Wrap(
+
             spacing: 12,
 
             children: [
 
               buildChoiceChip(
+
                 label: 'Sudah',
+
                 selected:
                     businessRunning ==
                         'Sudah',
@@ -151,7 +208,9 @@ class _Step4BusinessLicenseScreenState
               ),
 
               buildChoiceChip(
+
                 label: 'Belum',
+
                 selected:
                     businessRunning ==
                         'Belum',
@@ -184,12 +243,15 @@ class _Step4BusinessLicenseScreenState
           const SizedBox(height: 10),
 
           Wrap(
+
             spacing: 12,
 
             children: [
 
               buildChoiceChip(
+
                 label: 'Ya',
+
                 selected:
                     hasNpwp ==
                         'Ya',
@@ -206,7 +268,9 @@ class _Step4BusinessLicenseScreenState
               ),
 
               buildChoiceChip(
+
                 label: 'Tidak',
+
                 selected:
                     hasNpwp ==
                         'Tidak',
@@ -245,14 +309,18 @@ class _Step4BusinessLicenseScreenState
 
             decoration:
                 AppInputStyle.decoration(
+
               hint:
                   'Masukkan nama usaha',
+
               icon:
                   Icons.storefront_outlined,
             ),
 
-            onChanged: (_) =>
-                updateParent(),
+            onChanged: (_) {
+
+              updateParent();
+            },
           ),
 
           const SizedBox(height: 20),
@@ -261,7 +329,8 @@ class _Step4BusinessLicenseScreenState
           const Text(
             'Deskripsi Usaha',
             style: TextStyle(
-              fontWeight: FontWeight.bold,
+              fontWeight:
+                  FontWeight.bold,
             ),
           ),
 
@@ -280,19 +349,23 @@ class _Step4BusinessLicenseScreenState
 
             decoration:
                 AppInputStyle.decoration(
+
               hint:
                   'Jelaskan usaha Anda',
+
               icon:
                   Icons.description_outlined,
             ),
 
-            onChanged: (_) =>
-                updateParent(),
+            onChanged: (_) {
+
+              updateParent();
+            },
           ),
 
           const SizedBox(height: 20),
 
-          // TENAGA KERJA
+          // JUMLAH TENAGA KERJA
           const Text(
             'Jumlah Tenaga Kerja Indonesia',
             style: TextStyle(
@@ -313,14 +386,18 @@ class _Step4BusinessLicenseScreenState
 
             decoration:
                 AppInputStyle.decoration(
+
               hint:
                   'Contoh: 5',
+
               icon:
                   Icons.people_outline,
             ),
 
-            onChanged: (_) =>
-                updateParent(),
+            onChanged: (_) {
+
+              updateParent();
+            },
           ),
 
           const SizedBox(
@@ -352,14 +429,18 @@ class _Step4BusinessLicenseScreenState
           Colors.grey.shade100,
 
       side: BorderSide(
+
         color: selected
+
             ? const Color(
                 0xFF2D9CDB,
               )
+
             : Colors.grey.shade300,
       ),
 
       labelStyle: TextStyle(
+
         color: selected
             ? Colors.white
             : Colors.black87,
@@ -368,7 +449,9 @@ class _Step4BusinessLicenseScreenState
             FontWeight.w600,
       ),
 
-      onSelected: (_) => onTap(),
+      onSelected: (_) {
+        onTap();
+      },
     );
   }
 
@@ -378,6 +461,7 @@ class _Step4BusinessLicenseScreenState
   ) {
 
     return Row(
+
       mainAxisAlignment:
           MainAxisAlignment
               .spaceBetween,
@@ -385,6 +469,7 @@ class _Step4BusinessLicenseScreenState
       children: [
 
         Text(
+
           title,
 
           style: const TextStyle(
@@ -393,10 +478,12 @@ class _Step4BusinessLicenseScreenState
         ),
 
         Text(
+
           value,
 
           style: const TextStyle(
             color: Colors.white,
+
             fontWeight:
                 FontWeight.bold,
           ),

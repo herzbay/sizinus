@@ -130,6 +130,51 @@ class Step7DraftNibScreen extends StatelessWidget {
 
                       const SizedBox(height: 20),
 
+                      Container(
+
+                        width: double.infinity,
+
+                        padding: const EdgeInsets.all(14),
+
+                        decoration: BoxDecoration(
+
+                          color: Colors.orange.shade50,
+
+                          borderRadius:
+                              BorderRadius.circular(12),
+
+                          border: Border.all(
+                            color: Colors.orange.shade200,
+                          ),
+                        ),
+
+                        child: const Row(
+
+                          children: [
+
+                            Icon(
+                              Icons.pending_actions,
+                              color: Colors.orange,
+                            ),
+
+                            SizedBox(width: 10),
+
+                            Expanded(
+
+                              child: Text(
+
+                                'Draft NIB siap diterbitkan. Pastikan seluruh data usaha sudah sesuai.',
+
+                                style: TextStyle(
+                                  fontWeight:
+                                      FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
                       // HASIL VALIDASI
                       Container(
                         padding:
@@ -203,6 +248,63 @@ class Step7DraftNibScreen extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 18),
+
+          Container(
+
+            padding: const EdgeInsets.all(
+              14,
+            ),
+
+            decoration: BoxDecoration(
+
+              color: Colors.blue.shade50,
+
+              borderRadius:
+                  BorderRadius.circular(
+                12,
+              ),
+            ),
+
+            child: Column(
+
+              children: [
+
+                Row(
+                  children: [
+
+                    const Icon(
+                      Icons.school_outlined,
+                      color: Colors.blue,
+                    ),
+
+                    const SizedBox(width: 8),
+
+                    const Text(
+                      'Ringkasan Simulasi',
+                      style: TextStyle(
+                        fontWeight:
+                            FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                Text(
+                  'Anda telah menyelesaikan seluruh tahapan simulasi pembuatan NIB berdasarkan alur OSS Indonesia.',
+
+                  style: TextStyle(
+                    color:
+                        Colors.grey.shade700,
+                    height: 1.5,
                   ),
                 ),
               ],

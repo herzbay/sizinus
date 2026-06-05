@@ -1,29 +1,20 @@
 import 'package:flutter/material.dart';
 
 class Step1BusinessCategoryScreen
-    extends StatefulWidget {
+    extends StatelessWidget {
+
+  final String? selectedCategory;
 
   final Function(String) onSelected;
 
   const Step1BusinessCategoryScreen({
     super.key,
     required this.onSelected,
+    required this.selectedCategory,
   });
 
-  @override
-  State<Step1BusinessCategoryScreen>
-      createState() =>
-          _Step1BusinessCategoryScreenState();
-}
-
-class _Step1BusinessCategoryScreenState
-    extends State<
-        Step1BusinessCategoryScreen> {
-
-  String? selectedCategory;
-
   final List<Map<String, String>>
-      categories = [
+      categories = const [
 
     {
       'title': 'Kuliner',
@@ -95,6 +86,7 @@ class _Step1BusinessCategoryScreenState
 
       gridDelegate:
           const SliverGridDelegateWithFixedCrossAxisCount(
+
         crossAxisCount: 2,
 
         crossAxisSpacing: 14,
@@ -116,24 +108,20 @@ class _Step1BusinessCategoryScreenState
 
           onTap: () {
 
-            setState(() {
-
-              selectedCategory =
-                  item['title'];
-            });
-
-            widget.onSelected(
+            onSelected(
               item['title']!,
             );
           },
 
           child: AnimatedContainer(
+
             duration:
                 const Duration(
               milliseconds: 250,
             ),
 
             decoration: BoxDecoration(
+
               color: isSelected
                   ? Colors.blue.shade50
                   : Colors.white,
@@ -144,6 +132,7 @@ class _Step1BusinessCategoryScreenState
               ),
 
               border: Border.all(
+
                 color: isSelected
                     ? const Color(
                         0xFF2D9CDB,
@@ -155,6 +144,7 @@ class _Step1BusinessCategoryScreenState
               ),
 
               boxShadow: [
+
                 BoxShadow(
                   color:
                       Colors.black.withValues(
@@ -164,25 +154,32 @@ class _Step1BusinessCategoryScreenState
                   blurRadius: 8,
 
                   offset:
-                      const Offset(0, 3),
+                      const Offset(
+                    0,
+                    3,
+                  ),
                 ),
               ],
             ),
 
             child: Padding(
+
               padding:
                   const EdgeInsets.all(
                 12,
               ),
 
               child: Column(
+
                 mainAxisAlignment:
                     MainAxisAlignment.center,
 
                 children: [
 
                   Expanded(
+
                     child: ClipRRect(
+
                       borderRadius:
                           BorderRadius.circular(
                         18,
@@ -190,7 +187,9 @@ class _Step1BusinessCategoryScreenState
 
                       child: Image.asset(
                         item['icon']!,
-                        fit: BoxFit.contain,
+
+                        fit:
+                            BoxFit.contain,
                       ),
                     ),
                   ),
@@ -200,6 +199,7 @@ class _Step1BusinessCategoryScreenState
                   ),
 
                   Text(
+
                     item['title']!,
 
                     textAlign:
@@ -207,6 +207,7 @@ class _Step1BusinessCategoryScreenState
 
                     style:
                         const TextStyle(
+
                       fontSize: 15,
 
                       fontWeight:
