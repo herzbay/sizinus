@@ -64,7 +64,7 @@ class _NibRewardScreenState
         simulationData?.nibCompletedCount ?? 1;
 
     if (count <= 1) {
-      return 'Lencana NIB';
+      return '+1 Lencana';
     }
 
     return 'Lencana NIB x$count';

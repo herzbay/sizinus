@@ -2,21 +2,77 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/custom_topbar.dart';
 import '../../routes/app_routes.dart';
+import '../../services/simulation/local_simulation_storage.dart';
+import '../../models/simulation/simulation_data.dart';
 
-class SimulationListScreen extends StatelessWidget {
+class SimulationListScreen extends StatefulWidget {
   const SimulationListScreen({
     super.key,
   });
 
   @override
+  State<SimulationListScreen> createState() =>
+      _SimulationListScreenState();
+}
+
+class _SimulationListScreenState
+    extends State<SimulationListScreen> {
+
+  final LocalSimulationStorage storage =
+      LocalSimulationStorage();
+
+  SimulationData? simulationData;
+
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProgress();
+  }
+
+  Future<void> _loadProgress() async {
+
+    final data =
+        await storage.load();
+
+    if (!mounted) return;
+
+    setState(() {
+
+      simulationData = data;
+
+      isLoading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
 
-    // nanti ambil dari database
-    const int currentStep = 0;
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(
+          child:
+              CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final bool isCompleted =
+        simulationData?.nibCompleted ?? false;
+
+    final int currentStep =
+        isCompleted
+            ? 7
+            : ((simulationData?.unlockedStep ?? 1) - 1)
+                .clamp(0, 7);
+
     const int totalStep = 7;
 
     final double progress =
-        currentStep / totalStep;
+        isCompleted
+            ? 1.0
+            : currentStep / totalStep;
 
     return Scaffold(
 
@@ -247,10 +303,12 @@ class SimulationListScreen extends StatelessWidget {
                           ),
 
                           valueColor:
-                              const AlwaysStoppedAnimation(
-                            Color(
-                              0xFF2D9CDB,
-                            ),
+                              AlwaysStoppedAnimation(
+                            isCompleted
+                                ? Colors.green
+                                : const Color(
+                                    0xFF2D9CDB,
+                                  ),
                           ),
                         ),
                       ),
@@ -266,7 +324,9 @@ class SimulationListScreen extends StatelessWidget {
 
                         child: Text(
 
-                          '$currentStep / $totalStep Langkah',
+                          isCompleted
+                              ? '✓ Selesai'
+                              : '$currentStep / $totalStep Langkah',
 
                           style:
                               const TextStyle(
@@ -404,12 +464,14 @@ class SimulationListScreen extends StatelessWidget {
 
                         child: ElevatedButton(
 
-                          onPressed: () {
+                          onPressed: () async {
 
-                            Navigator.pushNamed(
+                            await Navigator.pushNamed(
                               context,
                               AppRoutes.nibDetail,
                             );
+
+                            _loadProgress();
                           },
 
                           style:
@@ -430,16 +492,41 @@ class SimulationListScreen extends StatelessWidget {
                             ),
                           ),
 
-                          child: const Text(
+                          child: Row(
 
-                            'Mulai Simulasi',
+                            mainAxisAlignment:
+                                MainAxisAlignment.center,
 
-                            style: TextStyle(
-                              color: Colors.white,
+                            children: [
 
-                              fontWeight:
-                                  FontWeight.bold,
-                            ),
+                              Icon(
+
+                                (simulationData?.nibCompleted ?? false)
+                                    ? Icons.visibility_outlined
+                                    : ((simulationData?.unlockedStep ?? 1) > 1)
+                                        ? Icons.play_circle_outline
+                                        : Icons.rocket_launch_outlined,
+
+                                color: Colors.white,
+                                size: 18,
+                              ),
+
+                              const SizedBox(width: 8),
+
+                              Text(
+
+                                (simulationData?.nibCompleted ?? false)
+                                    ? 'Lihat Simulasi'
+                                    : ((simulationData?.unlockedStep ?? 1) > 1)
+                                        ? 'Lanjutkan Simulasi'
+                                        : 'Mulai Simulasi',
+
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
