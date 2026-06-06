@@ -159,9 +159,24 @@ class _NibStepperScreenState
 
           onSelected: (value) async {
 
-            simulationData
-                .businessCategory =
+            final oldCategory =
+                simulationData.businessCategory;
+
+            simulationData.businessCategory =
                 value;
+
+            // CHANGE CATEGORY
+            if (oldCategory != value) {
+
+              simulationData.businessType =
+                  null;
+
+              simulationData.kbli =
+                  null;
+
+              simulationData.businessScope =
+                  null;
+            }
 
             await _saveSimulation();
 

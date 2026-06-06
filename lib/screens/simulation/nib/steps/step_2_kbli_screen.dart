@@ -96,6 +96,8 @@ class _Step2KbliScreenState
 
     } catch (_) {
 
+      selectedKbli = null;
+
       selectedDescription = null;
     }
   }
