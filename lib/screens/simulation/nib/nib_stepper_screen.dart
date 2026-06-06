@@ -452,32 +452,33 @@ class _NibStepperScreenState
                 },
               ),
 
-              const SizedBox(height: 24),
+              if (currentStep != 7) ...[
 
-              Text(
-                getStepTitle(),
+                const SizedBox(height: 24),
 
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight:
-                      FontWeight.bold,
+                Text(
+                  getStepTitle(),
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 8),
+                const SizedBox(height: 8),
 
-              Text(
-                getStepSubtitle(),
-
-                style: TextStyle(
-                  fontSize: 15,
-                  height: 1.5,
-                  color:
-                      Colors.grey.shade700,
+                Text(
+                  getStepSubtitle(),
+                  style: TextStyle(
+                    fontSize: 15,
+                    height: 1.5,
+                    color: Colors.grey.shade700,
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
+              ] else ...[
+                const SizedBox(height: 12),
+              ],
 
               Expanded(
                 child: buildCurrentStep(),

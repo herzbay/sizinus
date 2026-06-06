@@ -25,9 +25,45 @@ class NibPublishedDialog extends StatelessWidget {
 
         children: [
 
-          Image.asset(
-            'assets/images/icon_nib.png',
-            height: 100,
+          Container(
+
+            padding: const EdgeInsets.all(
+              14,
+            ),
+
+            decoration: BoxDecoration(
+
+              color: Colors.white,
+
+              borderRadius:
+                  BorderRadius.circular(
+                18,
+              ),
+
+              border: Border.all(
+                color: Colors.blue.shade100,
+                width: 1.5,
+              ),
+
+              boxShadow: [
+
+                BoxShadow(
+                  color: Colors.black.withValues(
+                    alpha: 0.04,
+                  ),
+                  blurRadius: 8,
+                  offset: const Offset(
+                    0,
+                    3,
+                  ),
+                ),
+              ],
+            ),
+
+            child: Image.asset(
+              'assets/images/icon_nib.png',
+              height: 90,
+            ),
           ),
 
           const SizedBox(height: 16),
@@ -47,7 +83,7 @@ class NibPublishedDialog extends StatelessWidget {
           const SizedBox(height: 10),
 
           const Text(
-            'Seluruh data simulasi telah berhasil diproses.',
+            'Seluruh data simulasi telah berhasil diproses dan disimpan.',
 
             textAlign: TextAlign.center,
           ),

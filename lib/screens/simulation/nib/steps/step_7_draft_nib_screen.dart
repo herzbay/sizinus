@@ -15,6 +15,7 @@ class Step7DraftNibScreen extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
+
           // DRAFT NIB
           Container(
             width: double.infinity,
@@ -22,67 +23,115 @@ class Step7DraftNibScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
 
-              borderRadius: BorderRadius.circular(20),
+              borderRadius:
+                  BorderRadius.circular(
+                20,
+              ),
 
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(
+                  color:
+                      Colors.black.withValues(
                     alpha: 0.05,
                   ),
+
                   blurRadius: 10,
-                  offset: const Offset(0, 4),
+
+                  offset:
+                      const Offset(
+                    0,
+                    4,
+                  ),
                 ),
               ],
             ),
 
             child: Column(
               children: [
+
                 // HEADER
                 Container(
                   width: double.infinity,
 
-                  padding: const EdgeInsets.all(20),
+                  padding:
+                      const EdgeInsets.all(
+                    24,
+                  ),
 
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Color(0xFF2D9CDB),
-                        Color(0xFF27AE60),
-                      ],
+                  decoration: BoxDecoration(
+
+                    color:
+                        Colors.blue.shade50,
+
+                    borderRadius:
+                        const BorderRadius.only(
+                      topLeft:
+                          Radius.circular(
+                        20,
+                      ),
+                      topRight:
+                          Radius.circular(
+                        20,
+                      ),
                     ),
 
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
+                    border: Border.all(
+                      color: Colors
+                          .blue.shade200,
                     ),
                   ),
 
-                  child: const Column(
+                  child: Column(
                     children: [
-                      Icon(
-                        Icons.badge_outlined,
-                        color: Colors.white,
-                        size: 46,
-                      ),
 
-                      SizedBox(height: 10),
+                      Container(
+                        padding:
+                            const EdgeInsets.all(
+                          14,
+                        ),
 
-                      Text(
-                        'DRAFT NIB',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                        decoration:
+                            BoxDecoration(
+                          color:
+                              Colors.white,
+
+                          borderRadius:
+                              BorderRadius.circular(
+                            14,
+                          ),
+                        ),
+
+                        child: const Icon(
+                          Icons.badge_outlined,
+                          size: 46,
+                          color: Color(
+                            0xFF2D9CDB,
+                          ),
                         ),
                       ),
 
-                      SizedBox(height: 4),
+                      const SizedBox(
+                        height: 12,
+                      ),
+
+                      const Text(
+                        'DRAFT NIB',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight:
+                              FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(
+                        height: 4,
+                      ),
 
                       Text(
-                        'Nomor Induk Berusaha',
+                        'Pratinjau data usaha sebelum penerbitan',
                         style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
+                          color: Colors
+                              .grey.shade600,
                         ),
                       ),
                     ],
@@ -90,16 +139,18 @@ class Step7DraftNibScreen extends StatelessWidget {
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding:
+                      const EdgeInsets.all(
+                    20,
+                  ),
 
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
-
                     children: [
+
                       buildRow(
                         'Nama Usaha',
-                        simulationData.businessName ??
+                        simulationData
+                                .businessName ??
                             '-',
                       ),
 
@@ -112,13 +163,15 @@ class Step7DraftNibScreen extends StatelessWidget {
 
                       buildRow(
                         'KBLI',
-                        simulationData.kbli ??
+                        simulationData
+                                .kbli ??
                             '-',
                       ),
 
                       buildRow(
                         'Produk / Jasa',
-                        simulationData.productName ??
+                        simulationData
+                                .productName ??
                             '-',
                       ),
 
@@ -128,183 +181,28 @@ class Step7DraftNibScreen extends StatelessWidget {
                             '${simulationData.capacityUnit ?? ''}',
                       ),
 
-                      const SizedBox(height: 20),
-
-                      Container(
-
-                        width: double.infinity,
-
-                        padding: const EdgeInsets.all(14),
-
-                        decoration: BoxDecoration(
-
-                          color: Colors.orange.shade50,
-
-                          borderRadius:
-                              BorderRadius.circular(12),
-
-                          border: Border.all(
-                            color: Colors.orange.shade200,
-                          ),
-                        ),
-
-                        child: const Row(
-
-                          children: [
-
-                            Icon(
-                              Icons.pending_actions,
-                              color: Colors.orange,
-                            ),
-
-                            SizedBox(width: 10),
-
-                            Expanded(
-
-                              child: Text(
-
-                                'Draft NIB siap diterbitkan. Pastikan seluruh data usaha sudah sesuai.',
-
-                                style: TextStyle(
-                                  fontWeight:
-                                      FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      buildRow(
+                        'Tenaga Kerja',
+                        simulationData
+                                .employeeCount
+                                ?.toString() ??
+                            '-',
                       ),
 
-                      // HASIL VALIDASI
-                      Container(
-                        padding:
-                            const EdgeInsets.all(
-                          16,
-                        ),
+                      buildRow(
+                        'Skala Usaha',
+                        simulationData
+                                .businessScale ??
+                            '-',
+                      ),
 
-                        decoration: BoxDecoration(
-                          color:
-                              Colors.green.shade50,
-
-                          borderRadius:
-                              BorderRadius.circular(
-                            14,
-                          ),
-
-                          border: Border.all(
-                            color: Colors
-                                .green.shade200,
-                          ),
-                        ),
-
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons
-                                      .verified_outlined,
-                                  color: Colors.green,
-                                ),
-
-                                const SizedBox(
-                                  width: 8,
-                                ),
-
-                                const Text(
-                                  'Hasil Validasi Risiko',
-                                  style: TextStyle(
-                                    fontWeight:
-                                        FontWeight
-                                            .bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(
-                              height: 16,
-                            ),
-
-                            buildValidationRow(
-                              'Skala Usaha',
-                              simulationData
-                                      .businessScale ??
-                                  '-',
-                            ),
-
-                            const SizedBox(
-                              height: 10,
-                            ),
-
-                            buildValidationRow(
-                              'Tingkat Risiko',
-                              simulationData
-                                      .riskLevel ??
-                                  '-',
-                            ),
-                          ],
-                        ),
+                      buildRow(
+                        'Tingkat Risiko',
+                        simulationData
+                                .riskLevel ??
+                            '-',
                       ),
                     ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 18),
-
-          Container(
-
-            padding: const EdgeInsets.all(
-              14,
-            ),
-
-            decoration: BoxDecoration(
-
-              color: Colors.blue.shade50,
-
-              borderRadius:
-                  BorderRadius.circular(
-                12,
-              ),
-            ),
-
-            child: Column(
-
-              children: [
-
-                Row(
-                  children: [
-
-                    const Icon(
-                      Icons.school_outlined,
-                      color: Colors.blue,
-                    ),
-
-                    const SizedBox(width: 8),
-
-                    const Text(
-                      'Ringkasan Simulasi',
-                      style: TextStyle(
-                        fontWeight:
-                            FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 12),
-
-                Text(
-                  'Anda telah menyelesaikan seluruh tahapan simulasi pembuatan NIB berdasarkan alur OSS Indonesia.',
-
-                  style: TextStyle(
-                    color:
-                        Colors.grey.shade700,
-                    height: 1.5,
                   ),
                 ),
               ],
@@ -317,12 +215,14 @@ class Step7DraftNibScreen extends StatelessWidget {
           Container(
             width: double.infinity,
 
-            padding: const EdgeInsets.all(
+            padding:
+                const EdgeInsets.all(
               18,
             ),
 
             decoration: BoxDecoration(
-              color: Colors.blue.shade50,
+              color:
+                  Colors.blue.shade50,
 
               borderRadius:
                   BorderRadius.circular(
@@ -340,19 +240,24 @@ class Step7DraftNibScreen extends StatelessWidget {
                   CrossAxisAlignment.start,
 
               children: [
+
                 const Icon(
                   Icons.info_outline,
                   color: Colors.blue,
                 ),
 
-                const SizedBox(width: 12),
+                const SizedBox(
+                  width: 12,
+                ),
 
                 Expanded(
                   child: Column(
                     crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                        CrossAxisAlignment
+                            .start,
 
                     children: [
+
                       const Text(
                         'Informasi OSS',
                         style: TextStyle(
@@ -369,8 +274,8 @@ class Step7DraftNibScreen extends StatelessWidget {
                       Text(
                         'Pada OSS sebenarnya Anda perlu:',
                         style: TextStyle(
-                          color:
-                              Colors.grey.shade800,
+                          color: Colors
+                              .grey.shade800,
                           height: 1.5,
                         ),
                       ),
@@ -405,7 +310,8 @@ class Step7DraftNibScreen extends StatelessWidget {
                           10,
                         ),
 
-                        decoration: BoxDecoration(
+                        decoration:
+                            BoxDecoration(
                           color:
                               Colors.white70,
 
@@ -415,25 +321,33 @@ class Step7DraftNibScreen extends StatelessWidget {
                           ),
                         ),
 
-                        child: const Row(
+                        child:
+                            const Row(
                           crossAxisAlignment:
                               CrossAxisAlignment
                                   .start,
 
                           children: [
+
                             Icon(
-                              Icons.school_outlined,
+                              Icons
+                                  .school_outlined,
                               size: 18,
-                              color: Colors.blue,
+                              color:
+                                  Colors.blue,
                             ),
 
-                            SizedBox(width: 8),
+                            SizedBox(
+                              width: 8,
+                            ),
 
                             Expanded(
                               child: Text(
                                 'Dalam simulasi ini langkah tersebut disederhanakan agar fokus pada proses pembelajaran.',
-                                style: TextStyle(
-                                  fontSize: 13,
+                                style:
+                                    TextStyle(
+                                  fontSize:
+                                      13,
                                 ),
                               ),
                             ),
@@ -447,7 +361,9 @@ class Step7DraftNibScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 32),
+          const SizedBox(
+            height: 32,
+          ),
         ],
       ),
     );
@@ -458,7 +374,8 @@ class Step7DraftNibScreen extends StatelessWidget {
     String value,
   ) {
     return Padding(
-      padding: const EdgeInsets.only(
+      padding:
+          const EdgeInsets.only(
         bottom: 14,
       ),
 
@@ -467,15 +384,16 @@ class Step7DraftNibScreen extends StatelessWidget {
             CrossAxisAlignment.start,
 
         children: [
+
           SizedBox(
-            width: 120,
+            width: 130,
 
             child: Text(
               title,
 
               style: TextStyle(
-                color:
-                    Colors.grey.shade600,
+                color: Colors
+                    .grey.shade600,
               ),
             ),
           ),
@@ -486,7 +404,8 @@ class Step7DraftNibScreen extends StatelessWidget {
             child: Text(
               value,
 
-              style: const TextStyle(
+              style:
+                  const TextStyle(
                 fontWeight:
                     FontWeight.w600,
               ),
@@ -494,29 +413,6 @@ class Step7DraftNibScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget buildValidationRow(
-    String title,
-    String value,
-  ) {
-    return Row(
-      mainAxisAlignment:
-          MainAxisAlignment.spaceBetween,
-
-      children: [
-        Text(title),
-
-        Text(
-          value,
-
-          style: const TextStyle(
-            fontWeight:
-                FontWeight.bold,
-          ),
-        ),
-      ],
     );
   }
 }
