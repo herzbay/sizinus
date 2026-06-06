@@ -102,191 +102,100 @@ class _Step4BusinessLicenseScreenState
 
         children: [
 
-          // HASIL VALIDASI RISIKO
-          Container(
+          // USAHA SUDAH BERJALAN
+          buildQuestionCard(
 
-            padding:
-                const EdgeInsets.all(
-              18,
-            ),
+            title:
+                'Apakah usaha ini sudah berjalan?',
 
-            decoration:
-                BoxDecoration(
+            child: Wrap(
 
-              gradient:
-                  const LinearGradient(
-
-                colors: [
-
-                  Color(
-                    0xFF2D9CDB,
-                  ),
-
-                  Color(
-                    0xFF27AE60,
-                  ),
-                ],
-              ),
-
-              borderRadius:
-                  BorderRadius.circular(
-                18,
-              ),
-            ),
-
-            child: Column(
+              spacing: 12,
 
               children: [
 
-                buildInfoRow(
-                  'Skala Usaha',
-                  widget.simulationData
-                          .businessScale ??
-                      '-',
+                buildChoiceChip(
+                  label: 'Sudah',
+                  selected:
+                      businessRunning ==
+                          'Sudah',
+                  onTap: () {
+
+                    setState(() {
+
+                      businessRunning =
+                          'Sudah';
+                    });
+
+                    updateParent();
+                  },
                 ),
 
-                const Padding(
+                buildChoiceChip(
+                  label: 'Belum',
+                  selected:
+                      businessRunning ==
+                          'Belum',
+                  onTap: () {
 
-                  padding:
-                      EdgeInsets.symmetric(
-                    vertical: 10,
-                  ),
+                    setState(() {
 
-                  child: Divider(
-                    color:
-                        Colors.white30,
-                  ),
-                ),
+                      businessRunning =
+                          'Belum';
+                    });
 
-                buildInfoRow(
-                  'Tingkat Risiko',
-                  widget.simulationData
-                          .riskLevel ??
-                      '-',
+                    updateParent();
+                  },
                 ),
               ],
             ),
           ),
 
-          const SizedBox(height: 24),
-
-          // USAHA SUDAH BERJALAN
-          const Text(
-            'Apakah usaha ini sudah berjalan?',
-            style: TextStyle(
-              fontWeight:
-                  FontWeight.bold,
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          Wrap(
-
-            spacing: 12,
-
-            children: [
-
-              buildChoiceChip(
-
-                label: 'Sudah',
-
-                selected:
-                    businessRunning ==
-                        'Sudah',
-
-                onTap: () {
-
-                  setState(() {
-
-                    businessRunning =
-                        'Sudah';
-                  });
-
-                  updateParent();
-                },
-              ),
-
-              buildChoiceChip(
-
-                label: 'Belum',
-
-                selected:
-                    businessRunning ==
-                        'Belum',
-
-                onTap: () {
-
-                  setState(() {
-
-                    businessRunning =
-                        'Belum';
-                  });
-
-                  updateParent();
-                },
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
 
           // NPWP
-          const Text(
-            'Apakah usaha memiliki NPWP tersendiri?',
-            style: TextStyle(
-              fontWeight:
-                  FontWeight.bold,
+          buildQuestionCard(
+
+            title:
+                'Apakah usaha memiliki NPWP tersendiri?',
+
+            child: Wrap(
+
+              spacing: 12,
+
+              children: [
+
+                buildChoiceChip(
+                  label: 'Ya',
+                  selected:
+                      hasNpwp == 'Ya',
+                  onTap: () {
+
+                    setState(() {
+
+                      hasNpwp = 'Ya';
+                    });
+
+                    updateParent();
+                  },
+                ),
+
+                buildChoiceChip(
+                  label: 'Tidak',
+                  selected:
+                      hasNpwp == 'Tidak',
+                  onTap: () {
+
+                    setState(() {
+
+                      hasNpwp = 'Tidak';
+                    });
+
+                    updateParent();
+                  },
+                ),
+              ],
             ),
-          ),
-
-          const SizedBox(height: 10),
-
-          Wrap(
-
-            spacing: 12,
-
-            children: [
-
-              buildChoiceChip(
-
-                label: 'Ya',
-
-                selected:
-                    hasNpwp ==
-                        'Ya',
-
-                onTap: () {
-
-                  setState(() {
-
-                    hasNpwp = 'Ya';
-                  });
-
-                  updateParent();
-                },
-              ),
-
-              buildChoiceChip(
-
-                label: 'Tidak',
-
-                selected:
-                    hasNpwp ==
-                        'Tidak',
-
-                onTap: () {
-
-                  setState(() {
-
-                    hasNpwp =
-                        'Tidak';
-                  });
-
-                  updateParent();
-                },
-              ),
-            ],
           ),
 
           const SizedBox(height: 24),
@@ -414,6 +323,17 @@ class _Step4BusinessLicenseScreenState
     required VoidCallback onTap,
   }) {
 
+    final bool isNegative =
+        label == 'Tidak' ||
+        label == 'Belum';
+
+    final Color activeColor =
+        isNegative
+            ? Colors.red
+            : const Color(
+                0xFF2D9CDB,
+              );
+
     return ChoiceChip(
 
       label: Text(label),
@@ -421,8 +341,8 @@ class _Step4BusinessLicenseScreenState
       selected: selected,
 
       selectedColor:
-          const Color(
-        0xFF2D9CDB,
+          activeColor.withValues(
+        alpha: 0.12,
       ),
 
       backgroundColor:
@@ -431,18 +351,16 @@ class _Step4BusinessLicenseScreenState
       side: BorderSide(
 
         color: selected
-
-            ? const Color(
-                0xFF2D9CDB,
-              )
-
+            ? activeColor
             : Colors.grey.shade300,
+
+        width: selected ? 2 : 1,
       ),
 
       labelStyle: TextStyle(
 
         color: selected
-            ? Colors.white
+            ? activeColor
             : Colors.black87,
 
         fontWeight:
@@ -455,42 +373,54 @@ class _Step4BusinessLicenseScreenState
     );
   }
 
-  Widget buildInfoRow(
-    String title,
-    String value,
-  ) {
+  Widget buildQuestionCard({
+    required String title,
+    required Widget child,
+  }) {
 
-    return Row(
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(
+        16,
+      ),
 
-      mainAxisAlignment:
-          MainAxisAlignment
-              .spaceBetween,
-
-      children: [
-
-        Text(
-
-          title,
-
-          style: const TextStyle(
-            color: Colors.white,
-          ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius:
+            BorderRadius.circular(
+          16,
         ),
 
-        Text(
-
-          value,
-
-          style: const TextStyle(
-            color: Colors.white,
-
-            fontWeight:
-                FontWeight.bold,
-          ),
+        border: Border.all(
+          color:
+              Colors.blue.shade100,
         ),
-      ],
+      ),
+
+      child: Column(
+
+        crossAxisAlignment:
+            CrossAxisAlignment.start,
+
+        children: [
+          Text(
+            title,
+            style:
+                const TextStyle(
+              fontWeight:
+                  FontWeight.bold,
+            ),
+          ),
+
+          const SizedBox(
+            height: 12,
+          ),
+
+          child,
+        ],
+      ),
     );
-  }
+  }  
 
   void updateParent() {
 
