@@ -67,117 +67,151 @@ class _Step5BusinessLocationScreenState
         children: [
 
           // ALAMAT USAHA
-          const Text(
-            'Apakah alamat usaha sama dengan alamat domisili?',
-            style: TextStyle(
-              fontWeight:
-                  FontWeight.bold,
+          buildQuestionCard(
+
+            title:
+                'Apakah alamat usaha sama dengan alamat domisili?',
+
+            child: Wrap(
+
+              spacing: 12,
+
+              children: [
+
+                buildChoiceChip(
+                  label: 'Ya',
+                  selected:
+                      sameAddress == 'Ya',
+                  onTap: () {
+
+                    setState(() {
+
+                      sameAddress = 'Ya';
+                    });
+
+                    updateParent();
+                  },
+                ),
+
+                buildChoiceChip(
+                  label: 'Tidak',
+                  selected:
+                      sameAddress == 'Tidak',
+                  onTap: () {
+
+                    setState(() {
+
+                      sameAddress =
+                          'Tidak';
+                    });
+
+                    updateParent();
+                  },
+                ),
+              ],
             ),
           ),
 
-          const SizedBox(height: 10),
-
-          Wrap(
-            spacing: 12,
-
-            children: [
-
-              buildChoiceChip(
-                label: 'Ya',
-
-                selected:
-                    sameAddress ==
-                        'Ya',
-
-                onTap: () {
-
-                  setState(() {
-
-                    sameAddress =
-                        'Ya';
-                  });
-
-                  updateParent();
-                },
-              ),
-
-              buildChoiceChip(
-                label: 'Tidak',
-
-                selected:
-                    sameAddress ==
-                        'Tidak',
-
-                onTap: () {
-
-                  setState(() {
-
-                    sameAddress =
-                        'Tidak';
-                  });
-
-                  updateParent();
-                },
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
 
           // LOKASI USAHA
-          const Text(
-            'Apakah lokasi usaha sudah ditentukan?',
-            style: TextStyle(
-              fontWeight:
-                  FontWeight.bold,
+          buildQuestionCard(
+
+            title:
+                'Apakah lokasi usaha sudah ditentukan?',
+
+            child: Wrap(
+
+              spacing: 12,
+
+              children: [
+
+                buildChoiceChip(
+                  label: 'Sudah',
+                  selected:
+                      locationDetermined ==
+                          'Sudah',
+                  onTap: () {
+
+                    setState(() {
+
+                      locationDetermined =
+                          'Sudah';
+                    });
+
+                    updateParent();
+                  },
+                ),
+
+                buildChoiceChip(
+                  label: 'Belum',
+                  selected:
+                      locationDetermined ==
+                          'Belum',
+                  onTap: () {
+
+                    setState(() {
+
+                      locationDetermined =
+                          'Belum';
+                    });
+
+                    updateParent();
+                  },
+                ),
+              ],
             ),
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
 
-          Wrap(
-            spacing: 12,
+          // PEMBANGUNAN GEDUNG
+          buildQuestionCard(
 
-            children: [
+            title:
+                'Apakah akan melakukan pembangunan gedung?',
 
-              buildChoiceChip(
-                label: 'Sudah',
+            child: Wrap(
 
-                selected:
-                    locationDetermined ==
-                        'Sudah',
+              spacing: 12,
 
-                onTap: () {
+              children: [
 
-                  setState(() {
+                buildChoiceChip(
+                  label: 'Ya',
+                  selected:
+                      buildingConstruction ==
+                          'Ya',
+                  onTap: () {
 
-                    locationDetermined =
-                        'Sudah';
-                  });
+                    setState(() {
 
-                  updateParent();
-                },
-              ),
+                      buildingConstruction =
+                          'Ya';
+                    });
 
-              buildChoiceChip(
-                label: 'Belum',
+                    updateParent();
+                  },
+                ),
 
-                selected:
-                    locationDetermined ==
-                        'Belum',
+                buildChoiceChip(
+                  label: 'Tidak',
+                  selected:
+                      buildingConstruction ==
+                          'Tidak',
+                  onTap: () {
 
-                onTap: () {
+                    setState(() {
 
-                  setState(() {
+                      buildingConstruction =
+                          'Tidak';
+                    });
 
-                    locationDetermined =
-                        'Belum';
-                  });
-
-                  updateParent();
-                },
-              ),
-            ],
+                    updateParent();
+                  },
+                ),
+              ],
+            ),
           ),
 
           const SizedBox(height: 24),
@@ -332,64 +366,6 @@ class _Step5BusinessLocationScreenState
             ),
           ),
 
-          const SizedBox(height: 24),
-
-          // PEMBANGUNAN GEDUNG
-          const Text(
-            'Apakah akan melakukan pembangunan gedung?',
-            style: TextStyle(
-              fontWeight:
-                  FontWeight.bold,
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          Wrap(
-            spacing: 12,
-
-            children: [
-
-              buildChoiceChip(
-                label: 'Ya',
-
-                selected:
-                    buildingConstruction ==
-                        'Ya',
-
-                onTap: () {
-
-                  setState(() {
-
-                    buildingConstruction =
-                        'Ya';
-                  });
-
-                  updateParent();
-                },
-              ),
-
-              buildChoiceChip(
-                label: 'Tidak',
-
-                selected:
-                    buildingConstruction ==
-                        'Tidak',
-
-                onTap: () {
-
-                  setState(() {
-
-                    buildingConstruction =
-                        'Tidak';
-                  });
-
-                  updateParent();
-                },
-              ),
-            ],
-          ),
-
           const SizedBox(
             height: 32,
           ),
@@ -404,6 +380,17 @@ class _Step5BusinessLocationScreenState
     required VoidCallback onTap,
   }) {
 
+    final bool isNegative =
+        label == 'Tidak' ||
+        label == 'Belum';
+
+    final Color activeColor =
+        isNegative
+            ? Colors.red
+            : const Color(
+                0xFF2D9CDB,
+              );
+
     return ChoiceChip(
 
       label: Text(label),
@@ -411,8 +398,8 @@ class _Step5BusinessLocationScreenState
       selected: selected,
 
       selectedColor:
-          const Color(
-        0xFF2D9CDB,
+          activeColor.withValues(
+        alpha: 0.12,
       ),
 
       backgroundColor:
@@ -421,18 +408,16 @@ class _Step5BusinessLocationScreenState
       side: BorderSide(
 
         color: selected
-
-            ? const Color(
-                0xFF2D9CDB,
-              )
-
+            ? activeColor
             : Colors.grey.shade300,
+
+        width: selected ? 2 : 1,
       ),
 
       labelStyle: TextStyle(
 
         color: selected
-            ? Colors.white
+            ? activeColor
             : Colors.black87,
 
         fontWeight:
@@ -444,6 +429,61 @@ class _Step5BusinessLocationScreenState
       },
     );
   }
+
+  Widget buildQuestionCard({
+    required String title,
+    required Widget child,
+  }) {
+
+    return Container(
+
+      width: double.infinity,
+
+      padding: const EdgeInsets.all(
+        16,
+      ),
+
+      decoration: BoxDecoration(
+
+        color: Colors.white,
+
+        borderRadius:
+            BorderRadius.circular(
+          16,
+        ),
+
+        border: Border.all(
+          color:
+              Colors.blue.shade100,
+        ),
+      ),
+
+      child: Column(
+
+        crossAxisAlignment:
+            CrossAxisAlignment.start,
+
+        children: [
+
+          Text(
+            title,
+
+            style:
+                const TextStyle(
+              fontWeight:
+                  FontWeight.bold,
+            ),
+          ),
+
+          const SizedBox(
+            height: 12,
+          ),
+
+          child,
+        ],
+      ),
+    );
+  }  
 
   void updateParent() {
 
