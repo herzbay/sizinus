@@ -409,33 +409,52 @@ class _Step3RiskValidationScreenState
               riskLevel != null)
 
             Container(
-
-              padding:
-                  const EdgeInsets.all(
-                18,
-              ),
-
-              decoration:
-                  BoxDecoration(
-
-                color:
+              padding: const EdgeInsets.all(16,),
+                decoration: BoxDecoration(
+                  color:
                     Colors.green.shade50,
 
-                borderRadius:
+                  borderRadius:
                     BorderRadius.circular(
-                  16,
-                ),
+                   14,
+                  ),
 
-                border: Border.all(
-                  color:
-                      Colors.green,
+                  border: Border.all(
+                    color: Colors
+                        .green.shade200,
+                  ),
                 ),
-              ),
 
               child: Column(
-
                 children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons
+                          .verified_outlined,
+                        color: Colors.green,
+                      ),
 
+                      const SizedBox(
+                        width: 8,
+                      ),
+
+                      const Text(
+                         'Hasil Validasi Risiko',
+                        style: TextStyle(
+                        fontWeight:
+                          FontWeight
+                              .bold,
+                        fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(
+                    height: 16,
+                  ), 
+                            
                   resultItem(
                     'Skala Usaha',
                     businessScale!,
