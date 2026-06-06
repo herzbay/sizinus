@@ -339,30 +339,94 @@ class _Step6ProductServiceScreenState
               ),
             ),
 
-            child: const Row(
+            child: Column(
 
               crossAxisAlignment:
                   CrossAxisAlignment.start,
 
               children: [
 
-                Icon(
-                  Icons.info_outline,
-                  color: Colors.blue,
+                const Row(
+
+                  children: [
+
+                    Icon(
+                      Icons.info_outline,
+                      color: Colors.blue,
+                    ),
+
+                    SizedBox(width: 10),
+
+                    Text(
+
+                      'Informasi Penting',
+
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight:
+                            FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
 
-                SizedBox(width: 12),
+                SizedBox(height: 12),
 
-                Expanded(
+                Text(
 
-                  child: Text(
+                  'Pada OSS sebenarnya Anda dapat menambahkan lebih dari satu produk atau jasa.',
 
-                    'Pada OSS sebenarnya Anda dapat menambahkan lebih dari satu produk atau jasa.\n\n'
-                    'Dalam simulasi ini cukup ditambahkan satu produk/jasa utama untuk mempermudah proses pembelajaran.',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    height: 1.5,
+                  ),
+                ),
 
-                    style: TextStyle(
-                      height: 1.5,
+                SizedBox(height: 12),
+
+                Container(
+
+                  padding:
+                      EdgeInsets.all(10),
+
+                  decoration: BoxDecoration(
+
+                    color:
+                        Colors.white70,
+
+                    borderRadius:
+                        BorderRadius.circular(
+                      10,
                     ),
+                  ),
+
+                  child: Row(
+
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+
+                    children: [
+
+                      Icon(
+                        Icons.lightbulb_outline,
+                        size: 18,
+                        color: Colors.blue,
+                      ),
+
+                      SizedBox(width: 8),
+
+                      Expanded(
+
+                        child: Text(
+
+                          'Dalam simulasi ini cukup tambahkan satu produk atau jasa utama untuk mempermudah proses pembelajaran.',
+
+                          style: const TextStyle(
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -378,83 +442,71 @@ class _Step6ProductServiceScreenState
   }
 
   Widget buildQuestion({
-
     required String title,
-
     required String? value,
-
     required Function(String)
         onSelected,
   }) {
 
-    return Column(
+    return buildQuestionCard(
 
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+      title: title,
 
-      children: [
+      child: Wrap(
 
-        Text(
-          title,
+        spacing: 12,
 
-          style: const TextStyle(
-            fontWeight:
-                FontWeight.bold,
+        children: [
+
+          buildChoiceChip(
+
+            label: 'Ya',
+
+            selected:
+                value == 'Ya',
+
+            onTap: () {
+
+              onSelected(
+                'Ya',
+              );
+            },
           ),
-        ),
 
-        const SizedBox(height: 10),
+          buildChoiceChip(
 
-        Wrap(
+            label: 'Tidak',
 
-          spacing: 12,
+            selected:
+                value == 'Tidak',
 
-          children: [
+            onTap: () {
 
-            buildChoiceChip(
-
-              label: 'Ya',
-
-              selected:
-                  value == 'Ya',
-
-              onTap: () {
-
-                onSelected(
-                  'Ya',
-                );
-              },
-            ),
-
-            buildChoiceChip(
-
-              label: 'Tidak',
-
-              selected:
-                  value ==
-                      'Tidak',
-
-              onTap: () {
-
-                onSelected(
-                  'Tidak',
-                );
-              },
-            ),
-          ],
-        ),
-      ],
+              onSelected(
+                'Tidak',
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
   Widget buildChoiceChip({
-
     required String label,
-
     required bool selected,
-
     required VoidCallback onTap,
   }) {
+
+    final bool isNegative =
+        label == 'Tidak';
+
+    final Color activeColor =
+        isNegative
+            ? Colors.red
+            : const Color(
+                0xFF2D9CDB,
+              );
 
     return ChoiceChip(
 
@@ -463,32 +515,90 @@ class _Step6ProductServiceScreenState
       selected: selected,
 
       selectedColor:
-          const Color(
-        0xFF2D9CDB,
+          activeColor.withValues(
+        alpha: 0.12,
       ),
 
       backgroundColor:
           Colors.grey.shade100,
 
       side: BorderSide(
+
         color: selected
-            ? const Color(
-                0xFF2D9CDB,
-              )
+            ? activeColor
             : Colors.grey.shade300,
+
+        width: selected ? 2 : 1,
       ),
 
       labelStyle: TextStyle(
+
         color: selected
-            ? Colors.white
+            ? activeColor
             : Colors.black87,
 
         fontWeight:
             FontWeight.w600,
       ),
 
-      onSelected: (_) =>
-          onTap(),
+      onSelected: (_) {
+        onTap();
+      },
+    );
+  }
+
+  Widget buildQuestionCard({
+    required String title,
+    required Widget child,
+  }) {
+
+    return Container(
+
+      width: double.infinity,
+
+      padding: const EdgeInsets.all(
+        16,
+      ),
+
+      decoration: BoxDecoration(
+
+        color: Colors.white,
+
+        borderRadius:
+            BorderRadius.circular(
+          16,
+        ),
+
+        border: Border.all(
+          color:
+              Colors.blue.shade100,
+        ),
+      ),
+
+      child: Column(
+
+        crossAxisAlignment:
+            CrossAxisAlignment.start,
+
+        children: [
+
+          Text(
+            title,
+
+            style:
+                const TextStyle(
+              fontWeight:
+                  FontWeight.bold,
+            ),
+          ),
+
+          const SizedBox(
+            height: 12,
+          ),
+
+          child,
+        ],
+      ),
     );
   }
 
