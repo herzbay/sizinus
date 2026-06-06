@@ -80,9 +80,13 @@ class Step1BusinessCategoryScreen
   @override
   Widget build(BuildContext context) {
 
-    return GridView.builder(
+      return GridView.builder(
 
-      itemCount: categories.length,
+        padding: const EdgeInsets.only(
+          bottom: 32,
+        ),
+
+        itemCount: categories.length,
 
       gridDelegate:
           const SliverGridDelegateWithFixedCrossAxisCount(
