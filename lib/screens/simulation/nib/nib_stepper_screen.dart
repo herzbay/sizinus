@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../widgets/custom_topbar.dart';
 import '../../../widgets/nib_progress_stepper.dart';
 import '../../../widgets/dialogs/nib_published_dialog.dart';
-
+import '../../../widgets/dialogs/simulation_saved_dialog.dart';
 import '../../../models/simulation/simulation_data.dart';
 import '../../../services/simulation/local_simulation_storage.dart';
 
@@ -828,6 +828,45 @@ class _NibStepperScreenState
                       // STEP 7
                       if (currentStep == 7) {
 
+                        if (simulationData.nibCompleted) {
+
+                          showDialog(
+
+                            context: context,
+
+                            builder: (_) {
+
+                              return SimulationSavedDialog(
+
+                                onHome: () {
+
+                                  Navigator.pop(context);
+
+                                  Navigator.popUntil(
+                                    context,
+                                    (route) => route.isFirst,
+                                  );
+                                },
+
+                                onReward: () {
+
+                                  Navigator.pop(context);
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          const NibRewardScreen(),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          );
+
+                          return;
+                        }
+
                         simulationData.nibCompleted = true;
 
                         simulationData.currentStep = 7;
@@ -888,7 +927,9 @@ class _NibStepperScreenState
                     child: Text(
 
                       currentStep == 7
-                          ? 'Simpan & Terbitkan'
+                          ? simulationData.nibCompleted
+                              ? 'Simpan'
+                              : 'Simpan & Terbitkan'
                           : 'Lanjut',
 
                       style: const TextStyle(

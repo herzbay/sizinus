@@ -45,9 +45,10 @@ class _NibRewardScreenState
 
     if (!mounted) return;
 
-    Navigator.pushReplacementNamed(
+    Navigator.pushNamedAndRemoveUntil(
       context,
       AppRoutes.nibStepper,
+      ModalRoute.withName(AppRoutes.nibDetail),
     );
   }
 
@@ -63,7 +64,7 @@ class _NibRewardScreenState
         simulationData?.nibCompletedCount ?? 1;
 
     if (count <= 1) {
-      return 'Lencana NIB Pertama';
+      return 'Lencana NIB';
     }
 
     return 'Lencana NIB x$count';
@@ -74,7 +75,7 @@ class _NibRewardScreenState
         simulationData?.nibCompletedCount ?? 1;
 
     if (count <= 1) {
-      return 'Menyelesaikan simulasi pembuatan NIB pertama';
+      return 'Menyelesaikan simulasi pembuatan NIB';
     }
 
     return 'Menyelesaikan simulasi NIB sebanyak $count kali';
