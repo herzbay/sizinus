@@ -20,5 +20,7 @@ class AppRoutes {
   static const step1BusinessCategory = '/step1-business-category';
 
   static const permitRecommendation = '/permit-recommendation';
+  static const businessGuide = '/business-guide';
+  
   
 }

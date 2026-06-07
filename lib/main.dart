@@ -19,6 +19,7 @@ import 'screens/simulation/simulation_list_screen.dart';
 import 'screens/simulation/nib_detail_screen.dart';
 import 'screens/simulation/nib/nib_stepper_screen.dart';
 import 'screens/recommendation/permit_recommendation_screen.dart';
+import 'screens/guide/business_guide_screen.dart';
 
 void main() {
 
@@ -97,6 +98,9 @@ class MyApp extends StatelessWidget {
 
         AppRoutes.permitRecommendation: (context) =>
             const PermitRecommendationScreen(),
+
+        AppRoutes.businessGuide: (context) =>
+            const BusinessGuideScreen(),
                 
       },
     );
