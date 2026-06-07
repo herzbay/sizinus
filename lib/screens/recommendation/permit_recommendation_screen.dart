@@ -43,7 +43,7 @@ class _PermitRecommendationScreenState
   }
 
   void _goToSimulation() {
-    Navigator.pushNamed(
+    Navigator.pushReplacementNamed(
       context,
       AppRoutes.simulationList,
     );
@@ -94,27 +94,37 @@ class _PermitRecommendationScreenState
                 _buildEmptyState(
                   title: 'Data simulasi belum tersedia',
                   subtitle:
-                      'Selesaikan simulasi NIB terlebih dahulu agar rekomendasi perizinan bisa dibaca dari data usaha yang tersimpan.',
-                  actionLabel: actionLabel,
+                      'Selesaikan simulasi pembuatan NIB terlebih dahulu agar fitur rekomendasi perizinan bisa dibaca dari data usaha yang tersimpan.',                 
                 )
               else if (!isCompleted)
                 _buildEmptyState(
                   title: 'Simulasi belum selesai',
                   subtitle:
-                      'Selesaikan simulasi NIB terlebih dahulu agar rekomendasi perizinan bisa dihitung dari hasil yang tersimpan.',
-                  actionLabel: actionLabel,
+                      'Selesaikan simulasi pembuatan NIB terlebih dahulu agar fitur rekomendasi perizinan bisa dihitung dari hasil yang tersimpan.',
                 )
               else ...[
                 _buildDataSummaryCard(data),
                 const SizedBox(height: 16),
 
                 if (recommendations.isNotEmpty) ...[
+                  const SizedBox(height: 24),
+
+                  const Text(
+                    'Rekomendasi Utama',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
                   _buildPrimaryRecommendation(
                     recommendations.first,
                   ),
 
                   if (recommendations.length > 1) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 28),
                     const Text(
                       'Rekomendasi Lanjutan',
                       style: TextStyle(
@@ -137,10 +147,6 @@ class _PermitRecommendationScreenState
                 ] else
                   _buildNoRecommendationState(),
               ],
-
-              const SizedBox(height: 16),
-
-              _buildInfoCard(),
 
               const SizedBox(height: 24),
 
@@ -205,7 +211,7 @@ class _PermitRecommendationScreenState
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Sistem membaca hasil simulasi NIB lalu menyusun izin yang paling relevan untuk diprioritaskan.',
+                  'Sistem membaca hasil simulasi pembuatan NIB lalu menyusun izin yang paling relevan untuk diprioritaskan.',
                   style: TextStyle(
                     color: Colors.grey.shade700,
                     height: 1.4,
@@ -219,7 +225,9 @@ class _PermitRecommendationScreenState
     );
   }
 
-  Widget _buildDataSummaryCard(SimulationData data) {
+  Widget _buildDataSummaryCard(
+    SimulationData data,
+  ) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -240,24 +248,68 @@ class _PermitRecommendationScreenState
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment:
+            CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Data Dasar Analisis',
+
+          Row(
+            children: [
+
+              const Icon(
+                Icons.analytics_outlined,
+                color: Color(0xFF2D9CDB),
+                size: 20,
+              ),
+
+              const SizedBox(width: 8),
+
+              const Text(
+                'Data Dasar Analisis',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight:
+                      FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 6),
+
+          Text(
+            'Data yang digunakan untuk menyusun rekomendasi perizinan.',
             style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade600,
+              fontSize: 13,
             ),
           ),
-          const SizedBox(height: 12),
+
+          const SizedBox(height: 14),
+
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
-              _summaryChip('Kategori', data.businessCategory ?? '-'),
-              _summaryChip('KBLI', data.kbli ?? '-'),
-              _summaryChip('Skala', data.businessScale ?? '-'),
-              _summaryChip('Risiko', data.riskLevel ?? '-'),
+
+              _summaryChip(
+                'Kategori',
+                data.businessCategory ?? '-',
+              ),
+
+              _summaryChip(
+                'KBLI',
+                data.kbli ?? '-',
+              ),
+
+              _summaryChip(
+                'Skala',
+                data.businessScale ?? '-',
+              ),
+
+              _summaryChip(
+                'Risiko',
+                data.riskLevel ?? '-',
+              ),
             ],
           ),
         ],
@@ -269,7 +321,7 @@ class _PermitRecommendationScreenState
     return _buildRecommendationCard(
       item,
       featured: true,
-      sectionTitle: 'Rekomendasi Utama',
+      sectionTitle: null,
     );
   }
 
@@ -285,8 +337,10 @@ class _PermitRecommendationScreenState
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: item.color.withValues(alpha: 0.22),
-          width: featured ? 1.4 : 1,
+          color: featured
+              ? Colors.green.shade300
+              : Colors.orange.shade300,
+          width: 1.3,
         ),
         boxShadow: [
           BoxShadow(
@@ -318,12 +372,16 @@ class _PermitRecommendationScreenState
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: item.color.withValues(alpha: 0.12),
+                  color: featured
+                      ? Colors.green.shade50
+                      : Colors.orange.shade50,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(
                   item.icon,
-                  color: item.color,
+                  color: featured
+                      ? Colors.green
+                      : Colors.deepOrange,
                   size: 26,
                 ),
               ),
@@ -353,8 +411,7 @@ class _PermitRecommendationScreenState
               const SizedBox(width: 10),
               _statusBadge(
                 item.statusLabel,
-                item.color,
-                item.isCompleted,
+                featured,
               ),
             ],
           ),
@@ -378,15 +435,20 @@ class _PermitRecommendationScreenState
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: item.color.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white,
+                        borderRadius:
+                            BorderRadius.circular(20),
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                        ),
                       ),
                       child: Text(
                         text,
                         style: TextStyle(
-                          color: item.color,
+                          color: Colors.grey.shade700,
                           fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                          fontWeight:
+                              FontWeight.w600,
                         ),
                       ),
                     ),
@@ -443,134 +505,87 @@ class _PermitRecommendationScreenState
   Widget _buildEmptyState({
     required String title,
     required String subtitle,
-    required String actionLabel,
   }) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: Colors.grey.shade200,
+    return Column(
+      children: [
+
+        Image.asset(
+          'assets/images/icon_lock.png',
+          height: 180,
+          fit: BoxFit.contain,
         ),
-      ),
-      child: Column(
-        children: [
-          Icon(
-            Icons.lock_outline,
-            size: 48,
-            color: Colors.grey.shade400,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+
+        const SizedBox(height: 20),
+
+        Container(
+          width: double.infinity,
+          padding:
+              const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius:
+                BorderRadius.circular(18),
+            border: Border.all(
+              color: Colors.grey.shade200,
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            subtitle,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.grey.shade700,
-              height: 1.4,
-            ),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: _goToSimulation,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2D9CDB),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-              child: Text(
-                actionLabel,
+          child: Column(
+            children: [
+
+              Text(
+                title,
+                textAlign:
+                    TextAlign.center,
                 style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  fontWeight:
+                      FontWeight.bold,
                 ),
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildInfoCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.blue.shade200,
+              const SizedBox(height: 8),
+
+              Text(
+                subtitle,
+                textAlign:
+                    TextAlign.center,
+                style: TextStyle(
+                  color:
+                      Colors.grey.shade700,
+                  height: 1.4,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      child: const Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            Icons.info_outline,
-            color: Color(0xFF2D9CDB),
-          ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Informasi Penting',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 6),
-                Text(
-                  'Rekomendasi ini bersifat rule-based berdasarkan data simulasi yang tersimpan. Nantinya logika ini bisa diganti ke decision tree tanpa mengubah tampilan menu.',
-                  style: TextStyle(
-                    height: 1.4,
-                    color: Colors.black87,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      ],
     );
   }
 
-  Widget _summaryChip(String label, String value) {
+  Widget _summaryChip(
+    String label,
+    String value,
+  ) {
     return Container(
-      padding: const EdgeInsets.symmetric(
+      padding:
+          const EdgeInsets.symmetric(
         horizontal: 12,
         vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(18),
+        color: Colors.blue.shade50,
+        borderRadius:
+            BorderRadius.circular(18),
         border: Border.all(
-          color: Colors.grey.shade200,
+          color: Colors.blue.shade100,
         ),
       ),
       child: Text(
         '$label: $value',
         style: const TextStyle(
           fontSize: 12,
-          fontWeight: FontWeight.w600,
+          fontWeight:
+              FontWeight.w600,
         ),
       ),
     );
@@ -578,26 +593,30 @@ class _PermitRecommendationScreenState
 
   Widget _statusBadge(
     String label,
-    Color color,
-    bool completed,
+    bool featured,
   ) {
     return Container(
-      padding: const EdgeInsets.symmetric(
+      padding:
+          const EdgeInsets.symmetric(
         horizontal: 10,
         vertical: 6,
       ),
       decoration: BoxDecoration(
-        color: completed
-            ? Colors.green.withValues(alpha: 0.1)
-            : color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(16),
+        color: featured
+            ? Colors.green.shade50
+            : Colors.orange.shade50,
+        borderRadius:
+            BorderRadius.circular(16),
       ),
       child: Text(
         label,
         style: TextStyle(
           fontSize: 11,
-          fontWeight: FontWeight.bold,
-          color: completed ? Colors.green : color,
+          fontWeight:
+              FontWeight.bold,
+          color: featured
+              ? Colors.green
+              : Colors.deepOrange,
         ),
       ),
     );
