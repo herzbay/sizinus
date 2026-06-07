@@ -18,6 +18,7 @@ import 'screens/mission/mission_screen.dart';
 import 'screens/simulation/simulation_list_screen.dart';
 import 'screens/simulation/nib_detail_screen.dart';
 import 'screens/simulation/nib/nib_stepper_screen.dart';
+import 'screens/recommendation/permit_recommendation_screen.dart';
 
 void main() {
 
@@ -93,6 +94,10 @@ class MyApp extends StatelessWidget {
 
         AppRoutes.nibStepper: (context) =>
             const NibStepperScreen(),
+
+        AppRoutes.permitRecommendation: (context) =>
+            const PermitRecommendationScreen(),
+                
       },
     );
   }

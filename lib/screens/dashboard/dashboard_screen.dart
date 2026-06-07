@@ -175,7 +175,7 @@ class DashboardScreen extends StatelessWidget {
             dashboardMenu(
               title: 'Simulasi Perizinan',
               subtitle: 'Pahami setiap alur perizinan',
-              xp: '+50 XP',
+              xp: '+200 XP',
               icon: Icons.edit_document,
 
               onTap: () {
@@ -188,17 +188,24 @@ class DashboardScreen extends StatelessWidget {
             ),
 
             dashboardMenu(
+              title: 'Rekomendasi Perizinan',
+              subtitle: 'Lihat izin yang disarankan',
+              xp: '+50 XP',
+              icon: Icons.fact_check_outlined,
+
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.permitRecommendation,
+                );
+              },
+            ),
+
+            dashboardMenu(
               title: 'Panduan UMKM',
               subtitle: 'Pelajari tips dan trik perizinan',
               xp: '+50 XP',
               icon: Icons.menu_book,
-            ),
-
-            dashboardMenu(
-              title: 'Rekomendasi Izin',
-              subtitle: 'Lihat izin yang direkomendasikan',
-              xp: '+20 XP',
-              icon: Icons.speed,
             ),
 
             const SizedBox(height: 100),
