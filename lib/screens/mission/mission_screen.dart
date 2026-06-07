@@ -1,637 +1,423 @@
 import 'package:flutter/material.dart';
 
+import '../../models/mission/mission_item.dart';
+import '../../models/simulation/simulation_data.dart';
+
+import '../../routes/app_routes.dart';
+
+import '../../services/simulation/local_simulation_storage.dart';
+
 import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/custom_topbar.dart';
 
-class MissionScreen extends StatelessWidget {
+class MissionScreen extends StatefulWidget {
   const MissionScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<MissionScreen> createState() =>
+      _MissionScreenState();
+}
+
+class _MissionScreenState
+    extends State<MissionScreen> {
+
+  final storage =
+      LocalSimulationStorage();
+
+  SimulationData? simulationData;
+
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+
+    final data =
+        await storage.load();
+
+    setState(() {
+
+      simulationData = data;
+      isLoading = false;
+    });
+  }
+
+  List<MissionItem> get missions {
+
+    final data =
+        simulationData ??
+            SimulationData();
+
+    return [
+
+      // UTAMA
+
+      MissionItem(
+        title:
+            'Selesaikan Simulasi NIB',
+
+        description:
+            'Pelajari proses penerbitan NIB.',
+
+        completed:
+            data.nibCompleted,
+      ),
+
+      MissionItem(
+        title:
+            'Buka Rekomendasi Perizinan',
+
+        description:
+            'Lihat hasil rekomendasi izin usaha.',
+
+        completed:
+            data.recommendationRewardClaimed,
+      ),
+
+      MissionItem(
+        title:
+            'Dapatkan Lencana Pertama',
+
+        description:
+            'Buka satu lencana apa pun.',
+
+        completed:
+            data.unlockedBadges.isNotEmpty,
+      ),
+
+      // BELAJAR
+
+      MissionItem(
+        title:
+            'Selesaikan Panduan NIB',
+
+        description:
+            'Baca dan simpan panduan NIB.',
+
+        completed:
+            data.completedGuideIds.contains(
+              'guide_nib',
+            ),
+      ),
+
+      MissionItem(
+        title:
+            'Selesaikan Panduan Halal',
+
+        description:
+            'Baca dan simpan panduan halal.',
+
+        completed:
+            data.completedGuideIds.contains(
+              'guide_halal',
+            ),
+      ),
+
+      MissionItem(
+        title:
+            'Selesaikan Panduan PIRT',
+
+        description:
+            'Baca dan simpan panduan PIRT.',
+
+        completed:
+            data.completedGuideIds.contains(
+              'guide_pirt',
+            ),
+      ),
+
+      // KOLEKTOR
+
+      MissionItem(
+        title:
+            'Kumpulkan 3 Lencana',
+
+        description:
+            'Miliki minimal 3 lencana.',
+
+        completed:
+            data.unlockedBadges.length >= 3,
+      ),
+
+      MissionItem(
+        title:
+            'Kumpulkan 5 Lencana',
+
+        description:
+            'Miliki minimal 5 lencana.',
+
+        completed:
+            data.unlockedBadges.length >= 5,
+      ),
+    ];
+  }
+
+  int get completedMissionCount {
+
+    return missions
+        .where(
+          (m) => m.completed,
+        )
+        .length;
+  }
+
+  double get progress {
+
+    if (missions.isEmpty) {
+      return 0;
+    }
+
+    return completedMissionCount /
+        missions.length;
+  }
+
+  void onBottomTap(
+    int index,
+  ) {
+
+    switch (index) {
+
+      case 0:
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.dashboard,
+        );
+        break;
+
+      case 2:
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.reward,
+        );
+        break;
+
+      case 3:
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.history,
+        );
+        break;
+    }
+  }
+
+  @override
+  Widget build(
+    BuildContext context,
+  ) {
+
+    if (isLoading) {
+
+      return const Scaffold(
+        body: Center(
+          child:
+              CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
 
-      // APPBAR
-      appBar: const CustomTopBar(),
+      appBar:
+          const CustomTopBar(),
 
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(
-            18,
-            18,
-            18,
-            24,
-          ),
+      bottomNavigationBar:
+          CustomBottomNavbar(
+        currentIndex: 1,
+        onTap: onBottomTap,
+      ),
+
+      body: SingleChildScrollView(
+
+        padding:
+            const EdgeInsets.all(
+          18,
+        ),
 
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
+
           children: [
 
-            // XP CARD
             Container(
-              width: double.infinity,
 
-              padding: const EdgeInsets.all(24),
+              padding:
+                  const EdgeInsets.all(
+                18,
+              ),
 
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF1877B9),
-                    Color(0xFF008C55),
-                  ],
+              decoration:
+                  BoxDecoration(
+
+                color:
+                    Colors.blue.shade50,
+
+                borderRadius:
+                    BorderRadius.circular(
+                  20,
                 ),
 
-                borderRadius: BorderRadius.circular(28),
+                border: Border.all(
+                  color:
+                      Colors.blue.shade200,
+                ),
               ),
 
               child: Column(
+
                 crossAxisAlignment:
                     CrossAxisAlignment.start,
 
                 children: [
 
-                  Row(
-                    children: [
-
-                      Container(
-                        padding: const EdgeInsets.all(16),
-
-                        decoration: BoxDecoration(
-                          color: Colors.white24,
-                          borderRadius:
-                              BorderRadius.circular(18),
-                        ),
-
-                        child: const Icon(
-                          Icons.local_fire_department,
-                          color: Colors.orange,
-                          size: 38,
-                        ),
-                      ),
-
-                      const Spacer(),
-
-                      const Text(
-                        '1,850 XP',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 22),
-
                   const Text(
-                    'Streak 7 Hari 🔥',
+
+                    'Progress Misi',
+
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
+                      fontSize: 20,
+                      fontWeight:
+                          FontWeight.bold,
                     ),
                   ),
 
-                  const SizedBox(height: 10),
-
-                  const Text(
-                    'Level 1 - Learner',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 34,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  const SizedBox(
+                    height: 12,
                   ),
 
-                  const SizedBox(height: 18),
-
-                  const Text(
-                    'Progress ke Level 2',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 18,
-                    ),
+                  Text(
+                    '$completedMissionCount / ${missions.length} Misi Selesai',
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(
+                    height: 12,
+                  ),
 
-                  ClipRRect(
+                  LinearProgressIndicator(
+                    value: progress,
+                    minHeight: 10,
                     borderRadius:
-                        BorderRadius.circular(20),
-
-                    child: LinearProgressIndicator(
-                      value: 0.75,
-                      minHeight: 14,
-                      backgroundColor: Colors.white24,
-                      valueColor:
-                          const AlwaysStoppedAnimation(
-                        Colors.white,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  const Align(
-                    alignment: Alignment.centerRight,
-
-                    child: Text(
-                      '75%',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                        BorderRadius.circular(
+                      20,
                     ),
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 35),
-
-            // DAILY MISSION
-            Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
-
-              children: [
-
-                const Text(
-                  'Misi Harian',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 8,
-                  ),
-
-                  decoration: BoxDecoration(
-                    color: Colors.orange.shade100,
-                    borderRadius:
-                        BorderRadius.circular(18),
-                  ),
-
-                  child: const Text(
-                    'Reset 12 Jam',
-                    style: TextStyle(
-                      color: Colors.orange,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+            const SizedBox(
+              height: 24,
             ),
 
-            const SizedBox(height: 22),
-
-            // MISSION LIST
-            missionCard(
-              icon: Icons.description,
-              title: 'Lengkapi Simulasi NIB',
-              subtitle:
-                  'Selesaikan simulasi pembuatan NIB pertama.',
-              progress: 0.8,
-              xp: '+120 XP',
-              completed: false,
-              color: Colors.blue,
-            ),
-
-            missionCard(
-              icon: Icons.upload_file,
-              title: 'Upload Dokumen',
-              subtitle:
-                  'Unggah minimal 2 dokumen simulasi.',
-              progress: 1.0,
-              xp: '+80 XP',
-              completed: true,
-              color: Colors.green,
-            ),
-
-            missionCard(
-              icon: Icons.verified,
-              title: 'Verifikasi Profil',
-              subtitle:
-                  'Lengkapi informasi akun dan nomor telepon.',
-              progress: 0.5,
-              xp: '+50 XP',
-              completed: false,
-              color: Colors.orange,
-            ),
-
-            const SizedBox(height: 35),
-
-            // WEEKLY CHALLENGE
             const Text(
-              'Challenge Mingguan',
+
+              'Daftar Misi',
+
               style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                fontWeight:
+                    FontWeight.bold,
               ),
             ),
 
-            const SizedBox(height: 20),
-
-            Container(
-              width: double.infinity,
-
-              padding: const EdgeInsets.all(24),
-
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF7B1FA2),
-                    Color(0xFF512DA8),
-                  ],
-                ),
-
-                borderRadius: BorderRadius.circular(26),
-              ),
-
-              child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
-
-                children: [
-
-                  Row(
-                    children: [
-
-                      Container(
-                        padding: const EdgeInsets.all(16),
-
-                        decoration: BoxDecoration(
-                          color: Colors.white24,
-                          borderRadius:
-                              BorderRadius.circular(18),
-                        ),
-
-                        child: const Icon(
-                          Icons.workspace_premium,
-                          color: Colors.amber,
-                          size: 38,
-                        ),
-                      ),
-
-                      const Spacer(),
-
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 8,
-                        ),
-
-                        decoration: BoxDecoration(
-                          color: Colors.white24,
-                          borderRadius:
-                              BorderRadius.circular(18),
-                        ),
-
-                        child: const Text(
-                          '3 Hari Lagi',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  const Text(
-                    'Master Simulasi',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  const Text(
-                    'Selesaikan 5 simulasi izin usaha dalam 1 minggu.',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 17,
-                    ),
-                  ),
-
-                  const SizedBox(height: 22),
-
-                  ClipRRect(
-                    borderRadius:
-                        BorderRadius.circular(20),
-
-                    child: LinearProgressIndicator(
-                      value: 0.6,
-                      minHeight: 14,
-                      backgroundColor: Colors.white24,
-                      valueColor:
-                          const AlwaysStoppedAnimation(
-                        Colors.amber,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  const Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
-
-                    children: [
-
-                      Text(
-                        '3 / 5 Selesai',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-
-                      Text(
-                        '+500 XP',
-                        style: TextStyle(
-                          color: Colors.amber,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            const SizedBox(
+              height: 14,
             ),
 
-            const SizedBox(height: 35),
-
-            // COMPLETED MISSION
-            const Text(
-              'Misi Selesai',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+            ...missions.map(
+              buildMissionCard,
             ),
-
-            const SizedBox(height: 20),
-
-            completedMission(
-              title: 'Login 3 Hari Berturut-turut',
-              xp: '+40 XP',
-            ),
-
-            completedMission(
-              title: 'Selesaikan Tutorial Awal',
-              xp: '+30 XP',
-            ),
-
-            completedMission(
-              title: 'Lengkapi Profil Akun',
-              xp: '+50 XP',
-            ),
-
-            const SizedBox(height: 120),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildMissionCard(
+    MissionItem mission,
+  ) {
+
+    return Container(
+
+      margin:
+          const EdgeInsets.only(
+        bottom: 12,
+      ),
+
+      padding:
+          const EdgeInsets.all(16),
+
+      decoration:
+          BoxDecoration(
+
+        color: Colors.white,
+
+        borderRadius:
+            BorderRadius.circular(
+          18,
         ),
-      ),
 
-      bottomNavigationBar: CustomBottomNavbar(
-        currentIndex: 1,
-        onTap: (index) {},
-      ),
-    );
-  }
+        border: Border.all(
 
-  // MISSION CARD
-  Widget missionCard({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required double progress,
-    required String xp,
-    required bool completed,
-    required Color color,
-  }) {
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 18),
-
-      padding: const EdgeInsets.all(22),
-
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-
-      child: Column(
-        children: [
-
-          Row(
-            children: [
-
-              Container(
-                padding: const EdgeInsets.all(14),
-
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
-                  borderRadius:
-                      BorderRadius.circular(16),
-                ),
-
-                child: Icon(
-                  icon,
-                  color: color,
-                  size: 32,
-                ),
-              ),
-
-              const SizedBox(width: 16),
-
-              Expanded(
-                child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
-
-                  children: [
-
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: 6),
-
-                    Text(
-                      subtitle,
-                      style: const TextStyle(
-                        color: Colors.black54,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 20),
-
-          ClipRRect(
-            borderRadius:
-                BorderRadius.circular(20),
-
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 12,
-              backgroundColor: Colors.grey.shade200,
-              valueColor:
-                  AlwaysStoppedAnimation(color),
-            ),
-          ),
-
-          const SizedBox(height: 18),
-
-          Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
-
-            children: [
-
-              Text(
-                xp,
-                style: TextStyle(
-                  color: color,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-
-              completed
-                  ? Container(
-                      padding:
-                          const EdgeInsets.symmetric(
-                        horizontal: 18,
-                        vertical: 10,
-                      ),
-
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius:
-                            BorderRadius.circular(18),
-                      ),
-
-                      child: const Text(
-                        'Selesai',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight:
-                              FontWeight.bold,
-                        ),
-                      ),
-                    )
-                  : ElevatedButton(
-                      onPressed: () {},
-
-                      style:
-                          ElevatedButton.styleFrom(
-                        backgroundColor: color,
-
-                        shape:
-                            RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(
-                            16,
-                          ),
-                        ),
-                      ),
-
-                      child: const Text(
-                        'Kerjakan',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // COMPLETED MISSION
-  Widget completedMission({
-    required String title,
-    required String xp,
-  }) {
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-
-      padding: const EdgeInsets.all(18),
-
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
+          color: mission.completed
+              ? Colors.green.shade300
+              : Colors.grey.shade300,
+        ),
       ),
 
       child: Row(
+
         children: [
 
-          Container(
-            padding: const EdgeInsets.all(12),
+          Icon(
 
-            decoration: BoxDecoration(
-              color: Colors.green.withValues(alpha: 0.12),
+            mission.completed
+                ? Icons.check_circle
+                : Icons.radio_button_unchecked,
 
-              borderRadius:
-                  BorderRadius.circular(14),
-            ),
-
-            child: const Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 28,
-            ),
+            color: mission.completed
+                ? Colors.green
+                : Colors.grey,
           ),
 
-          const SizedBox(width: 16),
+          const SizedBox(
+            width: 14,
+          ),
 
           Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
 
-          Text(
-            xp,
-            style: const TextStyle(
-              color: Colors.green,
-              fontWeight: FontWeight.bold,
-              fontSize: 17,
+            child: Column(
+
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
+
+              children: [
+
+                Text(
+
+                  mission.title,
+
+                  style:
+                      const TextStyle(
+                    fontWeight:
+                        FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 4,
+                ),
+
+                Text(
+                  mission.description,
+                ),
+              ],
             ),
           ),
         ],
