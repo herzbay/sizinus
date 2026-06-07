@@ -43,6 +43,14 @@ class SimulationData {
   DateTime? nibCompletedAt;
   int nibCompletedCount;
 
+  // GUIDE PROGRESS
+  List<String> completedGuideIds;
+
+  // REWARD
+  int totalXp;
+
+  List<String> unlockedBadges;
+
   // PROGRESS
   int currentStep;
   int unlockedStep;
@@ -86,6 +94,12 @@ class SimulationData {
     this.nibCompleted = false,
     this.nibCompletedCount = 0,
 
+    this.completedGuideIds = const [],
+
+    this.totalXp = 0,
+
+    this.unlockedBadges = const [],
+
     this.nibCompletedAt,
   });
 
@@ -126,6 +140,12 @@ class SimulationData {
 
       'nibCompleted': nibCompleted,
       'nibCompletedCount': nibCompletedCount,
+
+      'completedGuideIds': completedGuideIds,
+
+      'totalXp': totalXp,
+
+      'unlockedBadges': unlockedBadges,
 
       'nibCompletedAt':
           nibCompletedAt?.toIso8601String(),
@@ -221,6 +241,19 @@ class SimulationData {
       nibCompletedCount:
           json['nibCompletedCount'] ?? 0,
 
+      completedGuideIds:
+          List<String>.from(
+            json['completedGuideIds'] ?? [],
+          ),    
+
+      totalXp:
+          json['totalXp'] ?? 0,
+
+      unlockedBadges:
+          List<String>.from(
+            json['unlockedBadges'] ?? [],
+          ),    
+
       nibCompletedAt:
           json['nibCompletedAt'] != null
               ? DateTime.parse(
@@ -234,5 +267,28 @@ class SimulationData {
       unlockedStep:
           json['unlockedStep'] ?? 1,
     );
+  }
+  bool hasBadge(String badgeId) {
+
+    return unlockedBadges.contains(
+      badgeId,
+    );
+  }
+
+  void addBadge(String badgeId) {
+
+    if (!unlockedBadges.contains(
+      badgeId,
+    )) {
+
+      unlockedBadges.add(
+        badgeId,
+      );
+    }
+  }
+
+  void addXp(int amount) {
+
+    totalXp += amount;
   }
 }
