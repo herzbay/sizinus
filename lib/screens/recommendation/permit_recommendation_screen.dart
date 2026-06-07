@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../data/reward/badge_repository.dart';
 import '../../models/recommendation/permit_recommendation_item.dart';
 import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
@@ -34,12 +35,30 @@ class _PermitRecommendationScreenState
   Future<void> _loadData() async {
     final data = await storage.load();
 
+    if (data != null &&
+        data.nibCompleted &&
+        !data.recommendationRewardClaimed) {
+      data.totalXp += BadgeRepository.xpForRecommendationUnlocked();
+      data.recommendationRewardClaimed = true;
+      await storage.save(data);
+    }
+
     if (!mounted) return;
 
     setState(() {
       simulationData = data;
       isLoading = false;
     });
+
+    if (data != null &&
+        data.nibCompleted &&
+        data.recommendationRewardClaimed) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Anda mendapatkan +100 XP dari Rekomendasi Perizinan'),
+        ),
+      );
+    }
   }
 
   void _goToSimulation() {

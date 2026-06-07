@@ -1,426 +1,317 @@
 import 'package:flutter/material.dart';
 
+import '../../data/reward/badge_repository.dart';
+import '../../models/reward/badge.dart';
+import '../../models/simulation/simulation_data.dart';
+import '../../routes/app_routes.dart';
+import '../../services/simulation/local_simulation_storage.dart';
 import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/custom_topbar.dart';
 
-class RewardScreen extends StatelessWidget {
+class RewardScreen extends StatefulWidget {
   const RewardScreen({super.key});
 
   @override
+  State<RewardScreen> createState() => _RewardScreenState();
+}
+
+class _RewardScreenState extends State<RewardScreen> {
+  final LocalSimulationStorage storage = LocalSimulationStorage();
+
+  SimulationData? simulationData;
+  bool isLoading = true;
+
+  static const int _pointsPerLevel = 50;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    final data = await storage.load();
+
+    if (!mounted) return;
+
+    setState(() {
+      simulationData = data;
+      isLoading = false;
+    });
+  }
+
+  int get _totalPoints => simulationData?.totalXp ?? 0;
+
+  bool get _isSimulationCompleted =>
+      simulationData?.nibCompleted ?? false;
+
+  int get _currentLevel {
+    return (_totalPoints ~/ _pointsPerLevel) + 1;
+  }
+
+  int get _currentLevelStart {
+    return (_currentLevel - 1) * _pointsPerLevel;
+  }
+
+  int get _nextLevelStart {
+    return _currentLevel * _pointsPerLevel;
+  }
+
+  double get _progressToNextLevel {
+    final progress =
+        (_totalPoints - _currentLevelStart) / _pointsPerLevel;
+    return progress.clamp(0.0, 1.0);
+  }
+
+  String get _nextLevelLabel {
+    final remaining = _nextLevelStart - _totalPoints;
+    return '$remaining poin menuju level ${_currentLevel + 1}';
+  }
+
+  void _onBottomNavTap(int index) {
+    switch (index) {
+      case 0:
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.dashboard,
+        );
+        break;
+      case 1:
+        break;
+      case 2:
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.mission,
+        );
+        break;
+      case 3:
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.settings,
+        );
+        break;
+    }
+  }
+
+  void _showBadgeDetail(
+    RewardBadge badge,
+    bool earned,
+  ) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: earned
+                      ? Colors.green.shade50
+                      : Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: earned
+                        ? Colors.green.shade200
+                        : Colors.grey.shade300,
+                  ),
+                ),
+                child: _buildBadgeImage(
+                  earned ? badge.imageAsset : 'assets/images/badge_rahasia.png',
+                  height: 92,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                badge.title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                badge.description,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey.shade700,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 14),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: earned
+                      ? Colors.green.shade50
+                      : Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: earned
+                        ? Colors.green.shade200
+                        : Colors.grey.shade300,
+                  ),
+                ),
+                child: Text(
+                  earned
+                      ? 'Lencana ini sudah Anda dapatkan.'
+                      : 'Lencana ini masih terkunci.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: earned ? Colors.green : Colors.grey.shade700,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2D9CDB),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: const Text(
+                    'Tutup',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final data = simulationData ?? SimulationData();
+    final allBadges = BadgeRepository.allBadges;
+    final ownedBadgeIds = data.unlockedBadges.toSet();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-
-      // APPBAR
       appBar: const CustomTopBar(),
-
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(
-            18,
-            18,
-            18,
-            24,
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeaderCard(),
+
+              const SizedBox(height: 16),
+
+              _buildPointsCard(),
+
+              const SizedBox(height: 20),
+
+              _buildBadgeSectionHeader(),
+
+              const SizedBox(height: 12),
+
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: allBadges.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.8,
+                ),
+                itemBuilder: (context, index) {
+                  final badge = allBadges[index];
+                  final earned = ownedBadgeIds.contains(badge.id);
+
+                  return _buildBadgeCard(
+                    badge,
+                    earned: earned,
+                  );
+                },
+              ),
+
+              const SizedBox(height: 18),
+
+              _buildInfoCard(),
+
+              const SizedBox(height: 24),
+            ],
           ),
-
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-
-            // PROFILE LEVEL CARD
-            Container(
-              width: double.infinity,
-
-              padding: const EdgeInsets.all(22),
-
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF1877B9),
-                    Color(0xFF008C55),
-                  ],
-                ),
-
-                borderRadius: BorderRadius.circular(24),
-              ),
-
-              child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
-
-                children: [
-
-                  Row(
-                    children: [
-
-                      Container(
-                        padding: const EdgeInsets.all(14),
-
-                        decoration: BoxDecoration(
-                          color: Colors.white24,
-                          borderRadius:
-                              BorderRadius.circular(16),
-                        ),
-
-                        child: const Icon(
-                          Icons.workspace_premium,
-                          color: Colors.white,
-                          size: 36,
-                        ),
-                      ),
-
-                      const Spacer(),
-
-                      const Text(
-                        '75 / 100 XP',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  const Text(
-                    'Level 1',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  const Text(
-                    'Bayu Herlambang',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 38,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  const Text(
-                    'Progres ke Level 2',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  Stack(
-                    children: [
-
-                      Container(
-                        height: 16,
-
-                        decoration: BoxDecoration(
-                          color: Colors.white24,
-                          borderRadius:
-                              BorderRadius.circular(20),
-                        ),
-                      ),
-
-                      FractionallySizedBox(
-                        widthFactor: 0.75,
-
-                        child: Container(
-                          height: 16,
-
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.circular(20),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  const Align(
-                    alignment: Alignment.centerRight,
-
-                    child: Text(
-                      '75%',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 35),
-
-            // BADGE HEADER
-            Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
-
-              children: [
-
-                const Text(
-                  'Badge Koleksi',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                TextButton(
-                  onPressed: () {},
-
-                  child: const Text(
-                    'Lihat Semua',
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 18),
-
-            // BIG BADGE
-            Container(
-              width: double.infinity,
-
-              padding: const EdgeInsets.all(20),
-
-              decoration: BoxDecoration(
-                color: Colors.white,
-
-                borderRadius: BorderRadius.circular(22),
-
-                border: Border.all(
-                  color: Colors.green,
-                  width: 1.5,
-                ),
-              ),
-
-              child: Row(
-                children: [
-
-                  CircleAvatar(
-                    radius: 42,
-                    backgroundColor:
-                        Colors.greenAccent.shade100,
-
-                    child: const Icon(
-                      Icons.workspace_premium,
-                      color: Colors.green,
-                      size: 40,
-                    ),
-                  ),
-
-                  const SizedBox(width: 20),
-
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
-
-                      children: [
-
-                        Text(
-                          'First Timer',
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green,
-                          ),
-                        ),
-
-                        SizedBox(height: 8),
-
-                        Text(
-                          'Selesaikan pendaftaran UMKM pertama Anda.',
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // SMALL BADGES
-            Row(
-              children: [
-
-                Expanded(
-                  child: smallBadge(
-                    title: 'Learner',
-                    icon: Icons.star,
-                    color: Colors.orange,
-                  ),
-                ),
-
-                const SizedBox(width: 16),
-
-                Expanded(
-                  child: smallBadge(
-                    title: 'Verified',
-                    icon: Icons.verified,
-                    color: Colors.blue,
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 40),
-
-            // LEADERBOARD
-            Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
-
-              children: [
-
-                const Text(
-                  'Papan Peringkat',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-
-                  decoration: BoxDecoration(
-                    color: Colors.blue.shade100,
-                    borderRadius:
-                        BorderRadius.circular(20),
-                  ),
-
-                  child: const Text(
-                    'Mingguan',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            leaderboardItem(
-              rank: '1',
-              name: 'Joko Susanto',
-              level: 'Level 5 • Master UMKM',
-              xp: '2,450 XP',
-              highlight: false,
-            ),
-
-            leaderboardItem(
-              rank: '2',
-              name: 'Anisa Setyo',
-              level: 'Level 4 • Pro',
-              xp: '2,120 XP',
-              highlight: false,
-            ),
-
-            leaderboardItem(
-              rank: '4',
-              name: 'Bayu Herlambang (Anda)',
-              level: 'Level 1 • Learner',
-              xp: '1,850 XP',
-              highlight: true,
-            ),
-
-            leaderboardItem(
-              rank: '5',
-              name: 'Rudi Malik',
-              level: 'Level 1',
-              xp: '1,600 XP',
-              highlight: false,
-            ),
-
-            leaderboardItem(
-              rank: '6',
-              name: 'Siska Kartika',
-              level: 'Level 1',
-              xp: '1,480 XP',
-              highlight: false,
-            ),
-
-            const SizedBox(height: 120),
-          ],
-        ),
         ),
       ),
-
       bottomNavigationBar: CustomBottomNavbar(
         currentIndex: 2,
-        onTap: (index) {},
+        onTap: _onBottomNavTap,
       ),
     );
   }
 
-  // SMALL BADGE
-  Widget smallBadge({
-    required String title,
-    required IconData icon,
-    required Color color,
-  }) {
-
+  Widget _buildHeaderCard() {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 28,
-      ),
-
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.blue.shade50,
         borderRadius: BorderRadius.circular(20),
-      ),
-
-      child: Column(
-        children: [
-
-          CircleAvatar(
-            radius: 34,
-            backgroundColor: color.withValues(alpha: 0.15),
-
-            child: Icon(
-              icon,
-              color: color,
-              size: 34,
-            ),
+        border: Border.all(
+          color: Colors.blue.shade200,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
           ),
-
-          const SizedBox(height: 18),
-
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Hadiah & Pencapaian',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  _isSimulationCompleted
+                      ? 'Anda sudah menyelesaikan simulasi. Lihat seluruh pencapaian dan lencana yang berhasil dibuka.'
+                      : 'Kumpulkan poin dan lencana dari simulasi serta panduan yang sudah diselesaikan.',
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                    height: 1.4,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -428,118 +319,340 @@ class RewardScreen extends StatelessWidget {
     );
   }
 
-  // LEADERBOARD ITEM
-  Widget leaderboardItem({
-    required String rank,
-    required String name,
-    required String level,
-    required String xp,
-    required bool highlight,
-  }) {
-
+  Widget _buildPointsCard() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-
+      width: double.infinity,
       padding: const EdgeInsets.all(18),
-
       decoration: BoxDecoration(
-        color: highlight
-            ? const Color(0xFF0B6EA8)
-            : Colors.white,
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: Colors.grey.shade200,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.bolt_outlined,
+                color: Colors.amber,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                'Poin Anda',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '$_totalPoints',
+                style: const TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Text(
+                  'Poin',
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const Spacer(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    'Level $_currentLevel',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _nextLevelLabel,
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: LinearProgressIndicator(
+              value: _progressToNextLevel,
+              minHeight: 8,
+              backgroundColor: const Color(0xFFE5E7EB),
+              valueColor: const AlwaysStoppedAnimation(
+                Color(0xFF2D9CDB),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              '${(_progressToNextLevel * 100).round()}%',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-        borderRadius: BorderRadius.circular(22),
+  Widget _buildBadgeSectionHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          'Koleksi Lencana',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          '${simulationData?.unlockedBadges.length ?? 0}/${BadgeRepository.allBadges.length}',
+          style: TextStyle(
+            color: Colors.grey.shade700,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
 
-        border: highlight
-            ? Border.all(
-                color: Colors.white,
-                width: 2,
-              )
-            : null,
+  Widget _buildBadgeCard(
+    RewardBadge badge, {
+    required bool earned,
+  }) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+
+      onTap: () => _showBadgeDetail(
+        badge,
+        earned,
       ),
 
-      child: Row(
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
+
+        decoration: BoxDecoration(
+          color: Colors.white,
+
+          borderRadius:
+              BorderRadius.circular(18),
+
+          border: Border.all(
+            color: earned
+                ? badge.color.withValues(
+                    alpha: 0.25,
+                  )
+                : Colors.grey.shade300,
+          ),
+
+          boxShadow: [
+            BoxShadow(
+              color:
+                  Colors.black.withValues(
+                alpha: 0.04,
+              ),
+
+              blurRadius: 8,
+
+              offset: const Offset(
+                0,
+                3,
+              ),
+            ),
+          ],
+        ),
+
+        child: Column(
+          mainAxisAlignment:
+              MainAxisAlignment.center,
+
+          children: [
+
+            Container(
+              width: 72,
+              height: 72,
+
+              padding:
+                  const EdgeInsets.all(8),
+
+              decoration: BoxDecoration(
+                color: earned
+                    ? badge.color
+                        .withValues(
+                        alpha: 0.08,
+                      )
+                    : Colors.grey.shade100,
+
+                borderRadius:
+                    BorderRadius.circular(
+                  18,
+                ),
+              ),
+
+              child: _buildBadgeImage(
+                earned
+                    ? badge.imageAsset
+                    : 'assets/images/badge_rahasia.png',
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 5,
+              ),
+
+              decoration: BoxDecoration(
+                color: earned
+                    ? Colors.green.shade50
+                    : Colors.grey.shade100,
+
+                borderRadius:
+                    BorderRadius.circular(
+                  16,
+                ),
+              ),
+
+              child: Text(
+                earned
+                    ? 'Didapat'
+                    : 'Terkunci',
+
+                style: TextStyle(
+                  color: earned
+                      ? Colors.green
+                      : Colors.grey.shade600,
+
+                  fontSize: 11,
+
+                  fontWeight:
+                      FontWeight.bold,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            Text(
+              badge.title,
+
+              textAlign:
+                  TextAlign.center,
+
+              maxLines: 2,
+
+              overflow:
+                  TextOverflow.ellipsis,
+
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight:
+                    FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBadgeImage(String assetPath, {double height = 72}) {
+    return Image.asset(
+      assetPath,
+      fit: BoxFit.contain,
+      errorBuilder: (_, _, _) {
+        return Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Icon(
+            Icons.emoji_events_outlined,
+            size: height * 0.45,
+            color: Colors.grey.shade500,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildInfoCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+
+      decoration: BoxDecoration(
+        color: Colors.blue.shade50,
+
+        borderRadius: BorderRadius.circular(16),
+
+        border: Border.all(
+          color: Colors.blue.shade200,
+        ),
+      ),
+
+      child: const Row(
         children: [
 
-          SizedBox(
-            width: 28,
-
-            child: Text(
-              rank,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: highlight
-                    ? Colors.white
-                    : Colors.black54,
-              ),
-            ),
+          Icon(
+            Icons.touch_app_outlined,
+            color: Color(0xFF2D9CDB),
           ),
 
-          const SizedBox(width: 16),
-
-          CircleAvatar(
-            radius: 28,
-
-            backgroundColor: highlight
-                ? Colors.white24
-                : Colors.grey.shade200,
-
-            child: Text(
-              name.substring(0, 2).toUpperCase(),
-
-              style: TextStyle(
-                color: highlight
-                    ? Colors.white
-                    : Colors.black54,
-
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-
-          const SizedBox(width: 18),
+          SizedBox(width: 12),
 
           Expanded(
-            child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+            child: Text(
 
-              children: [
+              'Ketuk lencana untuk melihat detail.',
 
-                Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: highlight
-                        ? Colors.white
-                        : Colors.black,
-                  ),
-                ),
-
-                const SizedBox(height: 4),
-
-                Text(
-                  level,
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: highlight
-                        ? Colors.white70
-                        : Colors.black54,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          Text(
-            xp,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: highlight
-                  ? Colors.white
-                  : Colors.blue,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
             ),
           ),
         ],

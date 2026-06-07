@@ -4,7 +4,7 @@ import '../../../models/reward/badge.dart';
 
 class BadgeRepository {
   // XP rewards
-  static const int simulationNibXp = 500;
+  static const int simulationNibXp = 200;
   static const int guideNibXp = 50;
   static const int guideOtherXp = 50;
   static const int recommendationUnlockedXp = 100;
@@ -12,7 +12,7 @@ class BadgeRepository {
   // Main badges
   static const RewardBadge simulationNibBadge = RewardBadge(
     id: 'badge_simulation_nib',
-    title: 'Pelaku Usaha Pemula',
+    title: 'Pendekar Simulasi',
     description: 'Berhasil menyelesaikan simulasi pembuatan NIB.',
     imageAsset: 'assets/images/badge_simulation_nib.png',
     color: Color(0xFF2D9CDB),
@@ -20,7 +20,7 @@ class BadgeRepository {
 
   static const RewardBadge guideNibBadge = RewardBadge(
     id: 'badge_guide_nib',
-    title: 'Explorer NIB',
+    title: 'Dasar Usaha',
     description: 'Mempelajari panduan Nomor Induk Berusaha.',
     imageAsset: 'assets/images/badge_guide_nib.png',
     color: Colors.green,
@@ -28,7 +28,7 @@ class BadgeRepository {
 
   static const RewardBadge guideHalalBadge = RewardBadge(
     id: 'badge_guide_halal',
-    title: 'Explorer Halal',
+    title: 'Pengusaha Halal',
     description: 'Mempelajari panduan sertifikasi halal.',
     imageAsset: 'assets/images/badge_guide_halal.png',
     color: Colors.green,
@@ -36,7 +36,7 @@ class BadgeRepository {
 
   static const RewardBadge guidePirtBadge = RewardBadge(
     id: 'badge_guide_pirt',
-    title: 'Explorer PIRT',
+    title: 'Pengolah Terbaik',
     description: 'Mempelajari panduan PIRT.',
     imageAsset: 'assets/images/badge_guide_pirt.png',
     color: Colors.green,
@@ -44,7 +44,7 @@ class BadgeRepository {
 
   static const RewardBadge guideSniBadge = RewardBadge(
     id: 'badge_guide_sni',
-    title: 'Explorer SNI',
+    title: 'Standar Nasional',
     description: 'Mempelajari panduan SNI.',
     imageAsset: 'assets/images/badge_guide_sni.png',
     color: Colors.green,
@@ -52,7 +52,7 @@ class BadgeRepository {
 
   static const RewardBadge guideStandarBadge = RewardBadge(
     id: 'badge_guide_standar',
-    title: 'Explorer Standar',
+    title: 'Terbukti Aman',
     description: 'Mempelajari panduan sertifikat standar.',
     imageAsset: 'assets/images/badge_guide_standar.png',
     color: Colors.green,
@@ -60,7 +60,7 @@ class BadgeRepository {
 
   static const RewardBadge guideMerekBadge = RewardBadge(
     id: 'badge_guide_merek',
-    title: 'Explorer Merek',
+    title: 'Jaga Merek',
     description: 'Mempelajari panduan hak merek.',
     imageAsset: 'assets/images/badge_guide_merek.png',
     color: Colors.green,
@@ -68,7 +68,7 @@ class BadgeRepository {
 
   static const RewardBadge guidePbgBadge = RewardBadge(
     id: 'badge_guide_pbg',
-    title: 'Explorer PBG',
+    title: 'Bos',
     description: 'Mempelajari panduan PBG.',
     imageAsset: 'assets/images/badge_guide_pbg.png',
     color: Colors.green,
@@ -76,7 +76,7 @@ class BadgeRepository {
 
   static const RewardBadge guideNpwpBadge = RewardBadge(
     id: 'badge_guide_npwp',
-    title: 'Explorer NPWP',
+    title: 'Pengusaha Teladan',
     description: 'Mempelajari panduan NPWP usaha.',
     imageAsset: 'assets/images/badge_guide_npwp.png',
     color: Colors.green,

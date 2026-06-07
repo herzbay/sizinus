@@ -48,8 +48,8 @@ class SimulationData {
 
   // REWARD
   int totalXp;
-
   List<String> unlockedBadges;
+  bool recommendationRewardClaimed;
 
   // PROGRESS
   int currentStep;
@@ -95,8 +95,8 @@ class SimulationData {
     this.nibCompletedCount = 0,
 
     this.completedGuideIds = const [],
-
     this.totalXp = 0,
+    this.recommendationRewardClaimed = false,
 
     this.unlockedBadges = const [],
 
@@ -142,7 +142,7 @@ class SimulationData {
       'nibCompletedCount': nibCompletedCount,
 
       'completedGuideIds': completedGuideIds,
-
+      'recommendationRewardClaimed': recommendationRewardClaimed,
       'totalXp': totalXp,
 
       'unlockedBadges': unlockedBadges,
@@ -240,6 +240,9 @@ class SimulationData {
 
       nibCompletedCount:
           json['nibCompletedCount'] ?? 0,
+
+      recommendationRewardClaimed:
+          json['recommendationRewardClaimed'] ?? false,          
 
       completedGuideIds:
           List<String>.from(
