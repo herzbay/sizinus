@@ -20,6 +20,7 @@ import 'screens/simulation/nib_detail_screen.dart';
 import 'screens/simulation/nib/nib_stepper_screen.dart';
 import 'screens/recommendation/permit_recommendation_screen.dart';
 import 'screens/guide/business_guide_screen.dart';
+import 'screens/settings/profile_screen.dart';
 
 void main() {
 
@@ -101,6 +102,9 @@ class MyApp extends StatelessWidget {
 
         AppRoutes.businessGuide: (context) =>
             const BusinessGuideScreen(),
+
+        AppRoutes.profile: (context) =>
+            const ProfileScreen(),      
                 
       },
     );

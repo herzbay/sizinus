@@ -1,386 +1,649 @@
 import 'package:flutter/material.dart';
 
+import '../../models/history/history_item.dart';
+
+import '../../models/simulation/simulation_data.dart';
+
+import '../../routes/app_routes.dart';
+
+import '../../services/simulation/local_simulation_storage.dart';
+
 import '../../widgets/custom_bottom_navbar.dart';
+
 import '../../widgets/custom_topbar.dart';
 
-class HistoryScreen extends StatelessWidget {
-  const HistoryScreen({super.key});
+class HistoryScreen extends StatefulWidget {
 
-  @override
-  Widget build(BuildContext context) {
+const HistoryScreen({
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+super.key,
 
-      // APPBAR
-      appBar: const CustomTopBar(),
+});
 
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(
-            18,
-            18,
-            18,
-            24,
-          ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+@override
 
-            // FILTER CHIP
-            SizedBox(
-              height: 42,
+State<HistoryScreen> createState() =>
 
-              child: ListView(
-                scrollDirection: Axis.horizontal,
+_HistoryScreenState();
 
-                children: [
+}
 
-                  filterChip(
-                    title: 'Semua',
-                    active: true,
-                  ),
+class _HistoryScreenState
 
-                  filterChip(
-                    title: 'Diproses',
-                    active: false,
-                  ),
+extends State<HistoryScreen> {
 
-                  filterChip(
-                    title: 'Selesai',
-                    active: false,
-                  ),
+final storage =
 
-                  filterChip(
-                    title: 'Revisi',
-                    active: false,
-                  ),
-                ],
-              ),
-            ),
+LocalSimulationStorage();
 
-            const SizedBox(height: 28),
+bool isLoading = true;
 
-            // STATISTIC CARD
-            Container(
-              width: double.infinity,
+List<HistoryItem> history = [];
 
-              padding: const EdgeInsets.all(22),
+@override
 
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF1877B9),
-                    Color(0xFF008C55),
-                  ],
-                ),
+void initState() {
 
-                borderRadius: BorderRadius.circular(24),
-              ),
+super.initState();
 
-              child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceAround,
+loadHistory();
 
-                children: [
+}
 
-                  statisticItem(
-                    title: '12',
-                    subtitle: 'Selesai',
-                  ),
+Future<void> loadHistory() async {
 
-                  statisticItem(
-                    title: '3',
-                    subtitle: 'Diproses',
-                  ),
+final data =
 
-                  statisticItem(
-                    title: '1',
-                    subtitle: 'Revisi',
-                  ),
-                ],
-              ),
-            ),
+    await storage.load();
 
-            const SizedBox(height: 35),
 
-            const Text(
-              'Aktivitas Terbaru',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
 
-            const SizedBox(height: 20),
+final items =
 
-            // HISTORY LIST
-            historyCard(
-              businessName: 'Kopi Nusantara',
-              permitType: 'NIB Usaha Mikro',
-              date: '12 Mei 2026',
-              status: 'Selesai',
-              statusColor: Colors.green,
-              progress: 1.0,
-              xp: '+120 XP',
-            ),
+    data?.historyItems ?? [];
 
-            historyCard(
-              businessName: 'Warung Makan Barokah',
-              permitType: 'Izin UMKM Kuliner',
-              date: '10 Mei 2026',
-              status: 'Diproses',
-              statusColor: Colors.orange,
-              progress: 0.7,
-              xp: '+80 XP',
-            ),
 
-            historyCard(
-              businessName: 'Toko Elektronik Jaya',
-              permitType: 'Izin Perdagangan',
-              date: '08 Mei 2026',
-              status: 'Revisi',
-              statusColor: Colors.red,
-              progress: 0.4,
-              xp: '+40 XP',
-            ),
 
-            historyCard(
-              businessName: 'Laundry Bersih',
-              permitType: 'NIB Jasa',
-              date: '06 Mei 2026',
-              status: 'Selesai',
-              statusColor: Colors.green,
-              progress: 1.0,
-              xp: '+100 XP',
-            ),
+items.sort(
 
-            const SizedBox(height: 120),
-          ],
-        ),
-        ),
-      ),
+  (a, b) =>
 
-      bottomNavigationBar: CustomBottomNavbar(
-        currentIndex: 3,
-        onTap: (index) {},
-      ),
+      b.createdAt.compareTo(
+
+    a.createdAt,
+
+  ),
+
+);
+
+
+
+setState(() {
+
+
+
+  history = items;
+
+  isLoading = false;
+
+});
+
+}
+
+void onBottomTap(
+
+int index,
+
+) {
+
+switch (index) {
+
+
+
+  case 0:
+
+    Navigator.pushReplacementNamed(
+
+      context,
+
+      AppRoutes.dashboard,
+
     );
-  }
 
-  // FILTER CHIP
-  Widget filterChip({
-    required String title,
-    required bool active,
-  }) {
+    break;
 
-    return Container(
-      margin: const EdgeInsets.only(right: 12),
 
-      child: Chip(
-        backgroundColor: active
-            ? const Color(0xFF0F6DA1)
-            : Colors.white,
 
-        side: BorderSide.none,
+  case 1:
 
-        label: Text(
-          title,
-          style: TextStyle(
-            color: active
-                ? Colors.white
-                : Colors.black87,
+    Navigator.pushReplacementNamed(
 
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
+      context,
+
+      AppRoutes.mission,
+
     );
-  }
 
-  // STATISTIC ITEM
-  Widget statisticItem({
-    required String title,
-    required String subtitle,
-  }) {
+    break;
 
-    return Column(
+
+
+  case 2:
+
+    Navigator.pushReplacementNamed(
+
+      context,
+
+      AppRoutes.reward,
+
+    );
+
+    break;
+
+
+
+  case 4:
+
+    Navigator.pushReplacementNamed(
+
+      context,
+
+      AppRoutes.settings,
+
+    );
+
+    break;
+
+}
+
+}
+
+@override
+
+Widget build(
+
+BuildContext context,
+
+) {
+
+return Scaffold(
+
+
+
+  appBar:
+
+      const CustomTopBar(),
+
+
+
+  bottomNavigationBar:
+
+      CustomBottomNavbar(
+
+    currentIndex: 3,
+
+    onTap: onBottomTap,
+
+  ),
+
+
+
+  body: isLoading
+
+
+
+      ? const Center(
+
+          child:
+
+              CircularProgressIndicator(),
+
+        )
+
+
+
+      : history.isEmpty
+
+
+
+          ? _buildEmptyState()
+
+
+
+          : ListView.builder(
+
+
+
+              padding:
+
+                  const EdgeInsets.all(
+
+                18,
+
+              ),
+
+
+
+              itemCount:
+
+                  history.length,
+
+
+
+              itemBuilder:
+
+                  (context, index) {
+
+
+
+                final item =
+
+                    history[index];
+
+
+
+                return _buildHistoryCard(
+
+                  item,
+
+                );
+
+              },
+
+            ),
+
+);
+
+}
+
+Widget _buildEmptyState() {
+
+return Center(
+
+
+
+  child: Padding(
+
+
+
+    padding:
+
+        const EdgeInsets.all(
+
+      24,
+
+    ),
+
+
+
+    child: Column(
+
+
+
+      mainAxisAlignment:
+
+          MainAxisAlignment.center,
+
+
+
       children: [
 
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+
+
+        Icon(
+
+          Icons.history,
+
+          size: 90,
+
+          color:
+
+              Colors.grey.shade400,
+
         ),
 
-        const SizedBox(height: 6),
+
+
+        const SizedBox(
+
+          height: 16,
+
+        ),
+
+
+
+        const Text(
+
+
+
+          'Belum Ada Riwayat',
+
+
+
+          style: TextStyle(
+
+            fontSize: 20,
+
+            fontWeight:
+
+                FontWeight.bold,
+
+          ),
+
+        ),
+
+
+
+        const SizedBox(
+
+          height: 8,
+
+        ),
+
+
 
         Text(
-          subtitle,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Colors.white70,
+
+
+
+          'Riwayat aktivitas akan muncul setelah Anda menyelesaikan simulasi, panduan, atau mendapatkan poin.',
+
+
+
+          textAlign:
+
+              TextAlign.center,
+
+
+
+          style: TextStyle(
+
+            color:
+
+                Colors.grey.shade600,
+
           ),
+
         ),
+
       ],
-    );
-  }
 
-  // HISTORY CARD
-  Widget historyCard({
-    required String businessName,
-    required String permitType,
-    required String date,
-    required String status,
-    required Color statusColor,
-    required double progress,
-    required String xp,
-  }) {
+    ),
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 18),
+  ),
 
-      padding: const EdgeInsets.all(20),
+);
 
-      decoration: BoxDecoration(
-        color: Colors.white,
+}
 
-        borderRadius: BorderRadius.circular(24),
+Widget _buildHistoryCard(
 
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
+HistoryItem item,
+
+) {
+
+return Container(
+
+
+
+  margin:
+
+      const EdgeInsets.only(
+
+    bottom: 14,
+
+  ),
+
+
+
+  padding:
+
+      const EdgeInsets.all(
+
+    16,
+
+  ),
+
+
+
+  decoration:
+
+      BoxDecoration(
+
+
+
+    color: Colors.white,
+
+
+
+    borderRadius:
+
+        BorderRadius.circular(
+
+      18,
+
+    ),
+
+
+
+    border: Border.all(
+
+      color:
+
+          Colors.green.shade200,
+
+    ),
+
+
+
+    boxShadow: [
+
+
+
+      BoxShadow(
+
+        color:
+
+            Colors.black.withValues(
+
+          alpha: 0.04,
+
+        ),
+
+
+
+        blurRadius: 8,
+
+
+
+        offset:
+
+            const Offset(
+
+          0,
+
+          3,
+
+        ),
+
       ),
 
-      child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+    ],
 
-        children: [
+  ),
 
-          Row(
-            children: [
 
-              Container(
-                padding: const EdgeInsets.all(14),
 
-                decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.12),
+  child: Row(
 
-                  borderRadius:
-                      BorderRadius.circular(16),
-                ),
 
-                child: Icon(
-                  Icons.description,
-                  color: statusColor,
-                  size: 32,
-                ),
-              ),
 
-              const SizedBox(width: 16),
+    crossAxisAlignment:
 
-              Expanded(
-                child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+        CrossAxisAlignment.start,
 
-                  children: [
 
-                    Text(
-                      businessName,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
 
-                    const SizedBox(height: 6),
+    children: [
 
-                    Text(
-                      permitType,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
 
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 8,
-                ),
 
-                decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.15),
+      Container(
 
-                  borderRadius:
-                      BorderRadius.circular(18),
-                ),
 
-                child: Text(
-                  status,
-                  style: TextStyle(
-                    color: statusColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
+
+        width: 52,
+
+        height: 52,
+
+
+
+        decoration:
+
+            BoxDecoration(
+
+
+
+          color:
+
+              Colors.green.shade50,
+
+
+
+          borderRadius:
+
+              BorderRadius.circular(
+
+            14,
+
           ),
 
-          const SizedBox(height: 20),
+        ),
 
-          Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
 
-            children: [
 
-              Text(
-                date,
-                style: const TextStyle(
-                  color: Colors.black54,
-                  fontSize: 15,
-                ),
+        child: const Icon(
+
+          Icons.stars,
+
+          color:
+
+              Colors.green,
+
+        ),
+
+      ),
+
+
+
+      const SizedBox(
+
+        width: 14,
+
+      ),
+
+
+
+      Expanded(
+
+
+
+        child: Column(
+
+
+
+          crossAxisAlignment:
+
+              CrossAxisAlignment.start,
+
+
+
+          children: [
+
+
+
+            Text(
+
+
+
+              item.title,
+
+
+
+              style:
+
+                  const TextStyle(
+
+                fontWeight:
+
+                    FontWeight.bold,
+
+                fontSize: 16,
+
               ),
 
-              Text(
-                xp,
-                style: TextStyle(
-                  color: statusColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 10,
-              backgroundColor: Colors.grey.shade200,
-              valueColor:
-                  AlwaysStoppedAnimation(statusColor),
             ),
-          ),
-        ],
+
+
+
+            const SizedBox(
+
+              height: 4,
+
+            ),
+
+
+
+            Text(
+
+              item.description,
+
+            ),
+
+
+
+            const SizedBox(
+
+              height: 10,
+
+            ),
+
+
+
+            Text(
+
+
+
+              '+${item.points} Poin',
+
+
+
+              style: const TextStyle(
+
+                color:
+
+                    Colors.green,
+
+                fontWeight:
+
+                    FontWeight.bold,
+
+              ),
+
+            ),
+
+          ],
+
+        ),
+
       ),
-    );
-  }
+
+    ],
+
+  ),
+
+);
+
+}
+
 }

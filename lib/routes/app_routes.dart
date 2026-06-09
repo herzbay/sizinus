@@ -21,5 +21,7 @@ class AppRoutes {
 
   static const permitRecommendation = '/permit-recommendation';
   static const businessGuide = '/business-guide';
+
+  static const profile = '/profile';
   
 }

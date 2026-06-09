@@ -1,3 +1,4 @@
+import '../history/history_item.dart';
 class SimulationData {
 
   // STEP 1
@@ -51,6 +52,8 @@ class SimulationData {
   List<String> unlockedBadges;
   bool recommendationRewardClaimed;
 
+  List<HistoryItem> historyItems;
+
   // PROGRESS
   int currentStep;
   int unlockedStep;
@@ -97,8 +100,8 @@ class SimulationData {
     this.completedGuideIds = const [],
     this.totalXp = 0,
     this.recommendationRewardClaimed = false,
-
     this.unlockedBadges = const [],
+    this.historyItems = const [],
 
     this.nibCompletedAt,
   });
@@ -144,6 +147,11 @@ class SimulationData {
       'completedGuideIds': completedGuideIds,
       'recommendationRewardClaimed': recommendationRewardClaimed,
       'totalXp': totalXp,
+
+      'historyItems':
+          historyItems
+              .map((e) => e.toJson())
+              .toList(),
 
       'unlockedBadges': unlockedBadges,
 
@@ -263,6 +271,17 @@ class SimulationData {
                   json['nibCompletedAt'],
                 )
               : null,
+
+      historyItems:
+          (json['historyItems'] as List?)
+                  ?.map(
+                    (e) =>
+                        HistoryItem.fromJson(
+                      e,
+                    ),
+                  )
+                  .toList() ??
+              [],
 
       currentStep:
           json['currentStep'] ?? 1,
