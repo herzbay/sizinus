@@ -6,6 +6,7 @@ import '../../../widgets/dialogs/nib_published_dialog.dart';
 import '../../../widgets/dialogs/simulation_saved_dialog.dart';
 import '../../../models/simulation/simulation_data.dart';
 import '../../../services/simulation/local_simulation_storage.dart';
+import '../../../models/history/history_item.dart';
 
 import 'steps/step_1_business_category_screen.dart';
 import 'steps/step_2_kbli_screen.dart';
@@ -267,6 +268,19 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
 
       simulationData.totalXp +=
           BadgeRepository.xpForSimulationNibCompletion();
+
+      simulationData.historyItems.insert(
+        0,
+        HistoryItem(
+          title: 'Simulasi NIB Selesai',
+          description:
+              'Berhasil menyelesaikan simulasi dan menerbitkan NIB.',
+          points:
+              BadgeRepository
+                  .xpForSimulationNibCompletion(),
+          createdAt: DateTime.now(),
+        ),
+      );
 
       final badges = simulationData.unlockedBadges.toSet();
       badges.add(BadgeRepository.simulationNibBadge.id);

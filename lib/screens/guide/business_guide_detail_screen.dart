@@ -6,6 +6,7 @@ import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
 import '../../services/simulation/local_simulation_storage.dart';
 import '../../widgets/custom_topbar.dart';
+import '../../models/history/history_item.dart';
 
 class BusinessGuideDetailScreen extends StatefulWidget {
   final GuideItem guideItem;
@@ -119,6 +120,23 @@ class _BusinessGuideDetailScreenState
           updatedBadges;
 
       currentData.totalXp += earnedXp;
+
+      // HISTORY
+      currentData.historyItems.insert(
+        0,
+        HistoryItem(
+          title:
+              '${widget.guideItem.title} Diselesaikan',
+
+          description:
+              'Panduan berhasil dipelajari dan disimpan.',
+
+          points: earnedXp,
+
+          createdAt:
+              DateTime.now(),
+        ),
+      );
     }
 
     simulationData = currentData;

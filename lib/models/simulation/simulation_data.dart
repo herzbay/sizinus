@@ -52,6 +52,7 @@ class SimulationData {
   List<String> unlockedBadges;
   bool recommendationRewardClaimed;
 
+  // HISTORY
   List<HistoryItem> historyItems;
 
   // PROGRESS

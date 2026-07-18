@@ -7,6 +7,7 @@ import '../../routes/app_routes.dart';
 import '../../services/recommendation/permit_recommendation_engine.dart';
 import '../../services/simulation/local_simulation_storage.dart';
 import '../../widgets/custom_topbar.dart';
+import '../../models/history/history_item.dart';
 
 class PermitRecommendationScreen extends StatefulWidget {
   const PermitRecommendationScreen({
@@ -40,6 +41,21 @@ class _PermitRecommendationScreenState
         !data.recommendationRewardClaimed) {
       data.totalXp += BadgeRepository.xpForRecommendationUnlocked();
       data.recommendationRewardClaimed = true;
+      data.historyItems.insert(
+        0,
+        HistoryItem(
+          title:
+              'Rekomendasi Perizinan Dibuka',
+          description:
+              'Berhasil membuka rekomendasi izin berdasarkan simulasi usaha.',
+          points:
+              BadgeRepository
+                  .xpForRecommendationUnlocked(),
+          createdAt:
+              DateTime.now(),
+        ),
+      );
+
       await storage.save(data);
     }
 

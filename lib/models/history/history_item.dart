@@ -1,5 +1,4 @@
 class HistoryItem {
-
   final String title;
   final String description;
   final int points;
@@ -17,8 +16,7 @@ class HistoryItem {
       'title': title,
       'description': description,
       'points': points,
-      'createdAt':
-          createdAt.toIso8601String(),
+      'createdAt': createdAt.toIso8601String(),
     };
   }
 
@@ -27,8 +25,7 @@ class HistoryItem {
   ) {
     return HistoryItem(
       title: json['title'],
-      description:
-          json['description'],
+      description: json['description'],
       points: json['points'],
       createdAt: DateTime.parse(
         json['createdAt'],
