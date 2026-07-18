@@ -15,28 +15,35 @@ class LocalAuthService {
   Future<bool> register(
       UserModel user) async {
 
-    final prefs =
-        await SharedPreferences.getInstance();
+      final prefs =
+          await SharedPreferences.getInstance();
 
-    final email =
-        prefs.getString('email');
+      final json =
+          prefs.getString(_userKey);
 
-    if (email == user.email) {
-      return false;
+      if (json != null) {
+
+        final currentUser =
+            UserModel.fromJson(
+          jsonDecode(json),
+        );
+
+        if (currentUser.email
+                .toLowerCase() ==
+            user.email.toLowerCase()) {
+          return false;
+        }
+      }
+
+      await prefs.setString(
+        _userKey,
+        jsonEncode(
+          user.toJson(),
+        ),
+      );
+
+      return true;
     }
-
-    await prefs.setString(
-      _userKey,
-      jsonEncode(user.toJson()),
-    );
-
-    await prefs.setString(
-      'email',
-      user.email,
-    );
-
-    return true;
-  }
 
   Future<bool> login({
     required String email,
@@ -84,6 +91,30 @@ class LocalAuthService {
     );
   }
 
+  Future<void> deleteAccount() async {
+
+    final prefs =
+        await SharedPreferences.getInstance();
+
+    await prefs.remove(
+        _userKey);
+
+    await prefs.remove(
+        _loginKey);
+  }
+
+  Future<void> updateProfile(UserModel user) async {
+    final prefs =
+        await SharedPreferences.getInstance();
+
+    await prefs.setString(
+      _userKey,
+      jsonEncode(
+        user.toJson(),
+      ),
+    );
+  }
+
   Future<bool> isLoggedIn() async {
 
     final prefs =
@@ -101,6 +132,25 @@ class LocalAuthService {
 
     final json =
         prefs.getString(_userKey);
+
+    if (json == null) {
+      return null;
+    }
+
+    return UserModel.fromJson(
+      jsonDecode(json),
+    );
+  }
+
+  Future<UserModel?> getUser() async {
+
+    final prefs =
+        await SharedPreferences.getInstance();
+
+    final json =
+        prefs.getString(
+          _userKey,
+        );
 
     if (json == null) {
       return null;
