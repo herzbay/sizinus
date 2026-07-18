@@ -12,6 +12,7 @@ class AppRoutes {
   static const settings = '/settings';
   static const mission = '/mission';
   static const history = '/history';
+  static const leaderboard = '/leaderboard';
 
   static const simulationList = '/simulation-list';
   static const nibDetail = '/nib-detail';

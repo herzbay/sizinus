@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../routes/app_routes.dart';
 
 class CustomBottomNavbar extends StatelessWidget {
   final int currentIndex;
@@ -11,56 +10,12 @@ class CustomBottomNavbar extends StatelessWidget {
     required this.onTap,
   });
 
-  // NAVIGATION FUNCTION
-  void navigate(
-    BuildContext context,
-    int index,
-  ) {
-
-    String route;
-
-    switch (index) {
-
-      case 0:
-        route = AppRoutes.dashboard;
-        break;
-
-      case 1:
-        route = AppRoutes.mission;
-        break;
-
-      case 2:
-        route = AppRoutes.reward;
-        break;
-
-      case 3:
-        route = AppRoutes.history;
-        break;
-
-      default:
-        route = AppRoutes.dashboard;
-    }
-
-    // AGAR TIDAK NAVIGATE KE HALAMAN YANG SAMA
-    if (currentIndex == index) return;
-
-    Navigator.pushReplacementNamed(
-      context,
-      route,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
-
       top: false,
-
       child: Container(
-
         width: double.infinity,
-
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [
@@ -68,56 +23,51 @@ class CustomBottomNavbar extends StatelessWidget {
               Color(0xFF27AE60),
             ],
           ),
-
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(
                 alpha: 0.08,
               ),
-
               blurRadius: 8,
               offset: const Offset(0, -2),
             ),
           ],
         ),
-
         child: Padding(
-
           padding: const EdgeInsets.symmetric(
             vertical: 10,
+            horizontal: 6,
           ),
-
           child: Row(
             mainAxisAlignment:
                 MainAxisAlignment.spaceAround,
-
             children: [
-
               navItem(
-                context: context,
                 index: 0,
                 icon: Icons.home_rounded,
                 label: 'Beranda',
               ),
 
               navItem(
-                context: context,
                 index: 1,
                 icon: Icons.flag_rounded,
                 label: 'Misi',
               ),
 
               navItem(
-                context: context,
                 index: 2,
-                icon:
-                    Icons.workspace_premium_rounded,
+                icon: Icons.workspace_premium_rounded,
                 label: 'Reward',
               ),
 
               navItem(
-                context: context,
                 index: 3,
+                icon: Icons.leaderboard_rounded,
+                label: 'Peringkat',
+              ),
+
+              navItem(
+                index: 4,
                 icon: Icons.history_rounded,
                 label: 'Riwayat',
               ),
@@ -129,31 +79,35 @@ class CustomBottomNavbar extends StatelessWidget {
   }
 
   Widget navItem({
-    required BuildContext context,
     required int index,
     required IconData icon,
     required String label,
   }) {
-
     final bool isActive =
         currentIndex == index;
 
     return GestureDetector(
-
       onTap: () {
 
-        onTap(index);
+        // Tidak melakukan apa-apa jika sedang
+        // berada di halaman yang sama.
+        if (currentIndex == index) {
+          return;
+        }
 
-        navigate(context, index);
+        onTap(index);
       },
 
       child: AnimatedContainer(
         duration:
-            const Duration(milliseconds: 250),
+            const Duration(
+          milliseconds: 250,
+        ),
 
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 10,
+        padding:
+            const EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 8,
         ),
 
         decoration: BoxDecoration(
@@ -162,26 +116,32 @@ class CustomBottomNavbar extends StatelessWidget {
               : Colors.transparent,
 
           borderRadius:
-              BorderRadius.circular(18),
+              BorderRadius.circular(
+            18,
+          ),
         ),
 
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize:
+              MainAxisSize.min,
+
           children: [
 
             Icon(
               icon,
               color: Colors.white,
-              size: 26,
+              size: 24,
             ),
 
-            const SizedBox(height: 4),
+            const SizedBox(
+              height: 4,
+            ),
 
             Text(
               label,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 12,
+                fontSize: 11,
 
                 fontWeight: isActive
                     ? FontWeight.bold

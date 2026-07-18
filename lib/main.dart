@@ -21,6 +21,7 @@ import 'screens/simulation/nib/nib_stepper_screen.dart';
 import 'screens/recommendation/permit_recommendation_screen.dart';
 import 'screens/guide/business_guide_screen.dart';
 import 'screens/settings/profile_screen.dart';
+import 'screens/leaderboard/leaderboard_screen.dart';
 
 void main() {
 
@@ -84,6 +85,9 @@ class MyApp extends StatelessWidget {
 
         AppRoutes.mission: (context) =>
             const MissionScreen(),
+
+        AppRoutes.leaderboard: (context) =>
+            const LeaderboardScreen(),
 
         AppRoutes.settings: (context) =>
             const SettingsScreen(),
