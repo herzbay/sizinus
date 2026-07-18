@@ -178,7 +178,10 @@ class _RegisterScreenState
       ),
     );
 
-    Navigator.pop(context);
+      Navigator.pushReplacementNamed(
+      context,
+      AppRoutes.login,
+    );
   }
 
   @override
