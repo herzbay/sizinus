@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/custom_textfield.dart';
 import '../../routes/app_routes.dart';
+import '../../models/auth/user_model.dart';
+import '../../services/auth/local_auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({
@@ -28,6 +30,11 @@ class _RegisterScreenState
   final confirmPasswordController =
       TextEditingController();
 
+  final LocalAuthService auth =
+      LocalAuthService();
+
+  bool isLoading = false;
+
   @override
   void dispose() {
 
@@ -40,6 +47,138 @@ class _RegisterScreenState
     confirmPasswordController.dispose();
 
     super.dispose();
+  }
+
+  Future<void> register() async {
+
+    final name =
+        nameController.text.trim();
+
+    final email =
+        emailController.text.trim();
+
+    final password =
+        passwordController.text;
+
+    final confirm =
+        confirmPasswordController.text;
+
+    if (name.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirm.isEmpty) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+          content: Text(
+            'Semua data harus diisi.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    final emailRegex = RegExp(
+      r'^[^@]+@[^@]+\.[^@]+$',
+    );
+
+    if (!emailRegex.hasMatch(email)) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+          content: Text(
+            'Format email tidak valid.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    if (password.length < 6) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+          content: Text(
+            'Password minimal 6 karakter.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    if (password != confirm) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+          content: Text(
+            'Konfirmasi password tidak sama.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final success =
+        await auth.register(
+
+      UserModel(
+
+        fullName: name,
+
+        email: email,
+
+        password: password,
+      ),
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (!success) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+          content: Text(
+            'Email sudah terdaftar.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+
+      const SnackBar(
+        content: Text(
+          'Registrasi berhasil.',
+        ),
+      ),
+    );
+
+    Navigator.pop(context);
   }
 
   @override
@@ -188,26 +327,34 @@ class _RegisterScreenState
                 width: double.infinity,
                 height: 58,
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    // TODO:
-                    // Register Firebase Authentication
-
-                    Navigator.pop(context);
-                  },
+                  onPressed: isLoading
+                      ? null
+                      : register,
 
                   icon: const Icon(
                     Icons.person_add_alt_1_rounded,
                     color: Colors.white,
                   ),
 
-                  label: const Text(
-                    'Daftar',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+                  label: isLoading
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child:
+                              CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          'Daftar',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight:
+                                FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
 
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
