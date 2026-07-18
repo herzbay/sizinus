@@ -1,252 +1,348 @@
 import 'package:flutter/material.dart';
-import '../../widgets/custom_textfield.dart';
 
-class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+import '../../widgets/custom_textfield.dart';
+import '../../routes/app_routes.dart';
+
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({
+    super.key,
+  });
+
+  @override
+  State<RegisterScreen> createState() =>
+      _RegisterScreenState();
+}
+
+class _RegisterScreenState
+    extends State<RegisterScreen> {
+
+  final nameController =
+      TextEditingController();
+
+  final emailController =
+      TextEditingController();
+
+  final passwordController =
+      TextEditingController();
+
+  final confirmPasswordController =
+      TextEditingController();
+
+  @override
+  void dispose() {
+
+    nameController.dispose();
+
+    emailController.dispose();
+
+    passwordController.dispose();
+
+    confirmPasswordController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+
       backgroundColor: Colors.white,
+
       body: SafeArea(
+
         child: SingleChildScrollView(
 
-          padding: const EdgeInsets.fromLTRB(
-            18,
-            18,
-            18,
-            24,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 24,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 80),
 
-              // Title
+          child: Column(
+
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
+
+            children: [
+
+              const SizedBox(height: 60),
+
               const Text(
-                'Daftar',
+
+                'Buat Akun',
+
                 style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
+
+                  fontSize: 32,
+
+                  fontWeight:
+                      FontWeight.bold,
                 ),
               ),
 
               const SizedBox(height: 10),
 
               const Text(
-                'Daftar akun Anda untuk melanjutkan',
+
+                'Lengkapi data berikut untuk membuat akun baru.',
+
                 style: TextStyle(
-                  fontSize: 16,
+
                   color: Colors.grey,
+
+                  fontSize: 16,
+
+                  height: 1.5,
                 ),
               ),
 
-              const SizedBox(height: 50),
+              const SizedBox(height: 34),
 
-              // Username
               const Text(
-                'Username',
+
+                'Nama Lengkap',
+
                 style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
 
-              const SizedBox(height: 12),
+                  fontSize: 17,
 
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Masukkan username Anda',
-                  prefixIcon: const Icon(Icons.person_outline),
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 20),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade300,
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade300,
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 25),
-
-              // Email
-              const Text(
-                'Email',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Masukkan email Anda',
-                  prefixIcon: const Icon(Icons.mail_outline),
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 20),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade300,
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade300,
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 25),
-
-              // Password
-              const Text(
-                'Password',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
+                  fontWeight:
+                      FontWeight.w600,
                 ),
               ),
 
               const SizedBox(height: 12),
 
               CustomTextField(
-                hintText: 'Masukkan password Anda',
+                controller: nameController,
+                hintText:
+                    'Masukkan nama lengkap',
+                prefixIcon:
+                    Icons.person_outline,
+              ),
+
+              const SizedBox(height: 24),
+
+              const Text(
+                'Email',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight:
+                      FontWeight.w600,
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              CustomTextField(
+                controller: emailController,
+                hintText:
+                    'Masukkan alamat email',
+                prefixIcon:
+                    Icons.email_outlined,
+                keyboardType:
+                    TextInputType.emailAddress,
+              ),
+
+              const SizedBox(height: 24),
+
+              const Text(
+                'Password',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              CustomTextField(
+                controller: passwordController,
+                hintText: 'Masukkan password',
                 prefixIcon: Icons.lock_outline,
                 obscureText: true,
               ),
 
-              const SizedBox(height: 35),
+              const SizedBox(height: 24),
 
-              // Register Button
+              const Text(
+                'Konfirmasi Password',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              CustomTextField(
+                controller: confirmPasswordController,
+                hintText: 'Masukkan kembali password',
+                prefixIcon: Icons.lock_outline,
+                obscureText: true,
+              ),
+
+              const SizedBox(height: 34),
+
               SizedBox(
                 width: double.infinity,
                 height: 58,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1296DB),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    elevation: 2,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    // TODO:
+                    // Register Firebase Authentication
+
+                    Navigator.pop(context);
+                  },
+
+                  icon: const Icon(
+                    Icons.person_add_alt_1_rounded,
+                    color: Colors.white,
                   ),
-                  child: const Text(
+
+                  label: const Text(
                     'Daftar',
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                       color: Colors.white,
+                    ),
+                  ),
+
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        const Color(0xFF1296DB),
+
+                    elevation: 2,
+
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(16),
                     ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 45),
+              const SizedBox(height: 34),
 
-              // Divider
               Row(
                 children: [
+
                   Expanded(
                     child: Divider(
-                      color: Colors.grey.shade400,
-                      thickness: 1,
+                      color: Colors.grey.shade300,
                     ),
                   ),
+
                   const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12,
+                    ),
                     child: Text(
-                      'Atau lanjutkan dengan',
+                      'atau',
                       style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 16,
+                        color: Colors.grey,
                       ),
                     ),
                   ),
+
                   Expanded(
                     child: Divider(
-                      color: Colors.grey.shade400,
-                      thickness: 1,
+                      color: Colors.grey.shade300,
                     ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 35),
+              const SizedBox(height: 30),
 
-              // Google Register
               SizedBox(
                 width: double.infinity,
                 height: 58,
                 child: OutlinedButton.icon(
-                  onPressed: () {},
-                  icon: Image.network(
-                    'https://cdn-icons-png.flaticon.com/512/2991/2991148.png',
-                    width: 24,
+                  onPressed: () {
+                    // TODO:
+                    // Google Sign Up
+                  },
+
+                  icon: Image.asset(
+                    'assets/images/logo_google.png',
+                    width: 22,
+                    height: 22,
                   ),
+
                   label: const Text(
                     'Daftar dengan Google',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black87,
-                      fontWeight: FontWeight.w500,
                     ),
                   ),
+
                   style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.white,
+
                     side: BorderSide(
                       color: Colors.grey.shade300,
                     ),
+
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius:
+                          BorderRadius.circular(16),
                     ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 50),
+              const SizedBox(height: 40),
 
-              // Login Redirect
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Sudah punya akun?',
-                    style: TextStyle(fontSize: 17),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'Masuk Sekarang',
-                      style: TextStyle(
-                        fontSize: 17,
-                        color: Colors.blue,
-                      ),
+              Center(
+                child: RichText(
+                  text: TextSpan(
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
                     ),
+
+                    children: [
+
+                      const TextSpan(
+                        text: 'Sudah memiliki akun? ',
+                      ),
+
+                      WidgetSpan(
+                        alignment:
+                            PlaceholderAlignment.middle,
+
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              AppRoutes.login,
+                            );
+                          },
+
+                          child: const Text(
+                            'Masuk',
+
+                            style: TextStyle(
+                              color: Color(0xFF1296DB),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
             ],
           ),
         ),
       ),
     );
   }
-}
+}              
