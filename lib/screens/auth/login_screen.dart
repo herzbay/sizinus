@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../routes/app_routes.dart';
+import '../../services/auth/local_auth_service.dart';
 import '../../widgets/custom_textfield.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,13 +17,16 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState
     extends State<LoginScreen> {
 
+  final LocalAuthService auth =
+      LocalAuthService();
+
   final emailController =
       TextEditingController();
 
   final passwordController =
       TextEditingController();
 
-  bool obscurePassword = true;
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -32,6 +36,67 @@ class _LoginScreenState
     passwordController.dispose();
 
     super.dispose();
+  }
+
+  Future<void> login() async {
+
+    final email =
+        emailController.text.trim();
+
+    final password =
+        passwordController.text;
+
+    if (email.isEmpty ||
+        password.isEmpty) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+          content: Text(
+            'Email dan password wajib diisi.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final success =
+        await auth.login(
+      email: email,
+      password: password,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (!success) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+          content: Text(
+            'Email atau password salah.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    Navigator.pushReplacementNamed(
+      context,
+      AppRoutes.dashboard,
+    );
   }
 
   @override
@@ -76,19 +141,19 @@ class _LoginScreenState
 
               const Text(
 
-                'Masuk ke akun Anda untuk melanjutkan progres simulasi perizinan usaha.',
+                'Masuk untuk melanjutkan proses simulasi perizinan usaha.',
 
                 style: TextStyle(
 
                   color: Colors.grey,
 
-                  height: 1.5,
-
                   fontSize: 16,
+
+                  height: 1.5,
                 ),
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 34),
 
               const Text(
 
@@ -107,12 +172,15 @@ class _LoginScreenState
 
               CustomTextField(
                 controller: emailController,
-                hintText: 'Masukkan alamat email',
-                prefixIcon: Icons.email_outlined,
-                keyboardType: TextInputType.emailAddress,
+                hintText:
+                    'Masukkan alamat email',
+                prefixIcon:
+                    Icons.email_outlined,
+                keyboardType:
+                    TextInputType.emailAddress,
               ),
 
-              const SizedBox(height: 26),
+              const SizedBox(height: 24),
 
               const Text(
                 'Password',
@@ -124,85 +192,44 @@ class _LoginScreenState
 
               const SizedBox(height: 12),
 
-              TextField(
+              CustomTextField(
                 controller: passwordController,
-                obscureText: obscurePassword,
-                decoration: InputDecoration(
-                  hintText: 'Masukkan password',
-                  prefixIcon: const Icon(
-                    Icons.lock_outline,
-                  ),
-
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        obscurePassword =
-                            !obscurePassword;
-                      });
-                    },
-
-                    icon: Icon(
-                      obscurePassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                    ),
-                  ),
-
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-
-                  contentPadding:
-                      const EdgeInsets.symmetric(
-                    vertical: 18,
-                  ),
-
-                  border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(14),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF1296DB),
-                      width: 1.5,
-                    ),
-                  ),
-                ),
+                hintText: 'Masukkan password',
+                prefixIcon: Icons.lock_outline,
+                obscureText: true,
               ),
 
-              const SizedBox(height: 26),
+              const SizedBox(height: 34),
 
               SizedBox(
                 width: double.infinity,
                 height: 58,
-
                 child: ElevatedButton.icon(
+                  onPressed: isLoading
+                      ? null
+                      : login,
 
-                  onPressed: () {
+                  icon: isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child:
+                              CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Icon(
+                          Icons.login_rounded,
+                          color: Colors.white,
+                        ),
 
-                    Navigator.pushReplacementNamed(
-                      context,
-                      AppRoutes.dashboard,
-                    );
-                  },
+                  label: Text(
+                    isLoading
+                        ? 'Memproses...'
+                        : 'Masuk',
 
-                  icon: const Icon(
-                    Icons.login_rounded,
-                    color: Colors.white,
-                  ),
-
-                  label: const Text(
-                    'Masuk',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -211,6 +238,9 @@ class _LoginScreenState
 
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
+                        const Color(0xFF1296DB),
+
+                    disabledBackgroundColor:
                         const Color(0xFF1296DB),
 
                     elevation: 2,
@@ -223,7 +253,7 @@ class _LoginScreenState
                 ),
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 34),
 
               Row(
                 children: [
@@ -238,7 +268,6 @@ class _LoginScreenState
                     padding: EdgeInsets.symmetric(
                       horizontal: 12,
                     ),
-
                     child: Text(
                       'atau',
                       style: TextStyle(
@@ -260,9 +289,14 @@ class _LoginScreenState
               SizedBox(
                 width: double.infinity,
                 height: 58,
+
                 child: OutlinedButton.icon(
+
                   onPressed: () {
-                    // FirebaseAuth Google Sign In
+
+                    // TODO:
+                    // Firebase Google Sign In
+
                   },
 
                   icon: Image.asset(
@@ -287,8 +321,6 @@ class _LoginScreenState
                       color: Colors.grey.shade300,
                     ),
 
-                    elevation: 0,
-
                     shape: RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.circular(16),
@@ -297,7 +329,7 @@ class _LoginScreenState
                 ),
               ),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: 40),
 
               Center(
                 child: RichText(
@@ -318,20 +350,20 @@ class _LoginScreenState
                             PlaceholderAlignment.middle,
 
                         child: GestureDetector(
+
                           onTap: () {
 
                             Navigator.pushReplacementNamed(
                               context,
                               AppRoutes.register,
                             );
+
                           },
 
                           child: const Text(
                             'Daftar Sekarang',
-
                             style: TextStyle(
                               color: Color(0xFF1296DB),
-
                               fontWeight:
                                   FontWeight.bold,
                             ),
@@ -346,9 +378,9 @@ class _LoginScreenState
               const SizedBox(height: 30),
 
               ],
-            ),
-          ),
-        ),
-      );
-    }
-}
+              ),
+              ),
+              ),
+              );
+              }
+              }
