@@ -54,12 +54,8 @@ class _HistoryScreenState
     });
   }
 
-  void onBottomTap(
-    int index,
-  ) {
-
+  void _onBottomNavTap(int index) {
     switch (index) {
-
       case 0:
         Navigator.pushReplacementNamed(
           context,
@@ -81,11 +77,14 @@ class _HistoryScreenState
         );
         break;
 
-      case 4:
+      case 3:
         Navigator.pushReplacementNamed(
           context,
-          AppRoutes.settings,
+          AppRoutes.leaderboard,
         );
+        break;
+
+      case 4:
         break;
     }
   }
@@ -102,8 +101,8 @@ class _HistoryScreenState
 
       bottomNavigationBar:
           CustomBottomNavbar(
-        currentIndex: 3,
-        onTap: onBottomTap,
+        currentIndex: 4,
+        onTap: _onBottomNavTap,
       ),
 
       body: isLoading

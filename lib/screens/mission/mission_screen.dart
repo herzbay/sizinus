@@ -175,17 +175,16 @@ class _MissionScreenState
         missions.length;
   }
 
-  void onBottomTap(
-    int index,
-  ) {
-
+  void _onBottomNavTap(int index) {
     switch (index) {
-
       case 0:
         Navigator.pushReplacementNamed(
           context,
           AppRoutes.dashboard,
         );
+        break;
+
+      case 1:
         break;
 
       case 2:
@@ -196,6 +195,13 @@ class _MissionScreenState
         break;
 
       case 3:
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.leaderboard,
+        );
+        break;
+
+      case 4:
         Navigator.pushReplacementNamed(
           context,
           AppRoutes.history,
@@ -227,7 +233,7 @@ class _MissionScreenState
       bottomNavigationBar:
           CustomBottomNavbar(
         currentIndex: 1,
-        onTap: onBottomTap,
+        onTap: _onBottomNavTap,
       ),
 
       body: SingleChildScrollView(

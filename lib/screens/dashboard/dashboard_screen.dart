@@ -223,7 +223,37 @@ class DashboardScreen extends StatelessWidget {
       // BOTTOM NAVIGATION
       bottomNavigationBar: CustomBottomNavbar(
         currentIndex: 0,
-        onTap: (index) {},
+        onTap: (index) {
+          switch (index) {
+            case 1:
+              Navigator.pushReplacementNamed(
+                context,
+                AppRoutes.mission,
+              );
+              break;
+
+            case 2:
+              Navigator.pushReplacementNamed(
+                context,
+                AppRoutes.reward,
+              );
+              break;
+
+            case 3:
+              Navigator.pushReplacementNamed(
+                context,
+                AppRoutes.leaderboard,
+              );
+              break;
+
+            case 4:
+              Navigator.pushReplacementNamed(
+                context,
+                AppRoutes.history,
+              );
+              break;
+          }
+        },
       ),
     );
   }

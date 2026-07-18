@@ -240,43 +240,45 @@ const SizedBox(height: 20),
 // TOP 3 PODIUM
 // =======================
 
-Row(
-  crossAxisAlignment:
-      CrossAxisAlignment.end,
-  children: [
+if (leaderboard.length >= 3) ...[
+  Row(
+    crossAxisAlignment:
+        CrossAxisAlignment.end,
+    children: [
 
-    Expanded(
-      child: _buildPodium(
-        rank: 2,
-        user: leaderboard[1],
-        height: 130,
-        color: Colors.grey,
+      Expanded(
+        child: _buildPodium(
+          rank: 2,
+          user: leaderboard[1],
+          height: 130,
+          color: Colors.grey,
+        ),
       ),
-    ),
 
-    const SizedBox(width: 10),
+      const SizedBox(width: 10),
 
-    Expanded(
-      child: _buildPodium(
-        rank: 1,
-        user: leaderboard[0],
-        height: 170,
-        color: Colors.amber,
+      Expanded(
+        child: _buildPodium(
+          rank: 1,
+          user: leaderboard[0],
+          height: 170,
+          color: Colors.amber,
+        ),
       ),
-    ),
 
-    const SizedBox(width: 10),
+      const SizedBox(width: 10),
 
-    Expanded(
-      child: _buildPodium(
-        rank: 3,
-        user: leaderboard[2],
-        height: 110,
-        color: const Color(0xFFCD7F32),
+      Expanded(
+        child: _buildPodium(
+          rank: 3,
+          user: leaderboard[2],
+          height: 110,
+          color: const Color(0xFFCD7F32),
+        ),
       ),
-    ),
-  ],
-),
+    ],
+  ),
+],
 
 const SizedBox(height: 25),
 

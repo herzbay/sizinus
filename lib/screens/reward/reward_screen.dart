@@ -76,18 +76,28 @@ class _RewardScreenState extends State<RewardScreen> {
           AppRoutes.dashboard,
         );
         break;
+
       case 1:
-        break;
-      case 2:
         Navigator.pushReplacementNamed(
           context,
           AppRoutes.mission,
         );
         break;
+
+      case 2:
+        break;
+
       case 3:
         Navigator.pushReplacementNamed(
           context,
-          AppRoutes.settings,
+          AppRoutes.leaderboard,
+        );
+        break;
+
+      case 4:
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.history,
         );
         break;
     }
