@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/simulation/simulation_data.dart';
-import '../../../routes/app_routes.dart';
 import '../../../services/simulation/local_simulation_storage.dart';
 
 class NibRewardScreen extends StatefulWidget {
@@ -38,18 +37,6 @@ class _NibRewardScreenState
       simulationData = data;
       isLoading = false;
     });
-  }
-
-  Future<void> _restartSimulation() async {
-    await storage.clear();
-
-    if (!mounted) return;
-
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppRoutes.nibStepper,
-      ModalRoute.withName(AppRoutes.nibDetail),
-    );
   }
 
   void _goToDashboard() {
@@ -232,31 +219,7 @@ class _NibRewardScreenState
 
                 const SizedBox(height: 12),
 
-                SizedBox(
-                  width: double.infinity,
-                  height: 54,
-                  child: OutlinedButton(
-                    onPressed: _restartSimulation,
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        color: Color(0xFF2D9CDB),
-                        width: 1.5,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(14),
-                      ),
-                    ),
-                    child: const Text(
-                      'Ulangi Simulasi',
-                      style: TextStyle(
-                        color: Color(0xFF2D9CDB),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
+
               ],
             ),
           ),
