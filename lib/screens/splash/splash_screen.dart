@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-
+import '../../services/auth/local_auth_service.dart';
 import '../../routes/app_routes.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,6 +17,8 @@ class _SplashScreenState
     extends State<SplashScreen>
     with TickerProviderStateMixin {
 
+  final LocalAuthService auth =
+      LocalAuthService();
   late AnimationController _logoController;
   late AnimationController _textController;
   late AnimationController _loadingController;
@@ -106,12 +108,11 @@ class _SplashScreenState
     startAnimation();
   }
 
-  void startAnimation() async {
+  Future<void> startAnimation() async {
+    if (!mounted) return;
 
     _logoController.forward();
-
     _textController.forward();
-
     _loadingController.forward();
 
     _floatingController.repeat(
@@ -122,18 +123,37 @@ class _SplashScreenState
       reverse: true,
     );
 
-    Timer(
-      const Duration(seconds: 4),
-      () {
+    await Future.delayed(
+      const Duration(seconds: 5),
+    );
 
-        if (mounted) {
+    if (!mounted) return;
 
-          Navigator.pushReplacementNamed(
-            context,
-            AppRoutes.onboarding,
-          );
-        }
-      },
+    final onboardingCompleted =
+        await auth.isOnboardingCompleted();
+
+    if (!mounted) return;
+
+    if (!onboardingCompleted) {
+
+      Navigator.pushReplacementNamed(
+        context,
+        AppRoutes.onboarding,
+      );
+
+      return;
+    }
+
+    final loggedIn =
+        await auth.isLoggedIn();
+
+    if (!mounted) return;
+
+    Navigator.pushReplacementNamed(
+      context,
+      loggedIn
+          ? AppRoutes.dashboard
+          : AppRoutes.login,
     );
   }
 
@@ -296,7 +316,7 @@ class _SplashScreenState
                                   child:
                                       Image.asset(
                                     'assets/images/Logo_Sizinus.png',
-                                    width: 170,
+                                    width: 160,
                                   ),
                                 ),
                               ),
@@ -326,7 +346,7 @@ class _SplashScreenState
                             children: [
 
                               const Text(
-                                'Sedang Memuat...',
+                                'Menyiapkan aplikasi...',
                                 style: TextStyle(
                                   color:
                                       Colors.white,

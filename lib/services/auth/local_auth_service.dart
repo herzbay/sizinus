@@ -12,6 +12,9 @@ class LocalAuthService {
   static const String _loginKey =
       'is_login';
 
+  static const String _onboardingKey =
+      'onboarding_completed';
+
   Future<bool> register(
       UserModel user) async {
 
@@ -123,6 +126,28 @@ class LocalAuthService {
     return prefs.getBool(
             _loginKey) ??
         false;
+  }
+
+  Future<bool> isOnboardingCompleted() async {
+
+    final prefs =
+        await SharedPreferences.getInstance();
+
+    return prefs.getBool(
+          _onboardingKey,
+        ) ??
+        false;
+  }
+
+  Future<void> completeOnboarding() async {
+
+    final prefs =
+        await SharedPreferences.getInstance();
+
+    await prefs.setBool(
+      _onboardingKey,
+      true,
+    );
   }
 
   Future<UserModel?> getCurrentUser() async {

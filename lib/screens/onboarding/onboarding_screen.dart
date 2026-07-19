@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../routes/app_routes.dart';
+import '../../services/auth/local_auth_service.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -17,6 +18,9 @@ class _OnboardingScreenState
       PageController();
 
   int currentPage = 0;
+
+  final LocalAuthService auth =
+      LocalAuthService();  
 
   final List<Map<String, dynamic>> pages = [
 
@@ -45,7 +49,7 @@ class _OnboardingScreenState
     },
   ];
 
-  void nextPage() {
+  Future<void> nextPage() async {
 
     if (currentPage <
         pages.length - 1) {
@@ -55,7 +59,12 @@ class _OnboardingScreenState
             const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
+
     } else {
+
+      await auth.completeOnboarding();
+
+      if (!mounted) return;
 
       Navigator.pushReplacementNamed(
         context,
@@ -64,13 +73,25 @@ class _OnboardingScreenState
     }
   }
 
-  void skip() {
+  Future<void> skip() async {
+
+    await auth.completeOnboarding();
+
+    if (!mounted) return;
 
     Navigator.pushReplacementNamed(
       context,
       AppRoutes.login,
     );
   }
+
+  @override
+  void dispose() {
+
+    _pageController.dispose();
+
+    super.dispose();
+  }  
 
   @override
   Widget build(BuildContext context) {
@@ -93,15 +114,14 @@ class _OnboardingScreenState
 
                   const Spacer(),
 
+                if (currentPage != pages.length - 1)
                   TextButton(
                     onPressed: skip,
-
                     child: const Text(
-                      "Lewati",
+                      'Lewati',
                       style: TextStyle(
                         fontSize: 16,
-                        fontWeight:
-                            FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -303,7 +323,7 @@ class _OnboardingScreenState
                   child: Text(
                     currentPage ==
                             pages.length - 1
-                        ? "Mulai Sekarang"
+                        ? "Mulai Belajar"
                         : "Lanjut",
 
                     style:
