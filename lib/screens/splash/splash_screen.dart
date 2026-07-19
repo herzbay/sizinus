@@ -238,7 +238,7 @@ class _SplashScreenState
 
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 30,
+                              fontSize: 24,
                               fontWeight:
                                   FontWeight.bold,
                               height: 1.3,
