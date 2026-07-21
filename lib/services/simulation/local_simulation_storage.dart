@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/simulation/simulation_data.dart';
 import 'simulation_storage_service.dart';
 import '../auth/local_auth_service.dart';
+import '../session/user_session.dart';
 
 class LocalSimulationStorage
     implements SimulationStorageService {
@@ -37,6 +38,8 @@ class LocalSimulationStorage
         data.toJson(),
       ),
     );
+
+    UserSession.updateSimulation(data);
   }
 
   @override

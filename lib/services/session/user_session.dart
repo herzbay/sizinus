@@ -6,9 +6,7 @@ class UserSession {
   UserSession._();
 
   static UserModel? currentUser;
-
   static SimulationData? simulation;
-
   static bool get isLoggedIn =>
       currentUser != null;
 
@@ -24,11 +22,14 @@ class UserSession {
     simulation = data;
   }
 
-  static void clear() {
-
-    currentUser = null;
-
-    simulation = null;
+  static void updateSimulation(
+    SimulationData data,
+  ) {
+    simulation = data;
   }
 
+  static void clear() {
+    currentUser = null;
+    simulation = null;
+  }
 }
