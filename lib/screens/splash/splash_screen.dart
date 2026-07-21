@@ -162,36 +162,28 @@ class _SplashScreenState
     if (!mounted) return;
 
     if (loggedIn) {
+      final currentUser = await auth.getCurrentUser();
 
-      // ==============================
-      // LOAD USER
-      // ==============================
+      if (currentUser == null) {
+        await auth.logout();
 
-      final currentUser =
-          await auth.getCurrentUser();
+        if (!mounted) return;
 
-      if (currentUser != null) {
-
-        UserSession.setUser(
-          currentUser,
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.login,
         );
 
+        return;
       }
 
-      // ==============================
-      // LOAD DATA SIMULASI
-      // ==============================
+      UserSession.setUser(currentUser,);
 
-      final simulation =
-          await storage.load();
+      final simulation = await storage.load();
 
       UserSession.setSimulation(
-
-        simulation ??
-            SimulationData(),
-
+        simulation ?? SimulationData(),
       );
-
     }
 
     // ==============================
