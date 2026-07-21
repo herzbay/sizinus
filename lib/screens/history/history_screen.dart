@@ -1,60 +1,35 @@
 import 'package:flutter/material.dart';
 
 import '../../models/history/history_item.dart';
+import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
-import '../../services/simulation/local_simulation_storage.dart';
+import '../../services/session/user_session.dart';
 import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/custom_topbar.dart';
 
-class HistoryScreen extends StatefulWidget {
+class HistoryScreen extends StatelessWidget {
   const HistoryScreen({
     super.key,
   });
 
-  @override
-  State<HistoryScreen> createState() =>
-      _HistoryScreenState();
+  SimulationData get simulationData =>
+      UserSession.simulation!;
+
+List<HistoryItem> get history {
+  final items = List<HistoryItem>.from(
+    simulationData.historyItems,
+  );
+
+  items.sort(
+    (a, b) =>
+        b.createdAt.compareTo(
+      a.createdAt,
+    ),
+  );
+  return items;
 }
 
-class _HistoryScreenState
-    extends State<HistoryScreen> {
-
-  final storage =
-      LocalSimulationStorage();
-
-  bool isLoading = true;
-
-  List<HistoryItem> history = [];
-
-  @override
-  void initState() {
-    super.initState();
-    loadHistory();
-  }
-
-  Future<void> loadHistory() async {
-
-    final data =
-        await storage.load();
-
-    final items =
-        data?.historyItems ?? [];
-
-    items.sort(
-      (a, b) =>
-          b.createdAt.compareTo(
-        a.createdAt,
-      ),
-    );
-
-    setState(() {
-
-      history = items;
-      isLoading = false;
-    });
-  }
-
-  void _onBottomNavTap(int index) {
+  void _onBottomNavTap(BuildContext context, int index) {
     switch (index) {
       case 0:
         Navigator.pushReplacementNamed(
@@ -102,19 +77,14 @@ class _HistoryScreenState
       bottomNavigationBar:
           CustomBottomNavbar(
         currentIndex: 4,
-        onTap: _onBottomNavTap,
+        onTap: (index) => _onBottomNavTap(
+          context,
+          index,
+        ),
       ),
 
-      body: isLoading
-
-          ? const Center(
-              child:
-                  CircularProgressIndicator(),
-            )
-
-          : history.isEmpty
-
-              ? _buildEmptyState()
+      body: history.isEmpty
+          ? _buildEmptyState()
 
     : SingleChildScrollView(
         padding: const EdgeInsets.all(18),
