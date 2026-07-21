@@ -2,7 +2,6 @@ import '../../models/auth/user_model.dart';
 import '../../models/simulation/simulation_data.dart';
 
 class UserSession {
-  
   UserSession._();
 
   static UserModel? currentUser;
