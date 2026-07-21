@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../routes/app_routes.dart';
-
 import '../../widgets/custom_topbar.dart';
+
+import '../../services/auth/local_auth_service.dart';
+import '../../services/session/user_session.dart';
+
 
 class SettingsScreen
     extends StatelessWidget {
@@ -12,9 +15,7 @@ class SettingsScreen
   });
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context,) {
 
     return Scaffold(
 
@@ -76,7 +77,11 @@ class SettingsScreen
 
             child: ElevatedButton.icon(
 
-              onPressed: () {
+              onPressed: () async {
+                await LocalAuthService().logout();
+                UserSession.clear();
+
+                if (!context.mounted) return;
 
                 Navigator.pushNamedAndRemoveUntil(
                   context,

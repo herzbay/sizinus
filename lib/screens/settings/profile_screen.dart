@@ -1,54 +1,22 @@
 import 'package:flutter/material.dart';
 
 import '../../models/simulation/simulation_data.dart';
-import '../../services/simulation/local_simulation_storage.dart';
+import '../../services/session/user_session.dart';
 
 import '../../widgets/custom_topbar.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({
     super.key,
   });
 
-  @override
-  State<ProfileScreen> createState() =>
-      _ProfileScreenState();
-}
-
-class _ProfileScreenState
-    extends State<ProfileScreen> {
-
-  final storage =
-      LocalSimulationStorage();
-
-  SimulationData? data;
-
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    loadData();
-  }
-
-  Future<void> loadData() async {
-
-    final result =
-        await storage.load();
-
-    if (!mounted) return;
-
-    setState(() {
-
-      data = result;
-      isLoading = false;
-    });
-  }
+  SimulationData get simulationData =>
+      UserSession.simulation!;
 
   int get level {
 
     final points =
-        data?.totalXp ?? 0;
+        simulationData.totalXp;
 
     return (points ~/ 50) + 1;
   }
@@ -64,14 +32,7 @@ class _ProfileScreenState
         showBackButton: true,
       ),
 
-      body: isLoading
-
-          ? const Center(
-              child:
-                  CircularProgressIndicator(),
-            )
-
-          : SingleChildScrollView(
+      body : SingleChildScrollView(
 
               padding:
                   const EdgeInsets.all(
@@ -125,25 +86,25 @@ class _ProfileScreenState
 
                   _statCard(
                     'Total Poin',
-                    '${data?.totalXp ?? 0}',
+                    '${simulationData.totalXp}',
                     Icons.stars,
                   ),
 
                   _statCard(
                     'Total Badge',
-                    '${data?.unlockedBadges.length ?? 0}',
+                    '${simulationData.unlockedBadges.length}',
                     Icons.workspace_premium,
                   ),
 
                   _statCard(
                     'Panduan Selesai',
-                    '${data?.completedGuideIds.length ?? 0}',
+                    '${simulationData.completedGuideIds.length}',
                     Icons.menu_book,
                   ),
 
                   _statCard(
                     'Simulasi Selesai',
-                    data?.nibCompleted == true
+                    simulationData.nibCompleted
                         ? '1'
                         : '0',
                     Icons.business,
