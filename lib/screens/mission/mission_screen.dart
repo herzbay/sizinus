@@ -5,52 +5,20 @@ import '../../models/simulation/simulation_data.dart';
 
 import '../../routes/app_routes.dart';
 
-import '../../services/simulation/local_simulation_storage.dart';
+import '../../services/session/user_session.dart';
 
 import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/custom_topbar.dart';
 
-class MissionScreen extends StatefulWidget {
+class MissionScreen extends StatelessWidget {
   const MissionScreen({super.key});
 
-  @override
-  State<MissionScreen> createState() =>
-      _MissionScreenState();
-}
-
-class _MissionScreenState
-    extends State<MissionScreen> {
-
-  final storage =
-      LocalSimulationStorage();
-
-  SimulationData? simulationData;
-
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    loadData();
-  }
-
-  Future<void> loadData() async {
-
-    final data =
-        await storage.load();
-
-    setState(() {
-
-      simulationData = data;
-      isLoading = false;
-    });
-  }
+  SimulationData get simulationData =>
+      UserSession.simulation!;
 
   List<MissionItem> get missions {
 
-    final data =
-        simulationData ??
-            SimulationData();
+    final data = simulationData;
 
     return [
 
@@ -175,7 +143,7 @@ class _MissionScreenState
         missions.length;
   }
 
-  void _onBottomNavTap(int index) {
+  void _onBottomNavTap(BuildContext context, int index) {
     switch (index) {
       case 0:
         Navigator.pushReplacementNamed(
@@ -215,25 +183,17 @@ class _MissionScreenState
     BuildContext context,
   ) {
 
-    if (isLoading) {
-
-      return const Scaffold(
-        body: Center(
-          child:
-              CircularProgressIndicator(),
-        ),
-      );
-    }
-
     return Scaffold(
-
       appBar:
           const CustomTopBar(),
 
       bottomNavigationBar:
           CustomBottomNavbar(
         currentIndex: 1,
-        onTap: _onBottomNavTap,
+        onTap: (index) => _onBottomNavTap(
+          context,
+          index,
+        ),
       ),
 
       body: SingleChildScrollView(
