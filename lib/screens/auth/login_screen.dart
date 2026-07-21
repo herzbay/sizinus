@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
 import '../../services/auth/local_auth_service.dart';
+import '../../services/session/user_session.dart';
+import '../../services/simulation/local_simulation_storage.dart';
 import '../../widgets/custom_textfield.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -74,11 +77,11 @@ class _LoginScreenState
 
     if (!mounted) return;
 
-    setState(() {
-      isLoading = false;
-    });
-
     if (!success) {
+
+      setState(() {
+        isLoading = false;
+      });
 
       ScaffoldMessenger.of(context)
           .showSnackBar(
@@ -93,10 +96,42 @@ class _LoginScreenState
       return;
     }
 
-    Navigator.pushReplacementNamed(
-      context,
-      AppRoutes.dashboard,
+    final currentUser =
+        await auth.getCurrentUser();
+
+    if (currentUser != null) {
+
+      UserSession.setUser(
+        currentUser,
+      );
+
+    }
+
+    final simulation =
+        await LocalSimulationStorage()
+            .load();
+
+    UserSession.setSimulation(
+
+      simulation ??
+          SimulationData(),
+
     );
+
+    if (!mounted) return;
+
+    setState(() {
+      isLoading = false;
+    });
+
+    Navigator.pushReplacementNamed(
+
+      context,
+
+      AppRoutes.dashboard,
+
+    );
+
   }
 
   @override
@@ -110,9 +145,13 @@ class _LoginScreenState
 
         child: SingleChildScrollView(
 
-          padding: const EdgeInsets.symmetric(
+          padding:
+              const EdgeInsets.symmetric(
+
             horizontal: 24,
+
             vertical: 24,
+
           ),
 
           child: Column(
@@ -122,7 +161,9 @@ class _LoginScreenState
 
             children: [
 
-              const SizedBox(height: 60),
+              const SizedBox(
+                height: 60,
+              ),
 
               const Text(
 
@@ -134,10 +175,13 @@ class _LoginScreenState
 
                   fontWeight:
                       FontWeight.bold,
+
                 ),
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(
+                height: 10,
+              ),
 
               const Text(
 
@@ -145,15 +189,18 @@ class _LoginScreenState
 
                 style: TextStyle(
 
-                  color: Colors.grey,
-
                   fontSize: 16,
 
+                  color: Colors.grey,
+
                   height: 1.5,
+
                 ),
               ),
 
-              const SizedBox(height: 34),
+              const SizedBox(
+                height: 34,
+              ),
 
               const Text(
 
@@ -165,22 +212,33 @@ class _LoginScreenState
 
                   fontWeight:
                       FontWeight.w600,
+
                 ),
               ),
 
-              const SizedBox(height: 12),
-
-              CustomTextField(
-                controller: emailController,
-                hintText:
-                    'Masukkan alamat email',
-                prefixIcon:
-                    Icons.email_outlined,
-                keyboardType:
-                    TextInputType.emailAddress,
+              const SizedBox(
+                height: 12,
               ),
 
-              const SizedBox(height: 24),
+              CustomTextField(
+
+                controller:
+                    emailController,
+
+                hintText:
+                    'Masukkan alamat email',
+
+                prefixIcon:
+                    Icons.email_outlined,
+
+                keyboardType:
+                    TextInputType.emailAddress,
+
+              ),
+
+              const SizedBox(
+                height: 24,
+              ),
 
               const Text(
                 'Password',
@@ -190,7 +248,9 @@ class _LoginScreenState
                 ),
               ),
 
-              const SizedBox(height: 12),
+              const SizedBox(
+                height: 12,
+              ),
 
               CustomTextField(
                 controller: passwordController,
@@ -199,7 +259,9 @@ class _LoginScreenState
                 obscureText: true,
               ),
 
-              const SizedBox(height: 34),
+              const SizedBox(
+                height: 34,
+              ),
 
               SizedBox(
                 width: double.infinity,
@@ -215,8 +277,8 @@ class _LoginScreenState
                           height: 20,
                           child:
                               CircularProgressIndicator(
-                            color: Colors.white,
                             strokeWidth: 2,
+                            color: Colors.white,
                           ),
                         )
                       : const Icon(
@@ -245,15 +307,20 @@ class _LoginScreenState
 
                     elevation: 2,
 
-                    shape: RoundedRectangleBorder(
+                    shape:
+                        RoundedRectangleBorder(
                       borderRadius:
-                          BorderRadius.circular(16),
+                          BorderRadius.circular(
+                        16,
+                      ),
                     ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 34),
+              const SizedBox(
+                height: 34,
+              ),
 
               Row(
                 children: [
@@ -265,7 +332,8 @@ class _LoginScreenState
                   ),
 
                   const Padding(
-                    padding: EdgeInsets.symmetric(
+                    padding:
+                        EdgeInsets.symmetric(
                       horizontal: 12,
                     ),
                     child: Text(
@@ -281,10 +349,13 @@ class _LoginScreenState
                       color: Colors.grey.shade300,
                     ),
                   ),
+
                 ],
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(
+                height: 30,
+              ),
 
               SizedBox(
                 width: double.infinity,
@@ -295,7 +366,7 @@ class _LoginScreenState
                   onPressed: () {
 
                     // TODO:
-                    // Firebase Google Sign In
+                    // Firebase Google Login
 
                   },
 
@@ -315,21 +386,31 @@ class _LoginScreenState
                   ),
 
                   style: OutlinedButton.styleFrom(
-                    backgroundColor: Colors.white,
+
+                    backgroundColor:
+                        Colors.white,
 
                     side: BorderSide(
-                      color: Colors.grey.shade300,
+                      color:
+                          Colors.grey.shade300,
                     ),
 
-                    shape: RoundedRectangleBorder(
+                    shape:
+                        RoundedRectangleBorder(
                       borderRadius:
-                          BorderRadius.circular(16),
+                          BorderRadius.circular(
+                        16,
+                      ),
                     ),
+
                   ),
+
                 ),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(
+                height: 40,
+              ),
 
               Center(
                 child: RichText(
@@ -338,16 +419,17 @@ class _LoginScreenState
                       fontSize: 16,
                       color: Colors.black87,
                     ),
-
                     children: [
 
                       const TextSpan(
-                        text: 'Belum memiliki akun? ',
+                        text:
+                            'Belum memiliki akun? ',
                       ),
 
                       WidgetSpan(
                         alignment:
-                            PlaceholderAlignment.middle,
+                            PlaceholderAlignment
+                                .middle,
 
                         child: GestureDetector(
 
@@ -361,11 +443,19 @@ class _LoginScreenState
                           },
 
                           child: const Text(
+
                             'Daftar Sekarang',
+
                             style: TextStyle(
-                              color: Color(0xFF1296DB),
+
+                              color:
+                                  Color(
+                                0xFF1296DB,
+                              ),
+
                               fontWeight:
                                   FontWeight.bold,
+
                             ),
                           ),
                         ),
@@ -375,12 +465,14 @@ class _LoginScreenState
                 ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(
+                height: 30,
+              ),
 
-              ],
-              ),
-              ),
-              ),
-              );
-              }
-              }
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
