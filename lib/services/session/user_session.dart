@@ -1,34 +1,63 @@
+import 'package:flutter/foundation.dart';
+
 import '../../models/auth/user_model.dart';
 import '../../models/simulation/simulation_data.dart';
 
 class UserSession {
+
   UserSession._();
 
-  static UserModel? currentUser;
-  static SimulationData? simulation;
+  static final ValueNotifier<UserModel?>
+      currentUserNotifier =
+          ValueNotifier(null);
+
+  static final ValueNotifier<SimulationData?>
+      simulationNotifier =
+          ValueNotifier(null);
+
+  static UserModel? get currentUser =>
+      currentUserNotifier.value;
+
+  static SimulationData? get simulation =>
+      simulationNotifier.value;
+
   static bool get isLoggedIn =>
       currentUser != null;
 
   static void setUser(
     UserModel user,
   ) {
-    currentUser = user;
+
+    currentUserNotifier.value =
+        user;
+
   }
 
   static void setSimulation(
     SimulationData data,
   ) {
-    simulation = data;
+
+    simulationNotifier.value =
+        data;
+
   }
 
   static void updateSimulation(
     SimulationData data,
   ) {
-    simulation = data;
+
+    simulationNotifier.value =
+        data;
+
   }
 
   static void clear() {
-    currentUser = null;
-    simulation = null;
+
+    currentUserNotifier.value =
+        null;
+
+    simulationNotifier.value =
+        null;
+
   }
 }
