@@ -2,8 +2,12 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import '../../services/auth/local_auth_service.dart';
+
+import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
+import '../../services/auth/local_auth_service.dart';
+import '../../services/session/user_session.dart';
+import '../../services/simulation/local_simulation_storage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -19,6 +23,10 @@ class _SplashScreenState
 
   final LocalAuthService auth =
       LocalAuthService();
+
+  final LocalSimulationStorage storage =
+      LocalSimulationStorage();
+
   late AnimationController _logoController;
   late AnimationController _textController;
   late AnimationController _loadingController;
@@ -144,16 +152,62 @@ class _SplashScreenState
       return;
     }
 
+    // ==============================
+    // CEK STATUS LOGIN
+    // ==============================
+
     final loggedIn =
         await auth.isLoggedIn();
 
     if (!mounted) return;
 
+    if (loggedIn) {
+
+      // ==============================
+      // LOAD USER
+      // ==============================
+
+      final currentUser =
+          await auth.getCurrentUser();
+
+      if (currentUser != null) {
+
+        UserSession.setUser(
+          currentUser,
+        );
+
+      }
+
+      // ==============================
+      // LOAD DATA SIMULASI
+      // ==============================
+
+      final simulation =
+          await storage.load();
+
+      UserSession.setSimulation(
+
+        simulation ??
+            SimulationData(),
+
+      );
+
+    }
+
+    // ==============================
+    // NAVIGASI
+    // ==============================
+
+    if (!mounted) return;
+
     Navigator.pushReplacementNamed(
+
       context,
+
       loggedIn
           ? AppRoutes.dashboard
           : AppRoutes.login,
+
     );
   }
 
