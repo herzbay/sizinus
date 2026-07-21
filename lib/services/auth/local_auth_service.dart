@@ -6,8 +6,11 @@ import '../../models/auth/user_model.dart';
 
 class LocalAuthService {
 
-  static const String _userKey =
-      'user';
+  static const String _usersKey =
+      'users';
+
+  static const String _currentUserKey =
+      'current_user_email';
 
   static const String _loginKey =
       'is_login';
@@ -15,59 +18,83 @@ class LocalAuthService {
   static const String _onboardingKey =
       'onboarding_completed';
 
-  Future<bool> register(
-      UserModel user) async {
-
-      final prefs =
-          await SharedPreferences.getInstance();
-
-      final json =
-          prefs.getString(_userKey);
-
-      if (json != null) {
-
-        final currentUser =
-            UserModel.fromJson(
-          jsonDecode(json),
-        );
-
-        if (currentUser.email
-                .toLowerCase() ==
-            user.email.toLowerCase()) {
-          return false;
-        }
-      }
-
-      await prefs.setString(
-        _userKey,
-        jsonEncode(
-          user.toJson(),
-        ),
-      );
-
-      return true;
-    }
-
-  Future<bool> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<List<UserModel>> _getUsers() async {
 
     final prefs =
         await SharedPreferences.getInstance();
 
     final json =
-        prefs.getString(_userKey);
+        prefs.getString(_usersKey);
 
     if (json == null) {
+      return [];
+    }
+
+    final List list =
+        jsonDecode(json);
+
+    return list
+        .map((e) =>
+            UserModel.fromJson(e))
+        .toList();
+  }
+
+  Future<void> _saveUsers(
+      List<UserModel> users) async {
+
+    final prefs =
+        await SharedPreferences.getInstance();
+
+    await prefs.setString(
+      _usersKey,
+      jsonEncode(
+        users
+            .map((e) => e.toJson(),)
+            .toList(),
+      ),
+    );
+  }
+
+  Future<bool> register(
+      UserModel user,) async {
+
+    final users =
+        await _getUsers();
+
+    final exists =
+        users.any(
+      (u) => u.email.toLowerCase().trim() == user.email.toLowerCase().trim(),
+    );
+
+    if (exists) {
       return false;
     }
 
-    final user = UserModel.fromJson(
-      jsonDecode(json),
-    );
+    users.add(user);
 
-    if (user.email != email) {
+    await _saveUsers(users);
+
+    return true;
+  }
+
+  Future<bool> login({
+      required String email,
+      required String password,}) async {
+
+    final prefs =
+        await SharedPreferences.getInstance();
+
+    final users =
+        await _getUsers();
+    
+    UserModel? user;
+
+    try {
+      user = users.firstWhere(
+        (u) =>
+            u.email.toLowerCase().trim() == email.toLowerCase().trim(),
+      );
+    } catch (_) {
       return false;
     }
 
@@ -80,17 +107,26 @@ class LocalAuthService {
       true,
     );
 
+    await prefs.setString(
+      _currentUserKey,
+      user.email,
+    );
+
     return true;
   }
 
   Future<void> logout() async {
-
+    
     final prefs =
         await SharedPreferences.getInstance();
 
     await prefs.setBool(
       _loginKey,
       false,
+    );
+
+    await prefs.remove(
+      _currentUserKey,
     );
   }
 
@@ -99,23 +135,48 @@ class LocalAuthService {
     final prefs =
         await SharedPreferences.getInstance();
 
-    await prefs.remove(
-        _userKey);
+    final email =
+        prefs.getString(
+          _currentUserKey,
+        );
 
+    if (email == null) {
+      return;
+    }
+
+    final users =
+        await _getUsers();
+
+    users.removeWhere(
+      (u) => u.email.toLowerCase() == email.toLowerCase(),
+    );
+
+    await _saveUsers(users,);
     await prefs.remove(
-        _loginKey);
+      _currentUserKey,
+    );
+    await prefs.setBool(
+      _loginKey,
+      false,
+    );
   }
 
-  Future<void> updateProfile(UserModel user) async {
-    final prefs =
-        await SharedPreferences.getInstance();
+  Future<void> updateProfile(UserModel user,) async {
 
-    await prefs.setString(
-      _userKey,
-      jsonEncode(
-        user.toJson(),
-      ),
+    final users =
+        await _getUsers();
+
+    final index =
+        users.indexWhere(
+      (u) => u.email.toLowerCase() == user.email.toLowerCase(),
     );
+
+    if (index == -1) {
+      return;
+    }
+
+    users[index] = user;
+    await _saveUsers(users);
   }
 
   Future<bool> isLoggedIn() async {
@@ -155,34 +216,27 @@ class LocalAuthService {
     final prefs =
         await SharedPreferences.getInstance();
 
-    final json =
-        prefs.getString(_userKey);
+    final email =
+        prefs.getString(
+          _currentUserKey,
+        );
 
-    if (json == null) {
+    if (email == null) {
       return null;
     }
 
-    return UserModel.fromJson(
-      jsonDecode(json),
-    );
+    final users = await _getUsers();
+
+    try{
+      return users.firstWhere((u) => u.email.toLowerCase() == email.toLowerCase(),
+      );
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<UserModel?> getUser() async {
 
-    final prefs =
-        await SharedPreferences.getInstance();
-
-    final json =
-        prefs.getString(
-          _userKey,
-        );
-
-    if (json == null) {
-      return null;
-    }
-
-    return UserModel.fromJson(
-      jsonDecode(json),
-    );
+    return getCurrentUser();
   }
 }
