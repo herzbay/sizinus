@@ -4,46 +4,21 @@ import '../../data/reward/badge_repository.dart';
 import '../../models/reward/badge.dart';
 import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
-import '../../services/simulation/local_simulation_storage.dart';
+import '../../services/session/user_session.dart';
 import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/custom_topbar.dart';
 
-class RewardScreen extends StatefulWidget {
+class RewardScreen extends StatelessWidget {
   const RewardScreen({super.key});
 
-  @override
-  State<RewardScreen> createState() => _RewardScreenState();
-}
-
-class _RewardScreenState extends State<RewardScreen> {
-  final LocalSimulationStorage storage = LocalSimulationStorage();
-
-  SimulationData? simulationData;
-  bool isLoading = true;
-
   static const int _pointsPerLevel = 50;
+  SimulationData get simulationData =>
+      UserSession.simulation!;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
-  }
-
-  Future<void> _loadData() async {
-    final data = await storage.load();
-
-    if (!mounted) return;
-
-    setState(() {
-      simulationData = data;
-      isLoading = false;
-    });
-  }
-
-  int get _totalPoints => simulationData?.totalXp ?? 0;
+  int get _totalPoints => simulationData.totalXp;
 
   bool get _isSimulationCompleted =>
-      simulationData?.nibCompleted ?? false;
+      simulationData.nibCompleted;
 
   int get _currentLevel {
     return (_totalPoints ~/ _pointsPerLevel) + 1;
@@ -68,7 +43,7 @@ class _RewardScreenState extends State<RewardScreen> {
     return '$remaining poin menuju level ${_currentLevel + 1}';
   }
 
-  void _onBottomNavTap(int index) {
+  void _onBottomNavTap(BuildContext context, int index) {
     switch (index) {
       case 0:
         Navigator.pushReplacementNamed(
@@ -104,6 +79,7 @@ class _RewardScreenState extends State<RewardScreen> {
   }
 
   void _showBadgeDetail(
+    BuildContext context,
     RewardBadge badge,
     bool earned,
   ) {
@@ -210,15 +186,8 @@ class _RewardScreenState extends State<RewardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
 
-    final data = simulationData ?? SimulationData();
+    final data = simulationData;
     final allBadges = BadgeRepository.allBadges;
     final ownedBadgeIds = data.unlockedBadges.toSet();
 
@@ -257,6 +226,7 @@ class _RewardScreenState extends State<RewardScreen> {
                   final earned = ownedBadgeIds.contains(badge.id);
 
                   return _buildBadgeCard(
+                    context,
                     badge,
                     earned: earned,
                   );
@@ -274,7 +244,7 @@ class _RewardScreenState extends State<RewardScreen> {
       ),
       bottomNavigationBar: CustomBottomNavbar(
         currentIndex: 2,
-        onTap: _onBottomNavTap,
+        onTap: (index) => _onBottomNavTap(context, index),
       ),
     );
   }
@@ -451,7 +421,7 @@ class _RewardScreenState extends State<RewardScreen> {
           ),
         ),
         Text(
-          '${simulationData?.unlockedBadges.length ?? 0}/${BadgeRepository.allBadges.length}',
+          '${simulationData.unlockedBadges.length}/${BadgeRepository.allBadges.length}',
           style: TextStyle(
             color: Colors.grey.shade700,
             fontWeight: FontWeight.w600,
@@ -462,6 +432,7 @@ class _RewardScreenState extends State<RewardScreen> {
   }
 
   Widget _buildBadgeCard(
+    BuildContext context,
     RewardBadge badge, {
     required bool earned,
   }) {
@@ -469,6 +440,7 @@ class _RewardScreenState extends State<RewardScreen> {
       borderRadius: BorderRadius.circular(18),
 
       onTap: () => _showBadgeDetail(
+        context,
         badge,
         earned,
       ),
