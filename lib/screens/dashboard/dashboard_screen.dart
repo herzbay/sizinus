@@ -7,68 +7,27 @@ import '../../models/simulation/simulation_data.dart';
 
 import '../../routes/app_routes.dart';
 
-import '../../services/auth/local_auth_service.dart';
-import '../../services/simulation/local_simulation_storage.dart';
+import '../../services/session/user_session.dart';
 
 import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/custom_topbar.dart';
 
-class DashboardScreen extends StatefulWidget {
+class DashboardScreen extends StatelessWidget {
+
   const DashboardScreen({
     super.key,
   });
 
-  @override
-  State<DashboardScreen> createState() =>
-      _DashboardScreenState();
-}
-
-class _DashboardScreenState
-    extends State<DashboardScreen> {
-
-  final LocalAuthService auth =
-      LocalAuthService();
-
-  final LocalSimulationStorage storage =
-      LocalSimulationStorage();
-
-  UserModel? user;
-
-  SimulationData? simulation;
-
-  bool isLoading = true;
-
   static const int pointsPerLevel = 50;
 
-  @override
-  void initState() {
-    super.initState();
-    loadData();
-  }
+  UserModel get user =>
+      UserSession.currentUser!;
 
-  Future<void> loadData() async {
-
-    final currentUser =
-        await auth.getCurrentUser();
-
-    final simulationData =
-        await storage.load();
-
-    if (!mounted) return;
-
-    setState(() {
-
-      user = currentUser;
-
-      simulation = simulationData;
-
-      isLoading = false;
-
-    });
-  }
+  SimulationData get simulation =>
+      UserSession.simulation!; 
 
   int get totalPoint =>
-      simulation?.totalXp ?? 0;
+      simulation.totalXp;
 
   int get currentLevel =>
       (totalPoint ~/ pointsPerLevel) + 1;
@@ -85,7 +44,7 @@ class _DashboardScreenState
   List<RewardBadge> get latestBadges {
 
     final ids =
-        simulation?.unlockedBadges ?? [];
+        simulation.unlockedBadges;
 
     if (ids.isEmpty) {
       return [];
@@ -103,8 +62,7 @@ class _DashboardScreenState
         .toList();
   }
 
-  void onBottomTap(int index) {
-
+  void onBottomTap(BuildContext context, int index) {
     switch (index) {
 
       case 1:
@@ -148,20 +106,6 @@ class _DashboardScreenState
   @override
   Widget build(BuildContext context) {
 
-    if (isLoading) {
-
-      return const Scaffold(
-
-        body: Center(
-
-          child:
-              CircularProgressIndicator(),
-
-        ),
-
-      );
-    }
-
     return Scaffold(
 
       backgroundColor:
@@ -174,7 +118,8 @@ class _DashboardScreenState
       bottomNavigationBar:
           CustomBottomNavbar(
         currentIndex: 0,
-        onTap: onBottomTap,
+        onTap: (index) =>
+            onBottomTap(context, index),
       ),
 
       body: SafeArea(
@@ -310,8 +255,7 @@ class _DashboardScreenState
           const SizedBox(height: 6),
 
           Text(
-            user?.fullName ??
-                'Pengguna',
+            user.fullName,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 30,
