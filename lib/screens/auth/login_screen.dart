@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../providers/session_provider.dart';
 
 import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
@@ -99,39 +101,63 @@ class _LoginScreenState
     final currentUser =
         await auth.getCurrentUser();
 
-    if (currentUser != null) {
+    if (currentUser == null) {
 
-      UserSession.setUser(
-        currentUser,
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Gagal memuat data pengguna.',
+          ),
+        ),
       );
 
+      return;
     }
 
     final simulation =
         await LocalSimulationStorage()
             .load();
 
-    UserSession.setSimulation(
-
-      simulation ??
-          SimulationData(),
-
-    );
-
     if (!mounted) return;
 
-    setState(() {
-      isLoading = false;
-    });
+    // ===============================
+    // SESSION PROVIDER
+    // ===============================
 
-    Navigator.pushReplacementNamed(
+    context
+        .read<SessionProvider>()
+        .setUser(currentUser);
 
-      context,
+    context
+        .read<SessionProvider>()
+        .setSimulation(
+          simulation ??
+              SimulationData(),
+        );
 
-      AppRoutes.dashboard,
+    // ===============================
+    // SEMENTARA MASIH DIISI
+    // AGAR SCREEN LAIN TETAP BERJALAN
+    // ===============================
 
+    UserSession.setUser(
+      currentUser,
     );
 
+    UserSession.setSimulation(
+      simulation ??
+          SimulationData(),
+    );
+
+    // ===============================
+
+    Navigator.pushReplacementNamed(
+      context,
+      AppRoutes.dashboard,
+    );
   }
 
   @override

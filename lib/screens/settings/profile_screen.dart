@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+import '../../providers/session_provider.dart';
 import '../../models/simulation/simulation_data.dart';
-import '../../services/session/user_session.dart';
-
 import '../../widgets/custom_topbar.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -10,21 +10,38 @@ class ProfileScreen extends StatelessWidget {
     super.key,
   });
 
-  SimulationData get simulationData =>
-      UserSession.simulation!;
-
-  int get level {
+  int level(
+    SimulationData simulationData,
+  ) {
 
     final points =
         simulationData.totalXp;
 
     return (points ~/ 50) + 1;
+
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context,) {
+
+    final session =
+    context.watch<SessionProvider>();
+
+    final simulationData =
+        session.simulationData;
+
+    final currentUser =
+        session.currentUser;
+
+    if (simulationData == null ||
+        currentUser == null) {
+
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Scaffold(
 
@@ -59,8 +76,8 @@ class ProfileScreen extends StatelessWidget {
                     height: 12,
                   ),
 
-                  const Text(
-                    'Pengguna SIZINUS',
+                  Text(
+                    currentUser.fullName,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight:
@@ -73,7 +90,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
 
                   Text(
-                    'Level $level',
+                    'Level ${level(simulationData)}',
                     style: TextStyle(
                       color:
                           Colors.grey.shade600,

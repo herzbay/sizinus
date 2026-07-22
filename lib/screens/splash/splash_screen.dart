@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../providers/session_provider.dart';
 
 import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
@@ -177,12 +179,41 @@ class _SplashScreenState
         return;
       }
 
-      UserSession.setUser(currentUser,);
+      final simulation =
+          await storage.load();
 
-      final simulation = await storage.load();
+      if (!mounted) return;
+
+      // ===============================
+      // SESSION PROVIDER
+      // ===============================
+
+      context
+          .read<SessionProvider>()
+          .setUser(
+            currentUser,
+          );
+
+      context
+          .read<SessionProvider>()
+          .setSimulation(
+            simulation ??
+                SimulationData(),
+          );
+
+      // ===============================
+      // SEMENTARA
+      // AGAR SCREEN LAMA
+      // TETAP BERJALAN
+      // ===============================
+
+      UserSession.setUser(
+        currentUser,
+      );
 
       UserSession.setSimulation(
-        simulation ?? SimulationData(),
+        simulation ??
+            SimulationData(),
       );
     }
 

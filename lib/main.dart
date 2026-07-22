@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'providers/session_provider.dart';
 
 import 'themes/app_theme.dart';
 import 'themes/theme_provider.dart';
@@ -24,10 +25,18 @@ import 'screens/settings/profile_screen.dart';
 import 'screens/leaderboard/leaderboard_screen.dart';
 
 void main() {
-
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
+    MultiProvider(
+      providers: [
+
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+        ),
+
+        ChangeNotifierProvider(
+          create: (_) => SessionProvider(),
+        ),
+      ],
       child: const MyApp(),
     ),
   );
