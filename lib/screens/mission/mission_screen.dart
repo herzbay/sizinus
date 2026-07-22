@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../models/mission/mission_item.dart';
-import '../../models/simulation/simulation_data.dart';
+import 'package:provider/provider.dart';
+import '../../providers/session_provider.dart';
 
 import '../../routes/app_routes.dart';
-
-import '../../services/session/user_session.dart';
 
 import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/custom_topbar.dart';
@@ -13,12 +12,9 @@ import '../../widgets/custom_topbar.dart';
 class MissionScreen extends StatelessWidget {
   const MissionScreen({super.key});
 
-  SimulationData get simulationData =>
-      UserSession.simulation!;
+  List<MissionItem> missions(SessionProvider session,) {
 
-  List<MissionItem> get missions {
-
-    final data = simulationData;
+    final data = session.simulationData!;
 
     return [
 
@@ -124,23 +120,23 @@ class MissionScreen extends StatelessWidget {
     ];
   }
 
-  int get completedMissionCount {
+  int completedMissionCount(SessionProvider session,)  {
 
-    return missions
-        .where(
-          (m) => m.completed,
-        )
+    return missions(session)
+        .where((m) => m.completed)
         .length;
   }
 
-  double get progress {
+  double progress(SessionProvider session,) {
 
-    if (missions.isEmpty) {
+    final list = missions(session);
+
+    if (list.isEmpty) {
       return 0;
     }
 
-    return completedMissionCount /
-        missions.length;
+    return completedMissionCount(session) /
+        list.length;
   }
 
   void _onBottomNavTap(BuildContext context, int index) {
@@ -179,9 +175,22 @@ class MissionScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context,) {
+
+    final session =
+    context.watch<SessionProvider>();
+
+    if (!session.isLoggedIn ||
+        session.simulationData == null) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final missionList =
+        missions(session);
 
     return Scaffold(
       appBar:
@@ -257,7 +266,7 @@ class MissionScreen extends StatelessWidget {
                   ),
 
                   Text(
-                    '$completedMissionCount / ${missions.length} Misi Selesai',
+                    '${completedMissionCount(session)} / ${missionList.length} Misi Selesai',
                   ),
 
                   const SizedBox(
@@ -265,7 +274,7 @@ class MissionScreen extends StatelessWidget {
                   ),
 
                   LinearProgressIndicator(
-                    value: progress,
+                    value: progress(session),
                     minHeight: 10,
                     borderRadius:
                         BorderRadius.circular(
@@ -295,7 +304,7 @@ class MissionScreen extends StatelessWidget {
               height: 14,
             ),
 
-            ...missions.map(
+            ...missionList.map(
               buildMissionCard,
             ),
           ],

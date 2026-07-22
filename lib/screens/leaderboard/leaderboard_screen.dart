@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/custom_topbar.dart';
-import '../../models/simulation/simulation_data.dart';
-import '../../services/session/user_session.dart';
+import 'package:provider/provider.dart';
+import '../../providers/session_provider.dart';
 
 class LeaderboardUser {
   final String name;
@@ -25,16 +25,11 @@ class LeaderboardScreen extends StatelessWidget {
     super.key,
   });
 
-  static const int _pointsPerLevel = 50;
-
-  SimulationData get simulationData =>
-      UserSession.simulation!;
-
-  List<LeaderboardUser> get leaderboard {
+  List<LeaderboardUser> leaderboard(SessionProvider session,) {
     final myPoint =
-        simulationData.totalXp;
+        session.totalPoint;
     final myLevel =
-        (myPoint ~/ _pointsPerLevel) + 1;
+        session.currentLevel;
 
     final list = <LeaderboardUser>[
       LeaderboardUser(
@@ -134,6 +129,21 @@ class LeaderboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    final session =
+    context.watch<SessionProvider>();
+
+    if (!session.isLoggedIn ||
+        session.simulationData == null) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final ranking =
+        leaderboard(session);
+
     return Scaffold(
       appBar: const CustomTopBar(),
 
@@ -207,7 +217,7 @@ class LeaderboardScreen extends StatelessWidget {
             // TOP 3 PODIUM
             // =======================
 
-            if (leaderboard.length >= 3) ...[
+            if (ranking.length >= 3) ...[
               Row(
                 crossAxisAlignment:
                     CrossAxisAlignment.end,
@@ -216,7 +226,7 @@ class LeaderboardScreen extends StatelessWidget {
                   Expanded(
                     child: _buildPodium(
                       rank: 2,
-                      user: leaderboard[1],
+                      user: ranking[1],
                       height: 130,
                       color: Colors.grey,
                     ),
@@ -227,7 +237,7 @@ class LeaderboardScreen extends StatelessWidget {
                   Expanded(
                     child: _buildPodium(
                       rank: 1,
-                      user: leaderboard[0],
+                      user: ranking[0],
                       height: 170,
                       color: Colors.amber,
                     ),
@@ -238,7 +248,7 @@ class LeaderboardScreen extends StatelessWidget {
                   Expanded(
                     child: _buildPodium(
                       rank: 3,
-                      user: leaderboard[2],
+                      user: ranking[2],
                       height: 110,
                       color: const Color(0xFFCD7F32),
                     ),
@@ -293,7 +303,7 @@ class LeaderboardScreen extends StatelessWidget {
                       const SizedBox(height: 6),
 
                       Text(
-                        '${leaderboard.length}',
+                        '${ranking.length}',
                         style: const TextStyle(
                           fontWeight:
                               FontWeight.bold,
@@ -322,7 +332,7 @@ class LeaderboardScreen extends StatelessWidget {
                       const SizedBox(height: 6),
 
                       Text(
-                        '${simulationData.totalXp}',
+                        '${session.totalPoint}',
                         style: const TextStyle(
                           fontWeight:
                               FontWeight.bold,
@@ -351,7 +361,7 @@ class LeaderboardScreen extends StatelessWidget {
                       const SizedBox(height: 6),
 
                       Text(
-                        '${((simulationData.totalXp) ~/ 50) + 1}',
+                        '${session.currentLevel}',
                         style: const TextStyle(
                           fontWeight:
                               FontWeight.bold,
@@ -379,11 +389,11 @@ class LeaderboardScreen extends StatelessWidget {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: leaderboard.length,
+              itemCount: ranking.length,
               itemBuilder: (context, index) {
                 return _buildRankingCard(
                   rank: index + 1,
-                  user: leaderboard[index],
+                  user: ranking[index],
                 );
               },
             ),

@@ -2,24 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import '../../providers/session_provider.dart';
-import '../../models/simulation/simulation_data.dart';
 import '../../widgets/custom_topbar.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({
     super.key,
   });
-
-  int level(
-    SimulationData simulationData,
-  ) {
-
-    final points =
-        simulationData.totalXp;
-
-    return (points ~/ 50) + 1;
-
-  }
 
   @override
   Widget build(BuildContext context,) {
@@ -44,6 +32,7 @@ class ProfileScreen extends StatelessWidget {
     }
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
 
       appBar: const CustomTopBar(
         showBackButton: true,
@@ -90,7 +79,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
 
                   Text(
-                    'Level ${level(simulationData)}',
+                    'Level ${session.currentLevel}',
                     style: TextStyle(
                       color:
                           Colors.grey.shade600,
@@ -103,25 +92,25 @@ class ProfileScreen extends StatelessWidget {
 
                   _statCard(
                     'Total Poin',
-                    '${simulationData.totalXp}',
+                    '${session.totalPoint}',
                     Icons.stars,
                   ),
 
                   _statCard(
                     'Total Badge',
-                    '${simulationData.unlockedBadges.length}',
+                    '${session.badgeCount}',
                     Icons.workspace_premium,
                   ),
 
                   _statCard(
                     'Panduan Selesai',
-                    '${simulationData.completedGuideIds.length}',
+                    '${session.completedGuideCount}',
                     Icons.menu_book,
                   ),
 
                   _statCard(
                     'Simulasi Selesai',
-                    simulationData.nibCompleted
+                    session.nibCompleted
                         ? '1'
                         : '0',
                     Icons.business,

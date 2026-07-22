@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../data/reward/badge_repository.dart';
-import '../../models/auth/user_model.dart';
-import '../../models/reward/badge.dart';
-import '../../models/simulation/simulation_data.dart';
+import 'package:provider/provider.dart';
+import '../../providers/session_provider.dart';
 
 import '../../routes/app_routes.dart';
-
-import '../../services/session/user_session.dart';
 
 import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/custom_topbar.dart';
@@ -17,50 +13,6 @@ class DashboardScreen extends StatelessWidget {
   const DashboardScreen({
     super.key,
   });
-
-  static const int pointsPerLevel = 50;
-
-  UserModel get user =>
-      UserSession.currentUser!;
-
-  SimulationData get simulation =>
-      UserSession.simulation!; 
-
-  int get totalPoint =>
-      simulation.totalXp;
-
-  int get currentLevel =>
-      (totalPoint ~/ pointsPerLevel) + 1;
-
-  double get progress {
-
-    final current =
-        totalPoint % pointsPerLevel;
-
-    return current /
-        pointsPerLevel;
-  }
-
-  List<RewardBadge> get latestBadges {
-
-    final ids =
-        simulation.unlockedBadges;
-
-    if (ids.isEmpty) {
-      return [];
-    }
-
-    return BadgeRepository
-        .allBadges
-        .where(
-          (badge) =>
-              ids.contains(
-            badge.id,
-          ),
-        )
-        .take(2)
-        .toList();
-  }
 
   void onBottomTap(BuildContext context, int index) {
     switch (index) {
@@ -106,6 +58,16 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    final session = context.watch<SessionProvider>();
+
+    if (!session.isLoggedIn || session.simulationData == null) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
 
       backgroundColor:
@@ -138,7 +100,7 @@ class DashboardScreen extends StatelessWidget {
 
             children: [
 
-              _buildHeroCard(),
+              _buildHeroCard(session),
 
               const SizedBox(
                 height: 22,
@@ -215,7 +177,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeroCard() {
+  Widget _buildHeroCard(SessionProvider session,) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -255,7 +217,7 @@ class DashboardScreen extends StatelessWidget {
           const SizedBox(height: 6),
 
           Text(
-            user.fullName,
+            session.currentUser!.fullName,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 30,
@@ -291,7 +253,7 @@ class DashboardScreen extends StatelessWidget {
                       const SizedBox(height: 10),
 
                       Text(
-                        'Level $currentLevel',
+                        'Level ${session.currentLevel}',
                         style:
                             const TextStyle(
                           color: Colors.white,
@@ -330,7 +292,7 @@ class DashboardScreen extends StatelessWidget {
                       const SizedBox(height: 10),
 
                       Text(
-                        '$totalPoint Poin',
+                        '${session.totalPoint} Poin',
                         style:
                             const TextStyle(
                           color: Colors.white,
@@ -355,7 +317,7 @@ class DashboardScreen extends StatelessWidget {
             children: [
 
               Text(
-                'Progres ke Level ${currentLevel + 1}',
+                'Progres ke Level ${session.currentLevel + 1}',
                 style:
                     const TextStyle(
                   color: Colors.white,
@@ -365,7 +327,7 @@ class DashboardScreen extends StatelessWidget {
               ),
 
               Text(
-                '${(progress * 100).round()}%',
+                '${(session.progress * 100).round()}%',
                 style:
                     const TextStyle(
                   color: Colors.white,
@@ -383,7 +345,7 @@ class DashboardScreen extends StatelessWidget {
                 BorderRadius.circular(20),
             child:
                 LinearProgressIndicator(
-              value: progress,
+              value: session.progress,
               minHeight: 12,
               backgroundColor:
                   Colors.white24,
@@ -407,7 +369,7 @@ class DashboardScreen extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          latestBadges.isEmpty
+          session.latestBadges.isEmpty
 
               ? Container(
                   width: double.infinity,
@@ -431,7 +393,7 @@ class DashboardScreen extends StatelessWidget {
                 )
 
               : Row(
-                  children: latestBadges
+                  children: session.latestBadges
                       .map(
                         (badge) => Expanded(
                           child: Container(

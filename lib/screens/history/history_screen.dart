@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+import '../../providers/session_provider.dart';
 import '../../models/history/history_item.dart';
-import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
-import '../../services/session/user_session.dart';
 import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/custom_topbar.dart';
 
@@ -12,22 +12,19 @@ class HistoryScreen extends StatelessWidget {
     super.key,
   });
 
-  SimulationData get simulationData =>
-      UserSession.simulation!;
+  List<HistoryItem> history(
+    SessionProvider session,
+  ) {
+    final items = List<HistoryItem>.from(
+      session.simulationData!.historyItems,
+    );
 
-List<HistoryItem> get history {
-  final items = List<HistoryItem>.from(
-    simulationData.historyItems,
-  );
+    items.sort(
+      (a, b) => b.createdAt.compareTo(a.createdAt),
+    );
 
-  items.sort(
-    (a, b) =>
-        b.createdAt.compareTo(
-      a.createdAt,
-    ),
-  );
-  return items;
-}
+    return items;
+  }
 
   void _onBottomNavTap(BuildContext context, int index) {
     switch (index) {
@@ -69,6 +66,21 @@ List<HistoryItem> get history {
     BuildContext context,
   ) {
 
+    final session =
+    context.watch<SessionProvider>();
+
+    if (!session.isLoggedIn ||
+        session.simulationData == null) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final historyList =
+        history(session);
+
     return Scaffold(
 
       appBar:
@@ -83,7 +95,7 @@ List<HistoryItem> get history {
         ),
       ),
 
-      body: history.isEmpty
+      body: historyList.isEmpty
           ? _buildEmptyState()
 
     : SingleChildScrollView(
@@ -105,13 +117,13 @@ List<HistoryItem> get history {
             const SizedBox(height: 12),
 
             _buildLatestCard(
-              history.first,
+              historyList.first,
             ),
 
             const SizedBox(height: 24),
 
             // RIWAYAT LAINNYA
-            ..._buildGroupedHistory(),
+            ..._buildGroupedHistory(historyList,),
           ],
         ),
       ),
@@ -180,7 +192,7 @@ List<HistoryItem> get history {
     );
   }
 
-  List<Widget> _buildGroupedHistory() {
+  List<Widget> _buildGroupedHistory(List<HistoryItem> history,) {
 
   final List<Widget> widgets = [];
 
