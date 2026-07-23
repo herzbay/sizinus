@@ -326,8 +326,7 @@ class _DashboardScreenState
               children: [
 
                 _buildHeroStat(
-                  icon: Icons.workspace_premium,
-                  color: Colors.amber,
+                  image: 'assets/images/icon_level.png',
                   value: 'Lv.${session.currentLevel}',
                 ),
 
@@ -338,9 +337,8 @@ class _DashboardScreenState
                 ),
 
                 _buildHeroStat(
-                  icon: Icons.bolt,
-                  color: Colors.yellow,
-                  value: '${session.totalPoint} Poin',
+                  image: 'assets/images/icon_xp.png',
+                  value: '${session.totalPoint} XP',
                 ),
 
                 Container(
@@ -350,10 +348,9 @@ class _DashboardScreenState
                 ),
 
                 _buildHeroStat(
-                  icon: Icons.emoji_events,
-                  color: Colors.orangeAccent,
+                  image: 'assets/images/icon_lencana.png',
                   value: '${session.badgeCount}',
-              ),
+                ),
               ],
             ),
           ),
@@ -508,18 +505,18 @@ class _DashboardScreenState
   }
 
   Widget _buildHeroStat({
-    required IconData icon,
-    required Color color,
+    required String image,
     required String value,
   }) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
 
-        Icon(
-          icon,
-          color: color,
-          size: 20,
+        Image.asset(
+          image,
+          width: 22,
+          height: 22,
+          fit: BoxFit.contain,
         ),
 
         const SizedBox(width: 6),
