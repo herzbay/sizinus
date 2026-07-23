@@ -57,7 +57,7 @@ class CustomBottomNavbar extends StatelessWidget {
               navItem(
                 index: 2,
                 icon: Icons.workspace_premium_rounded,
-                label: 'Reward',
+                label: 'Koleksi',
               ),
 
               navItem(

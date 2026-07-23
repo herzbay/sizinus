@@ -153,20 +153,9 @@ class CustomTopBar extends StatelessWidget
 
                     _topIconButton(
                       icon:
-                          Icons.notifications_none_rounded,
-
-                      color: Colors.orange,
-
-                      onTap: () {},
-                    ),
-
-                    const SizedBox(width: 10),
-
-                    _topIconButton(
-                      icon:
                           Icons.settings_outlined,
 
-                      color: Colors.blueAccent,
+                      color: const Color.fromARGB(255, 104, 100, 100),
 
                       onTap: () {
 
