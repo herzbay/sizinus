@@ -40,25 +40,19 @@ class ProfileScreen extends StatelessWidget {
 
       body : SingleChildScrollView(
 
-              padding:
-                  const EdgeInsets.all(
-                20,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 18,
+                vertical: 22,
               ),
 
               child: Column(
 
                 children: [
 
-                  CircleAvatar(
-                    radius: 48,
-                    backgroundColor:
-                        Colors.blue.shade50,
-                    child: Icon(
-                      Icons.person,
-                      size: 52,
-                      color:
-                          Colors.blue.shade400,
-                    ),
+                  Image.asset(
+                    'assets/images/icon_user.png',
+                    width: 96,
+                    height: 96,
                   ),
 
                   const SizedBox(
@@ -90,30 +84,39 @@ class ProfileScreen extends StatelessWidget {
                     height: 24,
                   ),
 
-                  _statCard(
-                    'Total Poin',
-                    '${session.totalPoint}',
-                    Icons.stars,
-                  ),
+                  GridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisSpacing: 14,
+                    mainAxisSpacing: 14,
+                    childAspectRatio: 0.85,
+                    children: [
 
-                  _statCard(
-                    'Total Badge',
-                    '${session.badgeCount}',
-                    Icons.workspace_premium,
-                  ),
+                      _statCard(
+                        title: 'Total Poin',
+                        value: '${session.totalPoint}',
+                        image: 'assets/images/icon_xp.png',
+                      ),
 
-                  _statCard(
-                    'Panduan Selesai',
-                    '${session.completedGuideCount}',
-                    Icons.menu_book,
-                  ),
+                      _statCard(
+                        title: 'Total Lencana',
+                        value: '${session.badgeCount}',
+                        image: 'assets/images/icon_lencana.png',
+                      ),
 
-                  _statCard(
-                    'Simulasi Selesai',
-                    session.nibCompleted
-                        ? '1'
-                        : '0',
-                    Icons.business,
+                      _statCard(
+                        title: 'Panduan Selesai',
+                        value: '${session.completedGuideCount}',
+                        image: 'assets/images/icon_panduan.png',
+                      ),
+
+                      _statCard(
+                        title: 'Simulasi Selesai',
+                        value: session.nibCompleted ? '1' : '0',
+                        image: 'assets/images/icon_simulasi.png',
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -121,68 +124,56 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _statCard(
-    String title,
-    String value,
-    IconData icon,
-  ) {
+  Widget _statCard({
+    required String title,
+    required String value,
+    required String image,
+  }) {
 
     return Container(
-
-      margin:
-          const EdgeInsets.only(
-        bottom: 12,
-      ),
-
-      padding:
-          const EdgeInsets.all(
-        16,
-      ),
-
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-
         color: Colors.white,
-
-        borderRadius:
-            BorderRadius.circular(
-          18,
-        ),
-
-        border: Border.all(
-          color:
-              Colors.grey.shade200,
-        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(
+              alpha: 0.05,
+            ),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-
-      child: Row(
-
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
 
-          Icon(
-            icon,
-            color:
-                const Color(
-              0xFF2D9CDB,
+          Image.asset(
+            image,
+            width: 60,
+            height: 60,
+          ),
+
+          const SizedBox(height: 14),
+
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey.shade700,
+              fontWeight: FontWeight.w500,
             ),
           ),
 
-          const SizedBox(
-            width: 12,
-          ),
-
-          Expanded(
-            child: Text(
-              title,
-            ),
-          ),
+          const SizedBox(height: 6),
 
           Text(
             value,
-            style:
-                const TextStyle(
-              fontWeight:
-                  FontWeight.bold,
-              fontSize: 18,
+            style: const TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
