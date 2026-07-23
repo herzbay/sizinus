@@ -8,11 +8,37 @@ import '../../routes/app_routes.dart';
 import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/custom_topbar.dart';
 
-class DashboardScreen extends StatelessWidget {
-
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({
     super.key,
   });
+
+  @override
+  State<DashboardScreen> createState() =>
+      _DashboardScreenState();
+}
+
+class _DashboardScreenState
+    extends State<DashboardScreen>
+    with SingleTickerProviderStateMixin {
+
+  String getGreeting() {
+    final hour = DateTime.now().hour;
+
+    if (hour >= 5 && hour < 11) {
+      return 'Selamat Pagi ☀️';
+    }
+
+    if (hour >= 11 && hour < 15) {
+      return 'Selamat Siang 🌤️';
+    }
+
+    if (hour >= 15 && hour < 18) {
+      return 'Selamat Sore 🌇';
+    }
+
+    return 'Selamat Malam 🌙';
+  }
 
   void onBottomTap(BuildContext context, int index) {
     switch (index) {
@@ -53,6 +79,51 @@ class DashboardScreen extends StatelessWidget {
 
         break;
     }
+  }
+
+  late AnimationController _heroController;
+
+  late Animation<double> _fadeAnimation;
+
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _heroController = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 550,
+      ),
+    );
+
+    _fadeAnimation = CurvedAnimation(
+      parent: _heroController,
+      curve: Curves.easeOut,
+    );
+
+    _slideAnimation =
+        Tween<Offset>(
+      begin: const Offset(
+        0,
+        0.12,
+      ),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _heroController,
+        curve: Curves.easeOutCubic,
+      ),
+    );
+
+    _heroController.forward();
+  }
+
+  @override
+  void dispose() {
+    _heroController.dispose();
+    super.dispose();
   }
 
   @override
@@ -100,7 +171,13 @@ class DashboardScreen extends StatelessWidget {
 
             children: [
 
-              _buildHeroCard(session),
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: _buildHeroCard(session),
+                ),
+              ),
 
               const SizedBox(
                 height: 22,
@@ -112,7 +189,7 @@ class DashboardScreen extends StatelessWidget {
                 subtitle:
                     'Pahami setiap alur perizinan',
                 xp:
-                    '+200 Poin',
+                    '+250 Poin',
                 icon:
                     Icons.edit_document,
                 onTap: () {
@@ -206,11 +283,12 @@ class DashboardScreen extends StatelessWidget {
             CrossAxisAlignment.start,
         children: [
 
-          const Text(
-            'Halo,',
-            style: TextStyle(
+          Text(
+            getGreeting(),
+            style: const TextStyle(
               color: Colors.white70,
               fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
           ),
 
@@ -227,85 +305,57 @@ class DashboardScreen extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          Row(
-            children: [
-
-              Expanded(
-                child: Container(
-                  padding:
-                      const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white12,
-                    borderRadius:
-                        BorderRadius.circular(
-                      18,
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-
-                      const Icon(
-                        Icons.workspace_premium,
-                        color: Colors.amber,
-                        size: 30,
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      Text(
-                        'Level ${session.currentLevel}',
-                        style:
-                            const TextStyle(
-                          color: Colors.white,
-                          fontWeight:
-                              FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(
+                alpha: 0.08,
               ),
 
-              const SizedBox(width: 14),
-
-              Expanded(
-                child: Container(
-                  padding:
-                      const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white12,
-                    borderRadius:
-                        BorderRadius.circular(
-                      18,
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-
-                      const Icon(
-                        Icons.bolt,
-                        color: Colors.yellow,
-                        size: 30,
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      Text(
-                        '${session.totalPoint} Poin',
-                        style:
-                            const TextStyle(
-                          color: Colors.white,
-                          fontWeight:
-                              FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              border: Border.all(
+                color: Colors.white24,
               ),
-            ],
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Row(
+              mainAxisAlignment:
+                  MainAxisAlignment.spaceAround,
+              children: [
+
+                _buildHeroStat(
+                  icon: Icons.workspace_premium,
+                  color: Colors.amber,
+                  value: 'Lv.${session.currentLevel}',
+                ),
+
+                Container(
+                  width: 1,
+                  height: 26,
+                  color: Colors.white24,
+                ),
+
+                _buildHeroStat(
+                  icon: Icons.bolt,
+                  color: Colors.yellow,
+                  value: '${session.totalPoint} Poin',
+                ),
+
+                Container(
+                  width: 1,
+                  height: 26,
+                  color: Colors.white24,
+                ),
+
+                _buildHeroStat(
+                  icon: Icons.emoji_events,
+                  color: Colors.orangeAccent,
+                  value: '${session.badgeCount}',
+              ),
+              ],
+            ),
           ),
 
           const SizedBox(height: 24),
@@ -358,104 +408,131 @@ class DashboardScreen extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          const Text(
-            'Badge Terbaru',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-          const SizedBox(height: 12),
-
           session.latestBadges.isEmpty
 
               ? Container(
                   width: double.infinity,
-                  padding:
-                      const EdgeInsets.all(18),
+                  height: 60,
                   decoration: BoxDecoration(
-                    color: Colors.white12,
-                    borderRadius:
-                        BorderRadius.circular(
-                      16,
+                    color: Colors.white.withValues(
+                      alpha: 0.08,
                     ),
+
+                    border: Border.all(
+                      color: Colors.white24,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  child: const Text(
-                    'Belum ada badge yang diperoleh.',
-                    textAlign:
-                        TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
+                  child: const Center(
+                    child: Text(
+                      'Belum ada lencana yang diperoleh.',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                      ),
                     ),
                   ),
                 )
 
               : Row(
-                  children: session.latestBadges
-                      .map(
-                        (badge) => Expanded(
-                          child: Container(
-                            margin:
-                                const EdgeInsets.only(
-                              right: 10,
+                  children: List.generate(
+                    session.latestBadges.length,
+                    (index) {
+                      final badge =
+                          session.latestBadges[index];
+
+                      return Expanded(
+                        child: Container(
+                          height: 60,
+                          margin: EdgeInsets.only(
+                            right: index ==
+                                    session.latestBadges.length - 1
+                                ? 0
+                                : 10,
+                          ),
+                          padding:
+                              const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(
+                              alpha: 0.08,
                             ),
-                            padding:
-                                const EdgeInsets
-                                    .all(14),
-                            decoration:
-                                BoxDecoration(
-                              color:
-                                  Colors.white12,
-                              borderRadius:
-                                  BorderRadius
-                                      .circular(
-                                16,
+
+                            border: Border.all(
+                              color: Colors.white24,
+                            ),
+                            borderRadius:
+                                BorderRadius.circular(16),
+                          ),
+                          child: Row(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.center,
+                            children: [
+
+                              Image.asset(
+                                badge.imageAsset,
+                                width: 38,
+                                height: 38,
                               ),
-                            ),
-                            child: Column(
-                              children: [
 
-                                Image.asset(
-                                  badge.imageAsset,
-                                  height: 56,
-                                ),
+                              const SizedBox(width: 10),
 
-                                const SizedBox(
-                                  height: 8,
-                                ),
-
-                                Text(
+                              Expanded(
+                                child: Text(
                                   badge.title,
-                                  textAlign:
-                                      TextAlign
-                                          .center,
                                   maxLines: 2,
                                   overflow:
-                                      TextOverflow
-                                          .ellipsis,
+                                      TextOverflow.ellipsis,
                                   style:
                                       const TextStyle(
-                                    color:
-                                        Colors
-                                            .white,
-                                    fontSize:
-                                        12,
+                                    color: Colors.white,
+                                    fontSize: 13,
                                     fontWeight:
-                                        FontWeight
-                                            .bold,
+                                        FontWeight.w600,
+                                    height: 1.2,
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
-                      )
-                      .toList(),
+                      );
+                    },
+                  ),
                 ),
         ],
       ),
+    );
+  }
+
+  Widget _buildHeroStat({
+    required IconData icon,
+    required Color color,
+    required String value,
+  }) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+
+        Icon(
+          icon,
+          color: color,
+          size: 20,
+        ),
+
+        const SizedBox(width: 6),
+
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
     );
   }
 
@@ -543,28 +620,35 @@ class DashboardScreen extends StatelessWidget {
                   const SizedBox(height: 14),
 
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
                       color: Colors.green.shade50,
-                      borderRadius:
-                          BorderRadius.circular(
-                        20,
-                      ),
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Text(
-                      xp,
-                      style:
-                          TextStyle(
-                        color:
-                            Colors.green.shade700,
-                        fontWeight:
-                            FontWeight.bold,
-                        fontSize: 12,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+
+                        Image.asset(
+                          'assets/images/icon_xp.png',
+                          width: 16,
+                          height: 16,
+                        ),
+
+                        const SizedBox(width: 6),
+
+                        Text(
+                          xp,
+                          style: TextStyle(
+                            color: Colors.green.shade700,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
