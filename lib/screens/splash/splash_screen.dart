@@ -8,7 +8,6 @@ import '../../providers/session_provider.dart';
 import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
 import '../../services/auth/local_auth_service.dart';
-import '../../services/session/user_session.dart';
 import '../../services/simulation/local_simulation_storage.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -39,6 +38,8 @@ class _SplashScreenState
   late Animation<double> _logoOpacity;
   late Animation<double> _textOpacity;
   late Animation<double> _floatingAnimation;
+
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -190,38 +191,23 @@ class _SplashScreenState
 
       context
           .read<SessionProvider>()
-          .setUser(
-            currentUser,
+          .restoreSession(
+            user: currentUser,
+            simulation:
+                simulation ??
+                    SimulationData(),
           );
-
-      context
-          .read<SessionProvider>()
-          .setSimulation(
-            simulation ??
-                SimulationData(),
-          );
-
-      // ===============================
-      // SEMENTARA
-      // AGAR SCREEN LAMA
-      // TETAP BERJALAN
-      // ===============================
-
-      UserSession.setUser(
-        currentUser,
-      );
-
-      UserSession.setSimulation(
-        simulation ??
-            SimulationData(),
-      );
-    }
+      }
 
     // ==============================
     // NAVIGASI
     // ==============================
 
     if (!mounted) return;
+
+    setState(() {
+      isLoading = false;
+    });    
 
     Navigator.pushReplacementNamed(
 

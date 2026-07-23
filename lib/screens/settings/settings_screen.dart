@@ -4,7 +4,8 @@ import '../../routes/app_routes.dart';
 import '../../widgets/custom_topbar.dart';
 
 import '../../services/auth/local_auth_service.dart';
-import '../../services/session/user_session.dart';
+import 'package:provider/provider.dart';
+import '../../providers/session_provider.dart';
 
 
 class SettingsScreen
@@ -71,43 +72,49 @@ class SettingsScreen
             height: 24,
           ),
 
-          SizedBox(
-
-            height: 52,
-
-            child: ElevatedButton.icon(
-
-              onPressed: () async {
-                await LocalAuthService().logout();
-                UserSession.clear();
-
-                if (!context.mounted) return;
-
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  AppRoutes.login,
-                  (route) => false,
-                );
-              },
-
-              style:
-                  ElevatedButton.styleFrom(
-                backgroundColor:
-                    Colors.red,
-              ),
-
-              icon: const Icon(
-                Icons.logout,
-                color: Colors.white,
-              ),
-
-              label: const Text(
-                'Keluar Akun',
-                style: TextStyle(
-                  color: Colors.white,
+          _menuTile(
+            context,
+            icon: Icons.logout,
+            title: 'Keluar Akun',
+            onTap: () async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: const Text('Keluar Akun'),
+                  content: const Text(
+                    'Apakah Anda yakin ingin keluar dari akun ini?',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      child: const Text('Batal'),
+                    ),
+                    FilledButton(
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                      },
+                      child: const Text('Keluar'),
+                    ),
+                  ],
                 ),
-              ),
-            ),
+              );
+
+              if (confirm != true) return;
+
+              await LocalAuthService().logout();
+
+              if (!context.mounted) return;
+
+              context.read<SessionProvider>().clear();
+
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                AppRoutes.login,
+                (_) => false,
+              );
+            },
           ),
         ],
       ),

@@ -5,7 +5,6 @@ import '../../providers/session_provider.dart';
 import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
 import '../../services/auth/local_auth_service.dart';
-import '../../services/session/user_session.dart';
 import '../../services/simulation/local_simulation_storage.dart';
 import '../../widgets/custom_textfield.dart';
 
@@ -129,30 +128,16 @@ class _LoginScreenState
 
     context
         .read<SessionProvider>()
-        .setUser(currentUser);
-
-    context
-        .read<SessionProvider>()
-        .setSimulation(
-          simulation ??
-              SimulationData(),
+        .restoreSession(
+          user: currentUser,
+          simulation:
+              simulation ??
+                  SimulationData(),
         );
 
-    // ===============================
-    // SEMENTARA MASIH DIISI
-    // AGAR SCREEN LAIN TETAP BERJALAN
-    // ===============================
-
-    UserSession.setUser(
-      currentUser,
-    );
-
-    UserSession.setSimulation(
-      simulation ??
-          SimulationData(),
-    );
-
-    // ===============================
+    setState(() {
+      isLoading = false;
+    });
 
     Navigator.pushReplacementNamed(
       context,

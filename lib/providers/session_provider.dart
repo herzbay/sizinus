@@ -4,6 +4,7 @@ import '../models/auth/user_model.dart';
 import '../models/simulation/simulation_data.dart';
 import '../data/reward/badge_repository.dart';
 import '../models/reward/badge.dart';
+import '../services/simulation/local_simulation_storage.dart';
 
 class SessionProvider extends ChangeNotifier {
   static const int pointsPerLevel = 50;
@@ -106,6 +107,19 @@ class SessionProvider extends ChangeNotifier {
   void clear() {
     _currentUser = null;
     _simulationData = null;
+    notifyListeners();
+  }
+
+  Future<void> refreshSimulation() async {
+    if (_currentUser == null) return;
+
+    final simulation =
+        await LocalSimulationStorage().load();
+
+    if (simulation == null) return;
+
+    _simulationData = simulation;
+
     notifyListeners();
   }
 }
