@@ -5,7 +5,6 @@
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart)
-![Firebase](https://img.shields.io/badge/Firebase-Backend-FFCA28?style=for-the-badge&logo=firebase)
 ![Android](https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android)
 
 </p>
@@ -46,8 +45,6 @@ SIZINUS bertujuan membantu pelaku UMKM:
 - XP
 - Statistik pencapaian
 
----
-
 ## 📝 Simulasi Perizinan
 
 - Simulasi proses pembuatan izin usaha
@@ -55,13 +52,9 @@ SIZINUS bertujuan membantu pelaku UMKM:
 - Validasi data setiap tahap
 - Penyimpanan progress otomatis
 
----
-
 ## 🌳 Rekomendasi Perizinan
 
 Menggunakan **Rule-Based Decision Tree** untuk menghasilkan rekomendasi izin berdasarkan karakteristik usaha pengguna.
-
----
 
 ## 📚 Panduan Usaha
 
@@ -70,8 +63,6 @@ Menggunakan **Adaptive Learning Path** sehingga materi diprioritaskan sesuai:
 - hasil simulasi
 - rekomendasi izin
 - progres pembelajaran
-
----
 
 ## 🎮 Gamifikasi
 
@@ -86,24 +77,59 @@ Penerapan **Octalysis Framework** melalui:
 
 ---
 
-## 👤 Profil Pengguna
+# 📚 Panduan Penggunaan
 
-- Informasi akun
-- Statistik pembelajaran
-- Logout
+## 1️⃣ Registrasi
+
+- Buka aplikasi
+- Pilih **Daftar**
+- Isi data pengguna
+- Klik **Register**
+
+## 2️⃣ Login
+
+- Masukkan email
+- Masukkan password
+- Klik **Masuk**
+
+## 3️⃣ Memulai Simulasi
+
+- Pilih menu **Simulasi**
+- Isi data usaha
+- Ikuti seluruh tahapan
+- Selesaikan simulasi
+
+## 4️⃣ Melihat Rekomendasi
+
+Setelah simulasi selesai:
+
+- buka menu **Rekomendasi**
+- sistem akan memberikan rekomendasi izin usaha yang sesuai
+
+## 5️⃣ Mempelajari Panduan
+
+Masuk ke menu **Panduan Usaha**
+
+Materi akan muncul secara otomatis sesuai hasil simulasi dan progres belajar.
+
+## 6️⃣ Menyelesaikan Misi
+
+Selama belajar pengguna akan memperoleh:
+
+- XP
+- Badge
+- Level
+- Posisi Leaderboard
 
 ---
 
-# 🛠️ Teknologi
+# 📊 Metode yang Digunakan
 
-| Teknologi | Keterangan |
-|-----------|------------|
-| Flutter | Framework Mobile |
-| Dart | Bahasa Pemrograman |
-| Firebase Authentication | Login & Registrasi |
-| Cloud Firestore | Database |
-| SharedPreferences | Penyimpanan Lokal |
-| Material Design | User Interface |
+✅ Rule-Based Decision Tree
+
+✅ Adaptive Learning Path
+
+✅ Octalysis Framework
 
 ---
 
@@ -137,69 +163,15 @@ SIZINUS
 
 ---
 
-# 📚 Panduan Penggunaan
+# 🛠️ Teknologi
 
-## 1️⃣ Registrasi
-
-- Buka aplikasi
-- Pilih **Daftar**
-- Isi data pengguna
-- Klik **Register**
-
----
-
-## 2️⃣ Login
-
-- Masukkan email
-- Masukkan password
-- Klik **Masuk**
-
----
-
-## 3️⃣ Memulai Simulasi
-
-- Pilih menu **Simulasi**
-- Isi data usaha
-- Ikuti seluruh tahapan
-- Selesaikan simulasi
-
----
-
-## 4️⃣ Melihat Rekomendasi
-
-Setelah simulasi selesai:
-
-- buka menu **Rekomendasi**
-- sistem akan memberikan rekomendasi izin usaha yang sesuai
-
----
-
-## 5️⃣ Mempelajari Panduan
-
-Masuk ke menu **Panduan Usaha**
-
-Materi akan muncul secara otomatis sesuai hasil simulasi dan progres belajar.
-
----
-
-## 6️⃣ Menyelesaikan Misi
-
-Selama belajar pengguna akan memperoleh:
-
-- XP
-- Badge
-- Level
-- Posisi Leaderboard
-
----
-
-# 📊 Metode yang Digunakan
-
-✅ Rule-Based Decision Tree
-
-✅ Adaptive Learning Path
-
-✅ Octalysis Framework
+| Teknologi | Keterangan |
+|-----------|------------|
+| Flutter | Framework Mobile |
+| Dart | Bahasa Pemrograman |
+| Firebase Authentication | Login & Registrasi |
+| Cloud Firestore | Database |
+| SharedPreferences | Penyimpanan Lokal |
 
 ---
 
