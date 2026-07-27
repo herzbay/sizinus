@@ -1,4 +1,4 @@
-package com.example.sizinus
+package com.herzstudio.sizinus
 
 import io.flutter.embedding.android.FlutterActivity
 
