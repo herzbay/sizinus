@@ -4,7 +4,7 @@ import '../../providers/session_provider.dart';
 
 import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
-import '../../services/auth/local_auth_service.dart';
+import '../../services/auth/firebase_auth_service.dart';
 import '../../services/simulation/local_simulation_storage.dart';
 import '../../widgets/custom_textfield.dart';
 
@@ -21,8 +21,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState
     extends State<LoginScreen> {
 
-  final LocalAuthService auth =
-      LocalAuthService();
+  final FirebaseAuthService auth =
+      FirebaseAuthService();
 
   final emailController =
       TextEditingController();

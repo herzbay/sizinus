@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_topbar.dart';
 
-import '../../services/auth/local_auth_service.dart';
+import '../../services/auth/firebase_auth_service.dart';
 import 'package:provider/provider.dart';
 import '../../providers/session_provider.dart';
 
@@ -154,7 +154,7 @@ class SettingsScreen
 
               if (confirm != true) return;
 
-              await LocalAuthService().logout();
+              await FirebaseAuthService().logout();
 
               if (!context.mounted) return;
 

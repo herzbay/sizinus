@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../routes/app_routes.dart';
 import '../../models/auth/user_model.dart';
-import '../../services/auth/local_auth_service.dart';
+import '../../services/auth/firebase_auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({
@@ -30,8 +30,8 @@ class _RegisterScreenState
   final confirmPasswordController =
       TextEditingController();
 
-  final LocalAuthService auth =
-      LocalAuthService();
+  final FirebaseAuthService auth =
+      FirebaseAuthService();
 
   bool isLoading = false;
 
