@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../widgets/custom_textfield.dart';
-import '../../routes/app_routes.dart';
 import '../../models/auth/user_model.dart';
+import '../../routes/app_routes.dart';
 import '../../services/auth/firebase_auth_service.dart';
+import '../../widgets/custom_textfield.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({
@@ -50,34 +50,25 @@ class _RegisterScreenState
   }
 
   Future<void> register() async {
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
 
-    final name =
-        nameController.text.trim();
-
-    final email =
-        emailController.text.trim();
-
-    final password =
-        passwordController.text;
-
-    final confirm =
-        confirmPasswordController.text;
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+    final confirm = confirmPasswordController.text;
 
     if (name.isEmpty ||
         email.isEmpty ||
         password.isEmpty ||
         confirm.isEmpty) {
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
+      messenger.showSnackBar(
         const SnackBar(
           content: Text(
             'Semua data harus diisi.',
           ),
         ),
       );
-
       return;
     }
 
@@ -86,47 +77,35 @@ class _RegisterScreenState
     );
 
     if (!emailRegex.hasMatch(email)) {
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
+      messenger.showSnackBar(
         const SnackBar(
           content: Text(
             'Format email tidak valid.',
           ),
         ),
       );
-
       return;
     }
 
     if (password.length < 6) {
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
+      messenger.showSnackBar(
         const SnackBar(
           content: Text(
             'Password minimal 6 karakter.',
           ),
         ),
       );
-
       return;
     }
 
     if (password != confirm) {
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
+      messenger.showSnackBar(
         const SnackBar(
           content: Text(
             'Konfirmasi password tidak sama.',
           ),
         ),
       );
-
       return;
     }
 
@@ -134,15 +113,10 @@ class _RegisterScreenState
       isLoading = true;
     });
 
-    final success =
-        await auth.register(
-
+    final success = await auth.register(
       UserModel(
-
         fullName: name,
-
         email: email,
-
         password: password,
       ),
     );
@@ -154,23 +128,17 @@ class _RegisterScreenState
     });
 
     if (!success) {
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
+      messenger.showSnackBar(
         const SnackBar(
           content: Text(
-            'Email sudah terdaftar.',
+            'Registrasi gagal. Email mungkin sudah digunakan.',
           ),
         ),
       );
-
       return;
     }
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
-
+    messenger.showSnackBar(
       const SnackBar(
         content: Text(
           'Registrasi berhasil.',
@@ -178,8 +146,7 @@ class _RegisterScreenState
       ),
     );
 
-      Navigator.pushReplacementNamed(
-      context,
+    navigator.pushReplacementNamed(
       AppRoutes.login,
     );
   }

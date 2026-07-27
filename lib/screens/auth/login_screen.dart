@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/session_provider.dart';
 
 import '../../models/simulation/simulation_data.dart';
+import '../../providers/session_provider.dart';
 import '../../routes/app_routes.dart';
 import '../../services/auth/firebase_auth_service.dart';
 import '../../services/simulation/local_simulation_storage.dart';
@@ -43,26 +43,17 @@ class _LoginScreenState
   }
 
   Future<void> login() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text;
 
-    final email =
-        emailController.text.trim();
-
-    final password =
-        passwordController.text;
-
-    if (email.isEmpty ||
-        password.isEmpty) {
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             'Email dan password wajib diisi.',
           ),
         ),
       );
-
       return;
     }
 
@@ -70,8 +61,7 @@ class _LoginScreenState
       isLoading = true;
     });
 
-    final success =
-        await auth.login(
+    final success = await auth.login(
       email: email,
       password: password,
     );
@@ -79,14 +69,11 @@ class _LoginScreenState
     if (!mounted) return;
 
     if (!success) {
-
       setState(() {
         isLoading = false;
       });
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             'Email atau password salah.',
@@ -97,15 +84,16 @@ class _LoginScreenState
       return;
     }
 
-    final currentUser =
-        await auth.getCurrentUser();
+    final currentUser = await auth.getCurrentUser();
+
+    if (!mounted) return;
 
     if (currentUser == null) {
+      setState(() {
+        isLoading = false;
+      });
 
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             'Gagal memuat data pengguna.',
@@ -117,22 +105,13 @@ class _LoginScreenState
     }
 
     final simulation =
-        await LocalSimulationStorage()
-            .load();
+        await LocalSimulationStorage().load();
 
     if (!mounted) return;
 
-    // ===============================
-    // SESSION PROVIDER
-    // ===============================
-
-    context
-        .read<SessionProvider>()
-        .restoreSession(
+    context.read<SessionProvider>().restoreSession(
           user: currentUser,
-          simulation:
-              simulation ??
-                  SimulationData(),
+          simulation: simulation ?? SimulationData(),
         );
 
     setState(() {

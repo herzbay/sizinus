@@ -10,10 +10,17 @@ class FirebaseAuthService {
   /// ==========================
   Future<bool> register(UserModel user) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
+      final credential =
+          await _auth.createUserWithEmailAndPassword(
         email: user.email.trim(),
         password: user.password,
       );
+
+      await credential.user?.updateDisplayName(
+        user.fullName,
+      );
+
+      await credential.user?.reload();
 
       return true;
     } on FirebaseAuthException {
@@ -65,15 +72,26 @@ class FirebaseAuthService {
   /// ==========================
   /// UPDATE PROFILE
   /// ==========================
-  Future<void> updateProfile(UserModel user) async {
-    final firebaseUser = _auth.currentUser;
+  Future<bool> updateProfile(UserModel user) async {
+    try {
+      final firebaseUser = _auth.currentUser;
 
-    if (firebaseUser == null) return;
+      if (firebaseUser == null) {
+        return false;
+      }
 
-    // Untuk sementara hanya update displayName.
-    // Data lengkap akan dipindahkan ke Firestore pada Tahap 3.
-    await firebaseUser.updateDisplayName(user.fullName);
-    await firebaseUser.reload();
+      await firebaseUser.updateDisplayName(
+        user.fullName,
+      );
+
+      await firebaseUser.reload();
+
+      return true;
+    } on FirebaseAuthException {
+      return false;
+    } catch (_) {
+      return false;
+    }
   }
 
   /// ==========================
