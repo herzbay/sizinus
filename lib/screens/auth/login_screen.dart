@@ -5,6 +5,7 @@ import '../../models/simulation/simulation_data.dart';
 import '../../providers/session_provider.dart';
 import '../../routes/app_routes.dart';
 import '../../services/auth/firebase_auth_service.dart';
+import '../../services/user/firestore_user_service.dart';
 import '../../services/simulation/local_simulation_storage.dart';
 import '../../widgets/custom_textfield.dart';
 
@@ -23,6 +24,9 @@ class _LoginScreenState
 
   final FirebaseAuthService auth =
       FirebaseAuthService();
+
+  final FirestoreUserService userService =
+      FirestoreUserService();
 
   final emailController =
       TextEditingController();
@@ -43,11 +47,19 @@ class _LoginScreenState
   }
 
   Future<void> login() async {
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+    final sessionProvider =
+        context.read<SessionProvider>();
+
     final email = emailController.text.trim();
     final password = passwordController.text;
 
+    // ==========================
+    // VALIDASI INPUT
+    // ==========================
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         const SnackBar(
           content: Text(
             'Email dan password wajib diisi.',
@@ -61,19 +73,22 @@ class _LoginScreenState
       isLoading = true;
     });
 
-    final success = await auth.login(
+    // ==========================
+    // FIREBASE AUTH LOGIN
+    // ==========================
+    final authSuccess = await auth.login(
       email: email,
       password: password,
     );
 
     if (!mounted) return;
 
-    if (!success) {
+    if (!authSuccess) {
       setState(() {
         isLoading = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         const SnackBar(
           content: Text(
             'Email atau password salah.',
@@ -84,7 +99,34 @@ class _LoginScreenState
       return;
     }
 
-    final currentUser = await auth.getCurrentUser();
+    // ==========================
+    // GET FIREBASE UID
+    // ==========================
+    final uid = auth.getCurrentUserUid();
+
+    if (uid == null) {
+      setState(() {
+        isLoading = false;
+      });
+
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Gagal mendapatkan data akun.',
+          ),
+        ),
+      );
+
+      await auth.logout();
+
+      return;
+    }
+
+    // ==========================
+    // GET USER FROM FIRESTORE
+    // ==========================
+    final currentUser =
+        await userService.getUser(uid);
 
     if (!mounted) return;
 
@@ -93,37 +135,46 @@ class _LoginScreenState
         isLoading = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         const SnackBar(
           content: Text(
-            'Gagal memuat data pengguna.',
+            'Data profil pengguna tidak ditemukan.',
           ),
         ),
       );
 
+      await auth.logout();
+
       return;
     }
 
+    // ==========================
+    // LOAD SIMULATION LOCAL
+    // ==========================
     final simulation =
         await LocalSimulationStorage().load();
 
     if (!mounted) return;
 
-    context.read<SessionProvider>().restoreSession(
-          user: currentUser,
-          simulation: simulation ?? SimulationData(),
-        );
+    // ==========================
+    // RESTORE SESSION
+    // ==========================
+    sessionProvider.restoreSession(
+      user: currentUser,
+      simulation: simulation ?? SimulationData(),
+    );
 
     setState(() {
       isLoading = false;
     });
 
-    Navigator.pushReplacementNamed(
-      context,
+    // ==========================
+    // OPEN DASHBOARD
+    // ==========================
+    navigator.pushReplacementNamed(
       AppRoutes.dashboard,
     );
   }
-
   @override
   Widget build(BuildContext context) {
 
