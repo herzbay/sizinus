@@ -8,6 +8,8 @@ import '../../providers/session_provider.dart';
 import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
 import '../../services/auth/local_auth_service.dart';
+import '../../services/auth/firebase_auth_service.dart';
+import '../../services/user/firestore_user_service.dart';
 import '../../services/simulation/local_simulation_storage.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -24,6 +26,12 @@ class _SplashScreenState
 
   final LocalAuthService auth =
       LocalAuthService();
+
+  final FirebaseAuthService firebaseAuth =
+      FirebaseAuthService();
+
+  final FirestoreUserService userService =
+      FirestoreUserService();
 
   final LocalSimulationStorage storage =
       LocalSimulationStorage();
@@ -122,6 +130,14 @@ class _SplashScreenState
   Future<void> startAnimation() async {
     if (!mounted) return;
 
+    final navigator = Navigator.of(context);
+    final sessionProvider =
+        context.read<SessionProvider>();
+
+    // ==============================
+    // MULAI ANIMASI
+    // ==============================
+
     _logoController.forward();
     _textController.forward();
     _loadingController.forward();
@@ -140,15 +156,17 @@ class _SplashScreenState
 
     if (!mounted) return;
 
+    // ==============================
+    // CEK ONBOARDING
+    // ==============================
+
     final onboardingCompleted =
         await auth.isOnboardingCompleted();
 
     if (!mounted) return;
 
     if (!onboardingCompleted) {
-
-      Navigator.pushReplacementNamed(
-        context,
+      navigator.pushReplacementNamed(
         AppRoutes.onboarding,
       );
 
@@ -156,67 +174,103 @@ class _SplashScreenState
     }
 
     // ==============================
-    // CEK STATUS LOGIN
+    // CEK FIREBASE LOGIN
     // ==============================
 
     final loggedIn =
-        await auth.isLoggedIn();
+        await firebaseAuth.isLoggedIn();
 
     if (!mounted) return;
 
-    if (loggedIn) {
-      final currentUser = await auth.getCurrentUser();
+    if (!loggedIn) {
+      setState(() {
+        isLoading = false;
+      });
 
-      if (currentUser == null) {
-        await auth.logout();
+      navigator.pushReplacementNamed(
+        AppRoutes.login,
+      );
 
-        if (!mounted) return;
+      return;
+    }
 
-        Navigator.pushReplacementNamed(
-          context,
-          AppRoutes.login,
-        );
+    // ==============================
+    // AMBIL UID FIREBASE
+    // ==============================
 
-        return;
-      }
+    final uid =
+        firebaseAuth.getCurrentUserUid();
 
-      final simulation =
-          await storage.load();
+    if (uid == null) {
+      await firebaseAuth.logout();
 
       if (!mounted) return;
 
-      // ===============================
-      // SESSION PROVIDER
-      // ===============================
+      setState(() {
+        isLoading = false;
+      });
 
-      context
-          .read<SessionProvider>()
-          .restoreSession(
-            user: currentUser,
-            simulation:
-                simulation ??
-                    SimulationData(),
-          );
-      }
+      navigator.pushReplacementNamed(
+        AppRoutes.login,
+      );
+
+      return;
+    }
 
     // ==============================
-    // NAVIGASI
+    // AMBIL USER DARI FIRESTORE
     // ==============================
+
+    final currentUser =
+        await userService.getUser(uid);
 
     if (!mounted) return;
 
+    if (currentUser == null) {
+      await firebaseAuth.logout();
+
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+
+      navigator.pushReplacementNamed(
+        AppRoutes.login,
+      );
+
+      return;
+    }
+
+    // ==============================
+    // LOAD SIMULASI LOKAL
+    // ==============================
+
+    final simulation =
+        await storage.load();
+
+    if (!mounted) return;
+
+    // ==============================
+    // RESTORE SESSION PROVIDER
+    // ==============================
+
+    sessionProvider.restoreSession(
+      user: currentUser,
+      simulation:
+          simulation ?? SimulationData(),
+    );
+
+    // ==============================
+    // SELESAI
+    // ==============================
+
     setState(() {
       isLoading = false;
-    });    
+    });
 
-    Navigator.pushReplacementNamed(
-
-      context,
-
-      loggedIn
-          ? AppRoutes.dashboard
-          : AppRoutes.login,
-
+    navigator.pushReplacementNamed(
+      AppRoutes.dashboard,
     );
   }
 
