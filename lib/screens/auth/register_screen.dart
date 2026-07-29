@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/auth/user_model.dart';
 import '../../routes/app_routes.dart';
 import '../../services/auth/firebase_auth_service.dart';
+import '../../services/user/firestore_user_service.dart';
 import '../../widgets/custom_textfield.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -33,6 +34,9 @@ class _RegisterScreenState
   final FirebaseAuthService auth =
       FirebaseAuthService();
 
+  final FirestoreUserService userService =
+      FirestoreUserService();
+
   bool isLoading = false;
 
   @override
@@ -58,6 +62,9 @@ class _RegisterScreenState
     final password = passwordController.text;
     final confirm = confirmPasswordController.text;
 
+    // ==========================
+    // VALIDASI INPUT
+    // ==========================
     if (name.isEmpty ||
         email.isEmpty ||
         password.isEmpty ||
@@ -113,21 +120,27 @@ class _RegisterScreenState
       isLoading = true;
     });
 
-    final success = await auth.register(
-      UserModel(
-        fullName: name,
-        email: email,
-        password: password,
-      ),
+    // ==========================
+    // USER MODEL
+    // ==========================
+    final user = UserModel(
+      fullName: name,
+      email: email,
+      password: password,
     );
+
+    // ==========================
+    // FIREBASE AUTH REGISTER
+    // ==========================
+    final authSuccess = await auth.register(user);
 
     if (!mounted) return;
 
-    setState(() {
-      isLoading = false;
-    });
+    if (!authSuccess) {
+      setState(() {
+        isLoading = false;
+      });
 
-    if (!success) {
       messenger.showSnackBar(
         const SnackBar(
           content: Text(
@@ -135,8 +148,64 @@ class _RegisterScreenState
           ),
         ),
       );
+
       return;
     }
+
+    // ==========================
+    // GET FIREBASE UID
+    // ==========================
+    final uid = auth.getCurrentUserUid();
+
+    if (uid == null) {
+      setState(() {
+        isLoading = false;
+      });
+
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Registrasi gagal. Data pengguna tidak ditemukan.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    // ==========================
+    // CREATE FIRESTORE USER
+    // ==========================
+    final firestoreSuccess =
+        await userService.createUser(
+      uid: uid,
+      user: user,
+    );
+
+    if (!mounted) return;
+
+    if (!firestoreSuccess) {
+      setState(() {
+        isLoading = false;
+      });
+
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Akun berhasil dibuat, tetapi data profil gagal disimpan.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    // ==========================
+    // REGISTER SUCCESS
+    // ==========================
+    setState(() {
+      isLoading = false;
+    });
 
     messenger.showSnackBar(
       const SnackBar(
@@ -145,6 +214,10 @@ class _RegisterScreenState
         ),
       ),
     );
+
+    await auth.logout();
+
+    if (!mounted) return;
 
     navigator.pushReplacementNamed(
       AppRoutes.login,

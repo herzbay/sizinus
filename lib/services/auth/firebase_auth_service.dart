@@ -124,4 +124,11 @@ class FirebaseAuthService {
   Future<UserModel?> getUser() async {
     return getCurrentUser();
   }
+
+  /// ==========================
+  /// CURRENT USER UID
+  /// ==========================
+  String? getCurrentUserUid() {
+    return _auth.currentUser?.uid;
+  }
 }
