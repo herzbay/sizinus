@@ -25,12 +25,17 @@ class SettingsScreen
       ),
 
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.fromLTRB(
+          16,
+          16,
+          16,
+          MediaQuery.of(context).padding.bottom + 8,
+        ),
         children: [
           const Text(
             'Pengaturan',
             style: TextStyle(
-              fontSize: 28,
+              fontSize: 26,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -46,7 +51,7 @@ class SettingsScreen
             ),
           ),
 
-          const SizedBox(height: 28),
+          const SizedBox(height: 20),
 
           const Text(
             'PROFIL',
@@ -58,7 +63,7 @@ class SettingsScreen
             ),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
 
           _menuTile(
             context,
@@ -70,6 +75,31 @@ class SettingsScreen
                 context,
                 AppRoutes.profile,
               );
+            },
+          ),
+
+          _menuTile(
+            context,
+            icon: Icons.manage_accounts_outlined,
+            title: 'Kelola Akun',
+            subtitle: 'Ubah informasi akun',
+            onTap: () async {
+              final result = await Navigator.pushNamed(
+                context,
+                AppRoutes.account,
+              );
+
+              if (!context.mounted) return;
+
+              if (result == true) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Profil berhasil diperbarui.',
+                    ),
+                  ),
+                );
+              }
             },
           ),
 
@@ -85,7 +115,7 @@ class SettingsScreen
             ),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
 
           _menuTile(
             context,
@@ -104,7 +134,7 @@ class SettingsScreen
           ),
 
           const SizedBox(
-            height: 24,
+            height: 14,
           ),
 
           const SizedBox(height: 16),
@@ -119,7 +149,7 @@ class SettingsScreen
             ),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
 
           _menuTile(
             context,
@@ -180,71 +210,75 @@ class SettingsScreen
     required VoidCallback onTap,
     bool isLogout = false,
   }) {
-
-  return Container(
-    margin: const EdgeInsets.only(bottom: 14),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.05),
-          blurRadius: 10,
-          offset: const Offset(0, 4),
-        ),
-      ],
-    ),
-    child: ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 18,
-        vertical: 10,
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
-
-      leading: Container(
-        width: 46,
-        height: 46,
-        decoration: BoxDecoration(
-          color: isLogout
-              ? Colors.red.shade50
-              : const Color(0xFF2D9CDB)
-                  .withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(14),
+      child: ListTile(
+        dense: true,
+        visualDensity: const VisualDensity(
+          horizontal: 0,
+          vertical: -2,
         ),
-        child: Icon(
-          icon,
-          color: isLogout
-              ? Colors.red
-              : const Color(0xFF2D9CDB),
+        minLeadingWidth: 0,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 6,
         ),
-      ),
-
-      title: Text(
-        title,
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          color: isLogout ? Colors.red : Colors.black,
-        ),
-      ),
-
-      subtitle: Padding(
-        padding: const EdgeInsets.only(top: 2),
-        child: Text(
-          subtitle,
-          style: TextStyle(
-            color: Colors.grey.shade600,
-            fontSize: 13,
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: isLogout
+                ? Colors.red.shade50
+                : const Color(0xFF2D9CDB)
+                    .withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            icon,
+            size: 20,
+            color: isLogout
+                ? Colors.red
+                : const Color(0xFF2D9CDB),
           ),
         ),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: isLogout ? Colors.red : Colors.black,
+          ),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 1),
+          child: Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey.shade600,
+            ),
+          ),
+        ),
+        trailing: Icon(
+          Icons.chevron_right_rounded,
+          size: 20,
+          color: isLogout
+              ? Colors.red
+              : Colors.grey.shade400,
+        ),
+        onTap: onTap,
       ),
-
-      trailing: Icon(
-        Icons.chevron_right_rounded,
-        color:
-            isLogout ? Colors.red : Colors.grey.shade400,
-      ),
-
-      onTap: onTap,
-    ),
-  );
+    );
   }
 }

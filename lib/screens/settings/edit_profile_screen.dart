@@ -5,6 +5,10 @@ import '../../providers/session_provider.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/custom_topbar.dart';
 
+import '../../models/auth/user_model.dart';
+import '../../services/auth/firebase_auth_service.dart';
+import '../../services/user/firestore_user_service.dart';
+
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({
     super.key,
@@ -21,11 +25,19 @@ class _EditProfileScreenState
   late TextEditingController nameController;
   late TextEditingController emailController;
 
+  final FirebaseAuthService authService =
+      FirebaseAuthService();
+
+  final FirestoreUserService firestoreService =
+      FirestoreUserService();
+
+  bool isLoading = false;  
+
   @override
   void initState() {
     super.initState();
 
-    final user = context.read<SessionProvider>().currentUser;
+    final user = context.read<SessionProvider>().currentUser;  
 
     nameController = TextEditingController(
       text: user?.fullName ?? '',
@@ -43,10 +55,31 @@ class _EditProfileScreenState
     super.dispose();
   }
 
-  void saveProfile() {
+  Future<void> saveProfile() async {
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
 
-    if (nameController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
+    final session =
+        context.read<SessionProvider>();
+
+    final currentUser = session.currentUser;
+
+    if (currentUser == null) {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Data pengguna tidak ditemukan.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    final fullName =
+        nameController.text.trim();
+
+    if (fullName.isEmpty) {
+      messenger.showSnackBar(
         const SnackBar(
           content: Text(
             'Nama lengkap wajib diisi.',
@@ -56,46 +89,112 @@ class _EditProfileScreenState
       return;
     }
 
-    final emailRegex = RegExp(
-      r'^[^@]+@[^@]+\.[^@]+$',
+    if (!mounted) return;
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final user = UserModel(
+      fullName: fullName,
+      email: currentUser.email,
+      password: '',
     );
 
-    if (!emailRegex.hasMatch(
-      emailController.text.trim(),
-    )) {
-      ScaffoldMessenger.of(context).showSnackBar(
+    final authSuccess =
+        await authService.updateProfile(
+      user,
+    );
+
+    if (!mounted) return;
+
+    if (!authSuccess) {
+      setState(() {
+        isLoading = false;
+      });
+
+      messenger.showSnackBar(
         const SnackBar(
           content: Text(
-            'Format email tidak valid.',
+            'Gagal memperbarui profil.',
           ),
         ),
       );
+
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Siap dihubungkan ke Firebase.',
+    final uid =
+        authService.getCurrentUserUid();
+
+    if (uid == null) {
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text(
+            'UID pengguna tidak ditemukan.',
+          ),
         ),
-      ),
+      );
+
+      return;
+    }
+
+    final firestoreSuccess =
+        await firestoreService.updateUser(
+      uid: uid,
+      user: user,
     );
+
+    if (!mounted) return;
+
+    if (!firestoreSuccess) {
+      setState(() {
+        isLoading = false;
+      });
+
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Gagal menyimpan data ke database.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    session.updateUser(user);
+
+    if (!mounted) return;
+
+    navigator.pop(true);
   }
 
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return PopScope(
+      canPop: !isLoading,
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF5F5F5),
+        appBar: const CustomTopBar(
+          showBackButton: true,
+        ),
 
-      backgroundColor: const Color(0xFFF5F5F5),
-
-      appBar: const CustomTopBar(
-        showBackButton: true,
-      ),
-
-      body: SingleChildScrollView(
-
-        padding: const EdgeInsets.all(20),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(
+            20,
+            20,
+            20,
+            MediaQuery.of(context).padding.bottom + 16,
+          ),
 
         child: Column(
 
@@ -107,7 +206,7 @@ class _EditProfileScreenState
             const Text(
               'Kelola Akun',
               style: TextStyle(
-                fontSize: 28,
+                fontSize: 26,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -122,7 +221,7 @@ class _EditProfileScreenState
               ),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 24),
 
             Center(
 
@@ -153,7 +252,7 @@ class _EditProfileScreenState
               ),
             ),
 
-            const SizedBox(height: 36),
+            const SizedBox(height: 28),
 
             const Text(
               'Nama Lengkap',
@@ -168,11 +267,11 @@ class _EditProfileScreenState
               hintText: 'Nama Lengkap',
               prefixIcon: Icons.person_outline,
               controller: nameController,
-              textInputAction:
-                  TextInputAction.next,
+              textInputAction: TextInputAction.next,
+              enabled: !isLoading,
             ),
 
-            const SizedBox(height: 22),
+            const SizedBox(height: 16),
 
             const Text(
               'Email',
@@ -187,17 +286,27 @@ class _EditProfileScreenState
               hintText: 'Email',
               prefixIcon: Icons.email_outlined,
               controller: emailController,
-              keyboardType:
-                  TextInputType.emailAddress,
-              textInputAction:
-                  TextInputAction.done,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.done,
+              readOnly: true,
+              enabled: false,
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 6),
+
+            Text(
+              'Email digunakan sebagai akun login dan tidak dapat diubah.',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+            ),
+
+            const SizedBox(height: 6),
 
             const Divider(),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
 
             const Text(
               'Keamanan',
@@ -207,86 +316,123 @@ class _EditProfileScreenState
               ),
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
 
-            ListTile(
-
-              contentPadding: EdgeInsets.zero,
-
-              leading: Container(
-                width: 46,
-                height: 46,
-
-                decoration: BoxDecoration(
-                  color: Colors.orange.shade50,
-                  borderRadius:
-                      BorderRadius.circular(14),
-                ),
-
-                child: const Icon(
-                  Icons.lock_outline,
-                  color: Colors.orange,
-                ),
-              ),
-
-              title: const Text(
-                'Ubah Password',
-              ),
-
-              subtitle: const Text(
-                'Perbarui kata sandi akun',
-              ),
-
-              trailing: const Icon(
-                Icons.chevron_right_rounded,
-              ),
-
-              onTap: () {
-
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Fitur ubah password akan segera tersedia.',
-                    ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
                   ),
-                );
-
-              },
+                ],
+              ),
+              child: ListTile(
+                dense: true,
+                visualDensity: const VisualDensity(
+                  horizontal: 0,
+                  vertical: -2,
+                ),
+                minLeadingWidth: 0,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 6,
+                ),
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.orange.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.lock_outline,
+                    size: 20,
+                    color: Colors.orange,
+                  ),
+                ),
+                title: const Text(
+                  'Ubah Password',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                subtitle: Text(
+                  'Perbarui kata sandi akun',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                trailing: Icon(
+                  Icons.chevron_right_rounded,
+                  size: 20,
+                  color: Colors.grey.shade400,
+                ),
+                onTap: isLoading
+                    ? null
+                    : () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Fitur ubah password akan segera tersedia.',
+                            ),
+                          ),
+                        );
+                      },
+              ),
             ),
 
-            const SizedBox(height: 36),
+            const SizedBox(height: 26),
 
             SizedBox(
 
               width: double.infinity,
 
-              height: 56,
+              height: 52,
 
               child: FilledButton(
 
-                onPressed: saveProfile,
+                onPressed: isLoading
+                    ? null
+                    : saveProfile,
 
                 style: FilledButton.styleFrom(
                   backgroundColor:
                       const Color(0xFF2D9CDB),
                   shape: RoundedRectangleBorder(
                     borderRadius:
-                        BorderRadius.circular(16),
+                        BorderRadius.circular(14),
                   ),
                 ),
 
-                child: const Text(
-                  'SIMPAN',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                child: isLoading
+                    ? const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child:
+                            CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text(
+                        'SIMPAN',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                   ),
                 ),
-
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

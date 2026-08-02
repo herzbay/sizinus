@@ -24,5 +24,6 @@ class AppRoutes {
   static const businessGuide = '/business-guide';
 
   static const profile = '/profile';
+  static const account = '/account';
   
 }
