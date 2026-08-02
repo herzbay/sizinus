@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../routes/app_routes.dart';
+
 import '../../providers/session_provider.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/custom_topbar.dart';
@@ -37,7 +39,10 @@ class _EditProfileScreenState
   void initState() {
     super.initState();
 
-    final user = context.read<SessionProvider>().currentUser;  
+    final user = Provider.of<SessionProvider>(
+      context,
+      listen: false,
+    ).currentUser;
 
     nameController = TextEditingController(
       text: user?.fullName ?? '',
@@ -56,16 +61,15 @@ class _EditProfileScreenState
   }
 
   Future<void> saveProfile() async {
-    final messenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
 
-    final session =
-        context.read<SessionProvider>();
-
-    final currentUser = session.currentUser;
+    final currentUser =
+        Provider.of<SessionProvider>(
+          context,
+          listen: false,
+        ).currentUser;
 
     if (currentUser == null) {
-      messenger.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             'Data pengguna tidak ditemukan.',
@@ -79,7 +83,7 @@ class _EditProfileScreenState
         nameController.text.trim();
 
     if (fullName.isEmpty) {
-      messenger.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             'Nama lengkap wajib diisi.',
@@ -88,8 +92,6 @@ class _EditProfileScreenState
       );
       return;
     }
-
-    if (!mounted) return;
 
     setState(() {
       isLoading = true;
@@ -102,9 +104,7 @@ class _EditProfileScreenState
     );
 
     final authSuccess =
-        await authService.updateProfile(
-      user,
-    );
+        await authService.updateProfile(user);
 
     if (!mounted) return;
 
@@ -113,14 +113,13 @@ class _EditProfileScreenState
         isLoading = false;
       });
 
-      messenger.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             'Gagal memperbarui profil.',
           ),
         ),
       );
-
       return;
     }
 
@@ -128,20 +127,17 @@ class _EditProfileScreenState
         authService.getCurrentUserUid();
 
     if (uid == null) {
-      if (!mounted) return;
-
       setState(() {
         isLoading = false;
       });
 
-      messenger.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             'UID pengguna tidak ditemukan.',
           ),
         ),
       );
-
       return;
     }
 
@@ -158,7 +154,7 @@ class _EditProfileScreenState
         isLoading = false;
       });
 
-      messenger.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             'Gagal menyimpan data ke database.',
@@ -169,11 +165,13 @@ class _EditProfileScreenState
       return;
     }
 
-    session.updateUser(user);
+    // Ambil SessionProvider setelah seluruh proses async selesai
+    final sessionProvider =
+        context.read<SessionProvider>();
 
-    if (!mounted) return;
+    sessionProvider.updateUser(user);
 
-    navigator.pop(true);
+    Navigator.of(context).pop(true);
   }
 
   @override
@@ -374,16 +372,28 @@ class _EditProfileScreenState
                   size: 20,
                   color: Colors.grey.shade400,
                 ),
+                
                 onTap: isLoading
                     ? null
-                    : () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Fitur ubah password akan segera tersedia.',
-                            ),
-                          ),
+                    : () async {
+                        final messenger = ScaffoldMessenger.of(context);
+
+                        final result = await Navigator.pushNamed(
+                          context,
+                          AppRoutes.changePassword,
                         );
+
+                        if (!mounted) return;
+
+                        if (result == true) {
+                          messenger.showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Password berhasil diperbarui.',
+                              ),
+                            ),
+                          );
+                        }
                       },
               ),
             ),

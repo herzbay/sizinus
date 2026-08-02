@@ -95,6 +95,46 @@ class FirebaseAuthService {
   }
 
   /// ==========================
+  /// CHANGE PASSWORD
+  /// ==========================
+  Future<bool> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      final user = _auth.currentUser;
+
+      if (user == null || user.email == null) {
+        return false;
+      }
+
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
+
+      // Verifikasi password lama
+      await user.reauthenticateWithCredential(
+        credential,
+      );
+
+      // Update password baru
+      await user.updatePassword(
+        newPassword,
+      );
+
+      // Refresh session Firebase
+      await user.reload();
+
+      return true;
+    } on FirebaseAuthException {
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// ==========================
   /// LOGIN STATUS
   /// ==========================
   Future<bool> isLoggedIn() async {

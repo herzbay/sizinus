@@ -16,6 +16,7 @@ import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/reward/reward_screen.dart';
 import 'screens/settings/settings_screen.dart';
 import 'screens/settings/edit_profile_screen.dart';
+import 'screens/settings/change_password_screen.dart';
 import 'screens/history/history_screen.dart';
 import 'screens/mission/mission_screen.dart';
 import 'screens/simulation/simulation_list_screen.dart';
@@ -109,6 +110,9 @@ class MyApp extends StatelessWidget {
 
         AppRoutes.account: (context) =>
             const EditProfileScreen(),
+
+        AppRoutes.changePassword: (context) =>
+            const ChangePasswordScreen(),
 
         AppRoutes.simulationList: (context) =>
             const SimulationListScreen(),

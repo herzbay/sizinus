@@ -25,5 +25,6 @@ class AppRoutes {
 
   static const profile = '/profile';
   static const account = '/account';
+  static const changePassword = '/change-password';
   
 }

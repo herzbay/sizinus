@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/custom_topbar.dart';
+import '../../services/auth/firebase_auth_service.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({
@@ -25,6 +26,9 @@ class _ChangePasswordScreenState
   final confirmPasswordController =
       TextEditingController();
 
+  final FirebaseAuthService authService =
+      FirebaseAuthService();
+
   bool isLoading = false;
 
   @override
@@ -36,10 +40,6 @@ class _ChangePasswordScreenState
   }
 
   Future<void> changePassword() async {
-
-    final messenger =
-        ScaffoldMessenger.of(context);
-
     final oldPassword =
         oldPasswordController.text.trim();
 
@@ -50,7 +50,7 @@ class _ChangePasswordScreenState
         confirmPasswordController.text.trim();
 
     if (oldPassword.isEmpty) {
-      messenger.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             'Password lama wajib diisi.',
@@ -61,7 +61,7 @@ class _ChangePasswordScreenState
     }
 
     if (newPassword.length < 8) {
-      messenger.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             'Password baru minimal 8 karakter.',
@@ -72,7 +72,7 @@ class _ChangePasswordScreenState
     }
 
     if (newPassword != confirmPassword) {
-      messenger.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             'Konfirmasi password tidak sama.',
@@ -86,8 +86,10 @@ class _ChangePasswordScreenState
       isLoading = true;
     });
 
-    await Future.delayed(
-      const Duration(seconds: 1),
+    final success =
+        await authService.changePassword(
+      currentPassword: oldPassword,
+      newPassword: newPassword,
     );
 
     if (!mounted) return;
@@ -96,13 +98,18 @@ class _ChangePasswordScreenState
       isLoading = false;
     });
 
-    messenger.showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Siap dihubungkan ke Firebase.',
+    if (!success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Password lama salah atau gagal mengubah password.',
+          ),
         ),
-      ),
-    );
+      );
+      return;
+    }
+
+    Navigator.of(context).pop(true);
   }
 
   @override
