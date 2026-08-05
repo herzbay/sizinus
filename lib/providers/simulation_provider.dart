@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 
+import '../data/reward/badge_repository.dart';
+import '../models/reward/badge.dart';
 import '../models/simulation/simulation_data.dart';
 import '../services/auth/firebase_auth_service.dart';
 import '../services/simulation/firestore_simulation_service.dart';
-import '../data/reward/badge_repository.dart';
-import '../models/reward/badge.dart';
 
 class SimulationProvider extends ChangeNotifier {
   final FirestoreSimulationService _simulationService =
@@ -13,18 +13,21 @@ class SimulationProvider extends ChangeNotifier {
   final FirebaseAuthService _authService =
       FirebaseAuthService();
 
-  SimulationData _simulation =
-      SimulationData();
+  SimulationData _simulation = SimulationData();
 
   bool _isLoading = false;
 
   static const int pointsPerLevel = 50;
 
-  SimulationData get simulation =>
-      _simulation;
+  // ==========================
+  // GETTERS
+  // ==========================
 
-  int get totalPoint =>
-      _simulation.totalXp;
+  SimulationData get simulation => _simulation;
+
+  bool get isLoading => _isLoading;
+
+  int get totalPoint => _simulation.totalXp;
 
   int get currentLevel =>
       (totalPoint ~/ pointsPerLevel) + 1;
@@ -52,19 +55,15 @@ class SimulationProvider extends ChangeNotifier {
     final ids = _simulation.unlockedBadges;
 
     return BadgeRepository.allBadges
-        .where(
-          (badge) => ids.contains(badge.id),
-        )
+        .where((badge) => ids.contains(badge.id))
         .take(2)
         .toList();
   }
 
-  bool get isLoading =>
-      _isLoading;
+  // ==========================
+  // LOAD
+  // ==========================
 
-  /// ==========================
-  /// LOAD
-  /// ==========================
   Future<void> loadSimulation() async {
     final uid =
         _authService.getCurrentUserUid();
@@ -76,12 +75,14 @@ class SimulationProvider extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    await _simulationService
-        .createIfNotExists(uid: uid);
+    await _simulationService.createIfNotExists(
+      uid: uid,
+    );
 
     final data =
-        await _simulationService
-            .getSimulation(uid: uid);
+        await _simulationService.getSimulation(
+      uid: uid,
+    );
 
     if (data != null) {
       _simulation = data;
@@ -91,9 +92,10 @@ class SimulationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// ==========================
-  /// SAVE
-  /// ==========================
+  // ==========================
+  // SAVE
+  // ==========================
+
   Future<bool> saveSimulation() async {
     final uid =
         _authService.getCurrentUserUid();
@@ -102,16 +104,23 @@ class SimulationProvider extends ChangeNotifier {
       return false;
     }
 
-    return await _simulationService
-        .updateSimulation(
+    return await _simulationService.updateSimulation(
       uid: uid,
       simulation: _simulation,
     );
   }
 
-  /// ==========================
-  /// UPDATE
-  /// ==========================
+  // ==========================
+  // UPDATE
+  // ==========================
+
+  void setSimulation(
+    SimulationData simulation,
+  ) {
+    _simulation = simulation;
+    notifyListeners();
+  }
+
   void updateSimulation(
     SimulationData simulation,
   ) {
@@ -119,13 +128,23 @@ class SimulationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Pengganti restoreSession() pada SessionProvider
+  void restoreSimulation(
+    SimulationData simulation,
+  ) {
+    _simulation = simulation;
+    notifyListeners();
+  }
+
+  /// Memanggil notify tanpa mengubah data.
   void notifySimulationChanged() {
     notifyListeners();
   }
 
-  /// ==========================
-  /// RESET
-  /// ==========================
+  // ==========================
+  // RESET
+  // ==========================
+
   void clear() {
     _simulation = SimulationData();
     _isLoading = false;

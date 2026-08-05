@@ -160,9 +160,12 @@ class SettingsScreen
             isLogout: true,
             onTap: () async {
               final navigator = Navigator.of(context);
-              final sessionProvider = context.read<SessionProvider>();
+
               final simulationProvider =
                   context.read<SimulationProvider>();
+
+              final sessionProvider =
+                  context.read<SessionProvider>();
 
               final confirm = await showDialog<bool>(
                 context: context,
@@ -173,11 +176,13 @@ class SettingsScreen
                   ),
                   actions: [
                     TextButton(
-                      onPressed: () => Navigator.pop(context, false),
+                      onPressed: () =>
+                          Navigator.pop(context, false),
                       child: const Text('Batal'),
                     ),
                     FilledButton(
-                      onPressed: () => Navigator.pop(context, true),
+                      onPressed: () =>
+                          Navigator.pop(context, true),
                       child: const Text('Keluar'),
                     ),
                   ],

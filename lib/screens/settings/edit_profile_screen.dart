@@ -165,11 +165,11 @@ class _EditProfileScreenState
       return;
     }
 
-    // Ambil SessionProvider setelah seluruh proses async selesai
-    final sessionProvider =
-        context.read<SessionProvider>();
+    if (!mounted) return;
 
-    sessionProvider.updateUser(user);
+    context
+        .read<SessionProvider>()
+        .updateUser(user);
 
     Navigator.of(context).pop(true);
   }

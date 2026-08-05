@@ -130,13 +130,13 @@ class _DashboardScreenState
   @override
   Widget build(BuildContext context) {
 
-    final session =
+    final sessionProvider =
         context.watch<SessionProvider>();
 
     final simulationProvider =
         context.watch<SimulationProvider>();
 
-    if (!session.isLoggedIn ||
+    if (!sessionProvider.isLoggedIn ||
         simulationProvider.isLoading) {
       return const Scaffold(
         body: Center(
@@ -182,7 +182,7 @@ class _DashboardScreenState
                 child: SlideTransition(
                   position: _slideAnimation,
                   child: _buildHeroCard(
-                            session,
+                            sessionProvider,
                             simulationProvider,
                           ),
                 ),

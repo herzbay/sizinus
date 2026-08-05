@@ -50,7 +50,6 @@ class _LoginScreenState
     final navigator = Navigator.of(context);
     final sessionProvider =
         context.read<SessionProvider>();
-
     final email = emailController.text.trim();
     final password = passwordController.text;
 
@@ -176,10 +175,6 @@ class _LoginScreenState
     }
 
     if (!mounted) return;
-
-    sessionProvider.setSimulation(
-      simulationProvider.simulation,
-    );
 
     setState(() {
       isLoading = false;

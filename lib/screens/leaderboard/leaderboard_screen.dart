@@ -130,20 +130,20 @@ class LeaderboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final session =
+final sessionProvider =
     context.watch<SessionProvider>();
 
-    final simulationProvider =
-        context.watch<SimulationProvider>();
+final simulationProvider =
+    context.watch<SimulationProvider>();
 
-    if (!session.isLoggedIn ||
-        simulationProvider.isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
+if (!sessionProvider.isLoggedIn ||
+    simulationProvider.isLoading) {
+  return const Scaffold(
+    body: Center(
+      child: CircularProgressIndicator(),
+    ),
+  );
+}
 
     final ranking =
         leaderboard(simulationProvider);

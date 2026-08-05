@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../providers/session_provider.dart';
 
 import '../../models/simulation/simulation_data.dart';
+import '../../providers/simulation_provider.dart';
 import '../../routes/app_routes.dart';
 import '../../services/auth/local_auth_service.dart';
 import '../../services/auth/firebase_auth_service.dart';
@@ -131,8 +132,6 @@ class _SplashScreenState
     if (!mounted) return;
 
     final navigator = Navigator.of(context);
-    final sessionProvider =
-        context.read<SessionProvider>();
 
     // ==============================
     // MULAI ANIMASI
@@ -255,11 +254,15 @@ class _SplashScreenState
     // RESTORE SESSION PROVIDER
     // ==============================
 
-    sessionProvider.restoreSession(
-      user: currentUser,
-      simulation:
+    context.read<SessionProvider>().setUser(
+          currentUser,
+        );
+
+    context
+        .read<SimulationProvider>()
+        .setSimulation(
           simulation ?? SimulationData(),
-    );
+        );
 
     // ==============================
     // SELESAI

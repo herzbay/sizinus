@@ -67,13 +67,13 @@ class HistoryScreen extends StatelessWidget {
     BuildContext context,
   ) {
 
-    final session =
+    final sessionProvider =
         context.watch<SessionProvider>();
 
     final simulationProvider =
         context.watch<SimulationProvider>();
 
-    if (!session.isLoggedIn ||
+    if (!sessionProvider.isLoggedIn ||
         simulationProvider.isLoading) {
       return const Scaffold(
         body: Center(

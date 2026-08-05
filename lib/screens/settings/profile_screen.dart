@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import '../../providers/session_provider.dart';
+import '../../providers/simulation_provider.dart';
 import '../../widgets/custom_topbar.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -10,20 +11,17 @@ class ProfileScreen extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context,) {
+  Widget build(BuildContext context) {
+    final sessionProvider =
+        context.watch<SessionProvider>();
 
-    final session =
-    context.watch<SessionProvider>();
-
-    final simulationData =
-        session.simulationData;
+    final simulationProvider =
+        context.watch<SimulationProvider>();
 
     final currentUser =
-        session.currentUser;
+        sessionProvider.currentUser;
 
-    if (simulationData == null ||
-        currentUser == null) {
-
+    if (currentUser == null) {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -73,7 +71,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
 
                   Text(
-                    'Level ${session.currentLevel}',
+                    'Level ${simulationProvider.currentLevel}',
                     style: TextStyle(
                       color:
                           Colors.grey.shade600,
@@ -95,25 +93,25 @@ class ProfileScreen extends StatelessWidget {
 
                       _statCard(
                         title: 'Total Poin',
-                        value: '${session.totalPoint}',
+                        value: '${simulationProvider.totalPoint}',
                         image: 'assets/images/icon_xp.png',
                       ),
 
                       _statCard(
                         title: 'Total Lencana',
-                        value: '${session.badgeCount}',
+                        value: '${simulationProvider.badgeCount}',
                         image: 'assets/images/icon_lencana.png',
                       ),
 
                       _statCard(
                         title: 'Panduan Selesai',
-                        value: '${session.completedGuideCount}',
+                        value: '${simulationProvider.completedGuideCount}',
                         image: 'assets/images/icon_panduan.png',
                       ),
 
                       _statCard(
                         title: 'Simulasi Selesai',
-                        value: session.nibCompleted ? '1' : '0',
+                        value: simulationProvider.nibCompleted ? '1' : '0',
                         image: 'assets/images/icon_simulasi.png',
                       ),
                     ],
