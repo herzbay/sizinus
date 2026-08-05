@@ -2,9 +2,30 @@ import 'package:flutter/material.dart';
 
 import '../../models/guide/guide_item.dart';
 import '../../models/simulation/simulation_data.dart';
+import 'adaptive_learning_engine.dart';
 
 class BusinessGuideEngine {
   static List<GuideItem> generate(SimulationData? data) {
+    final adaptiveGuideIds =
+        data == null
+            ? <String>[]
+            : AdaptiveLearningEngine.evaluate(
+                data,
+              );
+
+    int getPriority(
+      String id,
+      int defaultPriority,
+    ) {
+      final index =
+          adaptiveGuideIds.indexOf(id);
+
+      if (index == -1) {
+        return defaultPriority;
+      }
+
+      return index;
+    }
     final items = <GuideItem>[];
 
     final category = (data?.businessCategory ?? '').trim();
@@ -100,7 +121,10 @@ class BusinessGuideEngine {
         icon: Icons.receipt_long_outlined,
         color: Colors.orange,
         isUnlocked: unlockedOthers,
-        priority: hasNpwp ? 5 : 1,
+        priority: getPriority(
+          'npwp',
+          100,
+        ),
         highlights: const [
           'Administrasi pajak',
           'Kelengkapan legalitas',
@@ -142,7 +166,10 @@ class BusinessGuideEngine {
         icon: Icons.verified_user_outlined,
         color: Colors.green,
         isUnlocked: unlockedOthers,
-        priority: category == 'Kuliner' && !hasHalalCertificate ? 1 : 6,
+        priority: getPriority(
+          'halal',
+          100,
+        ),
         highlights: const [
           'Usaha kuliner',
           'Produk makanan/minuman',
@@ -184,10 +211,10 @@ class BusinessGuideEngine {
         icon: Icons.food_bank_outlined,
         color: Colors.deepOrange,
         isUnlocked: unlockedOthers,
-        priority: category == 'Kuliner' &&
-                (businessScale == 'Mikro' || businessScale == 'Kecil')
-            ? 2
-            : 7,
+        priority: getPriority(
+          'pirt',
+          100,
+        ),
         highlights: const [
           'Skala mikro/kecil',
           'Pangan olahan',
@@ -229,7 +256,10 @@ class BusinessGuideEngine {
         icon: Icons.workspace_premium_outlined,
         color: Colors.green,
         isUnlocked: unlockedOthers,
-        priority: category == 'Manufaktur' && !hasSni ? 1 : 8,
+        priority: getPriority(
+          'sni',
+          100,
+        ),
         highlights: const [
           'Kategori manufaktur',
           'Standar produk',
@@ -271,7 +301,10 @@ class BusinessGuideEngine {
         icon: Icons.verified_outlined,
         color: Colors.green,
         isUnlocked: unlockedOthers,
-        priority: riskLevel == 'Sedang' ? 3 : 9,
+        priority: getPriority(
+          'standar',
+          100,
+        ),
         highlights: const [
           'Risiko menengah',
           'Izin lanjutan',
@@ -313,7 +346,10 @@ class BusinessGuideEngine {
         icon: Icons.sell_outlined,
         color: Colors.teal,
         isUnlocked: unlockedOthers,
-        priority: businessName.isNotEmpty ? 4 : 10,
+        priority: getPriority(
+          'merek',
+          100,
+        ),
         highlights: const [
           'Nama usaha',
           'Brand bisnis',
@@ -355,7 +391,10 @@ class BusinessGuideEngine {
         icon: Icons.apartment_outlined,
         color: Colors.orange,
         isUnlocked: unlockedOthers,
-        priority: buildingConstruction ? 5 : 11,
+        priority: getPriority(
+          'pbg',
+          100,
+        ),
         highlights: const [
           'Bangunan usaha',
           'Aspek lokasi',
