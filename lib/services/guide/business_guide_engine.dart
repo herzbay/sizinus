@@ -28,16 +28,6 @@ class BusinessGuideEngine {
     }
     final items = <GuideItem>[];
 
-    final category = (data?.businessCategory ?? '').trim();
-    final businessScale = (data?.businessScale ?? '').trim();
-    final riskLevel = (data?.riskLevel ?? '').trim();
-    final businessName = (data?.businessName ?? '').trim();
-    final hasNpwp = _isYes(data?.hasNpwp);
-    final hasHalalCertificate = _isYes(data?.hasHalalCertificate);
-    final hasSni = _isYes(data?.hasSni);
-    final buildingConstruction =
-        (data?.buildingConstruction ?? '').trim() == 'Ya';
-
     final completed = data?.nibCompleted ?? false;
 
     void addItem(GuideItem item) {
@@ -426,9 +416,5 @@ class BusinessGuideEngine {
 
     items.sort((a, b) => a.priority.compareTo(b.priority));
     return items;
-  }
-
-  static bool _isYes(String? value) {
-    return value?.trim().toLowerCase() == 'ya';
   }
 }
