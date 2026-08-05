@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import '../../providers/session_provider.dart';
+import '../../providers/simulation_provider.dart';
 import '../../data/reward/badge_repository.dart';
 import '../../models/reward/badge.dart';
 import '../../routes/app_routes.dart';
@@ -158,8 +159,11 @@ class RewardScreen extends StatelessWidget {
     final session =
     context.watch<SessionProvider>();
 
+    final simulationProvider =
+        context.watch<SimulationProvider>();
+
     if (!session.isLoggedIn ||
-        session.simulationData == null) {
+        simulationProvider.isLoading) {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -168,7 +172,7 @@ class RewardScreen extends StatelessWidget {
     }
 
     final simulation =
-        session.simulationData!;
+        simulationProvider.simulation;
 
     final allBadges =
         BadgeRepository.allBadges;
@@ -177,14 +181,14 @@ class RewardScreen extends StatelessWidget {
         simulation.unlockedBadges.toSet();
 
     final nextLevelPoint =
-        session.currentLevel * 50;
+        simulationProvider.currentLevel * 50;
 
     final remainingPoint =
-        (nextLevelPoint - session.totalPoint)
+        (nextLevelPoint - simulationProvider.totalPoint)
             .clamp(0, 50);
 
     final nextLevelLabel =
-        '$remainingPoint poin menuju level ${session.currentLevel + 1}';
+        '$remainingPoint poin menuju level ${simulationProvider.currentLevel + 1}';
 
     return Scaffold(
       appBar: const CustomTopBar(),
@@ -194,15 +198,15 @@ class RewardScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeaderCard(session),
+              _buildHeaderCard(simulationProvider),
 
               const SizedBox(height: 16),
 
-              _buildPointsCard(session,nextLevelLabel,),
+              _buildPointsCard(simulationProvider,nextLevelLabel,),
 
               const SizedBox(height: 20),
 
-              _buildBadgeSectionHeader(session),
+              _buildBadgeSectionHeader(simulationProvider),
 
               const SizedBox(height: 12),
 
@@ -244,7 +248,7 @@ class RewardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeaderCard(SessionProvider session,) {
+  Widget _buildHeaderCard(SimulationProvider simulationProvider,) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -278,7 +282,7 @@ class RewardScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  session.nibCompleted
+                  simulationProvider.nibCompleted
                       ? 'Anda sudah menyelesaikan simulasi. Lihat seluruh pencapaian dan lencana yang berhasil dibuka.'
                       : 'Kumpulkan poin dan lencana dari simulasi serta panduan yang sudah diselesaikan.',
                   style: TextStyle(
@@ -294,7 +298,7 @@ class RewardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPointsCard(SessionProvider session, String nextLevelLabel,) {
+  Widget _buildPointsCard(SimulationProvider simulationProvider, String nextLevelLabel,) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -337,7 +341,7 @@ class RewardScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${session.totalPoint}',
+                '${simulationProvider.totalPoint}',
                 style: const TextStyle(
                   fontSize: 34,
                   fontWeight: FontWeight.bold,
@@ -359,7 +363,7 @@ class RewardScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    'Level ${session.currentLevel}',
+                    'Level ${simulationProvider.currentLevel}',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -380,7 +384,7 @@ class RewardScreen extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: LinearProgressIndicator(
-              value: session.progress,
+              value: simulationProvider.progress,
               minHeight: 8,
               backgroundColor: const Color(0xFFE5E7EB),
               valueColor: const AlwaysStoppedAnimation(
@@ -392,7 +396,7 @@ class RewardScreen extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: Text(
-              '${(session.progress * 100).round()}%',
+              '${(simulationProvider.progress * 100).round()}%',
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.grey.shade600,
@@ -404,7 +408,7 @@ class RewardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBadgeSectionHeader(SessionProvider session,) {
+  Widget _buildBadgeSectionHeader(SimulationProvider simulationProvider,) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -416,7 +420,7 @@ class RewardScreen extends StatelessWidget {
           ),
         ),
         Text(
-          '${session.badgeCount}/${BadgeRepository.allBadges.length}',
+          '${simulationProvider.badgeCount}/${BadgeRepository.allBadges.length}',
           style: TextStyle(
             color: Colors.grey.shade700,
             fontWeight: FontWeight.w600,

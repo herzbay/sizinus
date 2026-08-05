@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import '../../providers/session_provider.dart';
+import '../../providers/simulation_provider.dart';
 import '../../models/history/history_item.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_bottom_navbar.dart';
@@ -13,10 +14,10 @@ class HistoryScreen extends StatelessWidget {
   });
 
   List<HistoryItem> history(
-    SessionProvider session,
+    SimulationProvider provider,
   ) {
     final items = List<HistoryItem>.from(
-      session.simulationData!.historyItems,
+      provider.simulation.historyItems,
     );
 
     items.sort(
@@ -67,10 +68,13 @@ class HistoryScreen extends StatelessWidget {
   ) {
 
     final session =
-    context.watch<SessionProvider>();
+        context.watch<SessionProvider>();
+
+    final simulationProvider =
+        context.watch<SimulationProvider>();
 
     if (!session.isLoggedIn ||
-        session.simulationData == null) {
+        simulationProvider.isLoading) {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -79,7 +83,7 @@ class HistoryScreen extends StatelessWidget {
     }
 
     final historyList =
-        history(session);
+        history(simulationProvider);
 
     return Scaffold(
 

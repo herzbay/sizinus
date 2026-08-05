@@ -5,6 +5,7 @@ import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/custom_topbar.dart';
 import 'package:provider/provider.dart';
 import '../../providers/session_provider.dart';
+import '../../providers/simulation_provider.dart';
 
 class LeaderboardUser {
   final String name;
@@ -25,11 +26,11 @@ class LeaderboardScreen extends StatelessWidget {
     super.key,
   });
 
-  List<LeaderboardUser> leaderboard(SessionProvider session,) {
+  List<LeaderboardUser> leaderboard(SimulationProvider simulationProvider,) {
     final myPoint =
-        session.totalPoint;
+        simulationProvider.totalPoint;
     final myLevel =
-        session.currentLevel;
+        simulationProvider.currentLevel;
 
     final list = <LeaderboardUser>[
       LeaderboardUser(
@@ -132,8 +133,11 @@ class LeaderboardScreen extends StatelessWidget {
     final session =
     context.watch<SessionProvider>();
 
+    final simulationProvider =
+        context.watch<SimulationProvider>();
+
     if (!session.isLoggedIn ||
-        session.simulationData == null) {
+        simulationProvider.isLoading) {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -142,7 +146,7 @@ class LeaderboardScreen extends StatelessWidget {
     }
 
     final ranking =
-        leaderboard(session);
+        leaderboard(simulationProvider);
 
     return Scaffold(
       appBar: const CustomTopBar(),
@@ -332,7 +336,7 @@ class LeaderboardScreen extends StatelessWidget {
                       const SizedBox(height: 6),
 
                       Text(
-                        '${session.totalPoint}',
+                        '${simulationProvider.totalPoint}',
                         style: const TextStyle(
                           fontWeight:
                               FontWeight.bold,
@@ -361,7 +365,7 @@ class LeaderboardScreen extends StatelessWidget {
                       const SizedBox(height: 6),
 
                       Text(
-                        '${session.currentLevel}',
+                        '${simulationProvider.currentLevel}',
                         style: const TextStyle(
                           fontWeight:
                               FontWeight.bold,
