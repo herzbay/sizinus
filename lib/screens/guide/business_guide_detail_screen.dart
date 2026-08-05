@@ -4,7 +4,8 @@ import '../../data/reward/badge_repository.dart';
 import '../../models/guide/guide_item.dart';
 import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
-import '../../services/simulation/local_simulation_storage.dart';
+import 'package:provider/provider.dart';
+import '../../providers/simulation_provider.dart';
 import '../../widgets/custom_topbar.dart';
 import '../../models/history/history_item.dart';
 
@@ -23,10 +24,8 @@ class BusinessGuideDetailScreen extends StatefulWidget {
 
 class _BusinessGuideDetailScreenState
     extends State<BusinessGuideDetailScreen> {
-  final LocalSimulationStorage storage =
-      LocalSimulationStorage();
 
-  SimulationData? simulationData;
+  late SimulationData simulationData;
   bool isLoading = true;
   bool isSaving = false;
 
@@ -46,16 +45,16 @@ class _BusinessGuideDetailScreenState
   }
 
   Future<void> _loadData() async {
-    final data = await storage.load();
+    final simulationProvider =
+        context.read<SimulationProvider>();
 
-    if (!mounted) return;
+    simulationData =
+        simulationProvider.simulation;
 
-    simulationData = data;
-
-    guideCompleted = data?.completedGuideIds.contains(
-          widget.guideItem.id,
-        ) ??
-        false;
+    guideCompleted =
+        simulationData.completedGuideIds.contains(
+      widget.guideItem.id,
+    );
 
     if (guideCompleted) {
       checkedSections = List.generate(
@@ -63,6 +62,8 @@ class _BusinessGuideDetailScreenState
         (_) => true,
       );
     }
+
+    if (!mounted) return;
 
     setState(() {
       isLoading = false;
@@ -80,7 +81,7 @@ class _BusinessGuideDetailScreenState
       isSaving = true;
     });
 
-    final currentData = simulationData ?? SimulationData();
+    final currentData = simulationData;
 
     final badgeId =
         BadgeRepository.badgeIdForGuideId(
@@ -141,7 +142,13 @@ class _BusinessGuideDetailScreenState
 
     simulationData = currentData;
 
-    await storage.save(currentData);
+    final simulationProvider =
+        context.read<SimulationProvider>();
+
+    simulationProvider.updateSimulation(
+        currentData);
+
+    await simulationProvider.saveSimulation();
 
     if (!mounted) return;
 

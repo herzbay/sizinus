@@ -5,7 +5,8 @@ import '../../models/recommendation/permit_recommendation_item.dart';
 import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
 import '../../services/recommendation/permit_recommendation_engine.dart';
-import '../../services/simulation/local_simulation_storage.dart';
+import 'package:provider/provider.dart';
+import '../../providers/simulation_provider.dart';
 import '../../widgets/custom_topbar.dart';
 import '../../models/history/history_item.dart';
 
@@ -21,10 +22,7 @@ class PermitRecommendationScreen extends StatefulWidget {
 
 class _PermitRecommendationScreenState
     extends State<PermitRecommendationScreen> {
-  final LocalSimulationStorage storage =
-      LocalSimulationStorage();
-
-  SimulationData? simulationData;
+  late SimulationData simulationData;
   bool isLoading = true;
 
   @override
@@ -34,14 +32,23 @@ class _PermitRecommendationScreenState
   }
 
   Future<void> _loadData() async {
-    final data = await storage.load();
+    final simulationProvider =
+        context.read<SimulationProvider>();
 
-    if (data != null &&
-        data.nibCompleted &&
-        !data.recommendationRewardClaimed) {
-      data.totalXp += BadgeRepository.xpForRecommendationUnlocked();
-      data.recommendationRewardClaimed = true;
-      data.historyItems.insert(
+    simulationData =
+        simulationProvider.simulation;
+
+    if (simulationData.nibCompleted &&
+        !simulationData
+            .recommendationRewardClaimed) {
+      simulationData.totalXp +=
+          BadgeRepository
+              .xpForRecommendationUnlocked();
+
+      simulationData
+          .recommendationRewardClaimed = true;
+
+      simulationData.historyItems.insert(
         0,
         HistoryItem(
           title:
@@ -51,27 +58,33 @@ class _PermitRecommendationScreenState
           points:
               BadgeRepository
                   .xpForRecommendationUnlocked(),
-          createdAt:
-              DateTime.now(),
+          createdAt: DateTime.now(),
         ),
       );
 
-      await storage.save(data);
+      simulationProvider.updateSimulation(
+        simulationData,
+      );
+
+      await simulationProvider
+          .saveSimulation();
     }
 
     if (!mounted) return;
 
     setState(() {
-      simulationData = data;
       isLoading = false;
     });
 
-    if (data != null &&
-        data.nibCompleted &&
-        data.recommendationRewardClaimed) {
-      ScaffoldMessenger.of(context).showSnackBar(
+    if (simulationData.nibCompleted &&
+        simulationData
+            .recommendationRewardClaimed) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
         const SnackBar(
-          content: Text('Anda mendapatkan +100 XP dari Rekomendasi Perizinan'),
+          content: Text(
+            'Anda mendapatkan +100 XP dari Rekomendasi Perizinan',
+          ),
         ),
       );
     }
@@ -95,15 +108,23 @@ class _PermitRecommendationScreenState
     }
 
     final data = simulationData;
-    final hasData = data != null &&
-        (data.businessCategory ?? '').trim().isNotEmpty;
 
-    final isCompleted = data?.nibCompleted ?? false;
-    final hasProgress = (data?.unlockedStep ?? 1) > 1;
+    final hasData =
+        (data.businessCategory ?? '')
+            .trim()
+            .isNotEmpty;
 
-    final recommendations = (hasData && isCompleted)
-        ? PermitRecommendationEngine.generate(data)
-        : <PermitRecommendationItem>[];
+    final isCompleted =
+        data.nibCompleted;
+
+    final hasProgress =
+        data.unlockedStep > 1;
+
+    final recommendations =
+        hasData && isCompleted
+            ? PermitRecommendationEngine
+                .generate(data)
+            : <PermitRecommendationItem>[];
 
     final String actionLabel = isCompleted
         ? 'Lihat Simulasi'

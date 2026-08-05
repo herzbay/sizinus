@@ -4,7 +4,8 @@ import '../../models/guide/guide_item.dart';
 import '../../models/simulation/simulation_data.dart';
 import '../../routes/app_routes.dart';
 import '../../services/guide/business_guide_engine.dart';
-import '../../services/simulation/local_simulation_storage.dart';
+import 'package:provider/provider.dart';
+import '../../providers/simulation_provider.dart';
 import '../../widgets/custom_topbar.dart';
 import 'business_guide_detail_screen.dart';
 
@@ -26,10 +27,8 @@ class BusinessGuideScreen extends StatefulWidget {
 
 class _BusinessGuideScreenState
     extends State<BusinessGuideScreen> {
-  final LocalSimulationStorage storage =
-      LocalSimulationStorage();
 
-  SimulationData? simulationData;
+  late SimulationData simulationData;
   bool isLoading = true;
 
   @override
@@ -39,12 +38,15 @@ class _BusinessGuideScreenState
   }
 
   Future<void> _loadData() async {
-    final data = await storage.load();
+    final simulationProvider =
+        context.read<SimulationProvider>();
+
+    simulationData =
+        simulationProvider.simulation;
 
     if (!mounted) return;
 
     setState(() {
-      simulationData = data;
       isLoading = false;
     });
   }
@@ -121,11 +123,13 @@ class _BusinessGuideScreenState
     }
 
     final data = simulationData;
-    final hasData = data != null &&
+
+    final hasData =
         (data.businessCategory ?? '').trim().isNotEmpty;
 
-    final isCompleted = data?.nibCompleted ?? false;
-    final hasProgress = (data?.unlockedStep ?? 1) > 1;
+    final isCompleted = data.nibCompleted;
+
+    final hasProgress = data.unlockedStep > 1;
 
     final guides = BusinessGuideEngine.generate(data);
     final nibGuide = guides.firstWhere((e) => e.id == 'nib');

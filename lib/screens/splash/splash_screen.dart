@@ -5,13 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/session_provider.dart';
 
-import '../../models/simulation/simulation_data.dart';
 import '../../providers/simulation_provider.dart';
 import '../../routes/app_routes.dart';
 import '../../services/auth/local_auth_service.dart';
 import '../../services/auth/firebase_auth_service.dart';
 import '../../services/user/firestore_user_service.dart';
-import '../../services/simulation/local_simulation_storage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -33,9 +31,6 @@ class _SplashScreenState
 
   final FirestoreUserService userService =
       FirestoreUserService();
-
-  final LocalSimulationStorage storage =
-      LocalSimulationStorage();
 
   late AnimationController _logoController;
   late AnimationController _textController;
@@ -242,31 +237,49 @@ class _SplashScreenState
     }
 
     // ==============================
-    // LOAD SIMULASI LOKAL
+    // RESTORE USER
     // ==============================
-
-    final simulation =
-        await storage.load();
-
-    if (!mounted) return;
-
-    // ==============================
-    // RESTORE SESSION PROVIDER
-    // ==============================
-
-    context.read<SessionProvider>().setUser(
-          currentUser,
-        );
 
     context
-        .read<SimulationProvider>()
-        .setSimulation(
-          simulation ?? SimulationData(),
-        );
+        .read<SessionProvider>()
+        .setUser(currentUser);
+
+    // ==============================
+    // LOAD SIMULATION FIRESTORE
+    // ==============================
+
+    final simulationProvider =
+        context.read<SimulationProvider>();
+
+    try {
+      await simulationProvider.loadSimulation();
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Gagal memuat data simulasi.',
+          ),
+        ),
+      );
+
+      navigator.pushReplacementNamed(
+        AppRoutes.login,
+      );
+
+      return;
+    }
 
     // ==============================
     // SELESAI
     // ==============================
+
+    if (!mounted) return;
 
     setState(() {
       isLoading = false;
