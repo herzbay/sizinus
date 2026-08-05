@@ -49,6 +49,7 @@ class SimulationData {
 
   // REWARD
   int totalXp;
+  List<String> claimedMissionIds;
   List<String> unlockedBadges;
   bool recommendationRewardClaimed;
 
@@ -103,6 +104,7 @@ class SimulationData {
     this.recommendationRewardClaimed = false,
     this.unlockedBadges = const [],
     this.historyItems = const [],
+    this.claimedMissionIds = const [],
 
     this.nibCompletedAt,
   });
@@ -148,6 +150,7 @@ class SimulationData {
       'completedGuideIds': completedGuideIds,
       'recommendationRewardClaimed': recommendationRewardClaimed,
       'totalXp': totalXp,
+      'claimedMissionIds': claimedMissionIds,
 
       'historyItems':
           historyItems
@@ -261,6 +264,11 @@ class SimulationData {
       totalXp:
           json['totalXp'] ?? 0,
 
+      claimedMissionIds:
+          List<String>.from(
+            json['claimedMissionIds'] ?? [],
+          ),
+
       unlockedBadges:
           List<String>.from(
             json['unlockedBadges'] ?? [],
@@ -307,6 +315,16 @@ class SimulationData {
       unlockedBadges.add(
         badgeId,
       );
+    }
+  }
+
+  bool isMissionClaimed(String missionId) {
+    return claimedMissionIds.contains(missionId);
+  }
+
+  void claimMission(String missionId) {
+    if (!claimedMissionIds.contains(missionId)) {
+      claimedMissionIds.add(missionId);
     }
   }
 

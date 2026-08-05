@@ -5,6 +5,8 @@ import '../models/reward/badge.dart';
 import '../models/simulation/simulation_data.dart';
 import '../services/auth/firebase_auth_service.dart';
 import '../services/simulation/firestore_simulation_service.dart';
+import '../models/history/history_item.dart';
+import '../models/mission/mission_item.dart';
 
 class SimulationProvider extends ChangeNotifier {
   final FirestoreSimulationService _simulationService =
@@ -139,6 +141,49 @@ class SimulationProvider extends ChangeNotifier {
   /// Memanggil notify tanpa mengubah data.
   void notifySimulationChanged() {
     notifyListeners();
+  }
+
+  Future<bool> claimMission(
+    MissionItem mission,
+  ) async {
+
+    // sudah pernah diklaim
+    if (_simulation.claimedMissionIds.contains(
+      mission.id,
+    )) {
+      return false;
+    }
+
+    // tandai mission sudah diklaim
+    _simulation.claimMission(
+      mission.id,
+    );
+
+    // tambah XP
+    _simulation.addXp(
+      mission.rewardPoint,
+    );
+
+    // tambah history
+    _simulation.historyItems.insert(
+      0,
+      HistoryItem(
+        title: mission.title,
+        description:
+            'Reward misi berhasil diklaim',
+        points: mission.rewardPoint,
+        createdAt: DateTime.now(),
+      ),
+    );
+
+    final success =
+        await saveSimulation();
+
+    if (success) {
+      notifyListeners();
+    }
+
+    return success;
   }
 
   // ==========================

@@ -9,137 +9,44 @@ import '../../routes/app_routes.dart';
 
 import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/custom_topbar.dart';
+import '../../models/mission/mission_status.dart';
+import '../../services/mission/mission_engine.dart';
 
 class MissionScreen extends StatelessWidget {
   const MissionScreen({super.key});
 
-  List<MissionItem> missions(
-    SimulationProvider provider,
-  ) {
-    final data = provider.simulation;
-
-    return [
-
-      // UTAMA
-
-      MissionItem(
-        title:
-            'Selesaikan Simulasi NIB',
-
-        description:
-            'Pelajari proses penerbitan NIB.',
-
-        completed:
-            data.nibCompleted,
-      ),
-
-      MissionItem(
-        title:
-            'Buka Rekomendasi Perizinan',
-
-        description:
-            'Lihat hasil rekomendasi izin usaha.',
-
-        completed:
-            data.recommendationRewardClaimed,
-      ),
-
-      MissionItem(
-        title:
-            'Dapatkan Lencana Pertama',
-
-        description:
-            'Buka satu lencana apa pun.',
-
-        completed:
-            data.unlockedBadges.isNotEmpty,
-      ),
-
-      // BELAJAR
-
-      MissionItem(
-        title:
-            'Selesaikan Panduan NIB',
-
-        description:
-            'Baca dan simpan panduan NIB.',
-
-        completed:
-            data.completedGuideIds.contains(
-              'guide_nib',
-            ),
-      ),
-
-      MissionItem(
-        title:
-            'Selesaikan Panduan Halal',
-
-        description:
-            'Baca dan simpan panduan halal.',
-
-        completed:
-            data.completedGuideIds.contains(
-              'guide_halal',
-            ),
-      ),
-
-      MissionItem(
-        title:
-            'Selesaikan Panduan PIRT',
-
-        description:
-            'Baca dan simpan panduan PIRT.',
-
-        completed:
-            data.completedGuideIds.contains(
-              'guide_pirt',
-            ),
-      ),
-
-      // KOLEKTOR
-
-      MissionItem(
-        title:
-            'Kumpulkan 3 Lencana',
-
-        description:
-            'Miliki minimal 3 lencana.',
-
-        completed:
-            data.unlockedBadges.length >= 3,
-      ),
-
-      MissionItem(
-        title:
-            'Kumpulkan 5 Lencana',
-
-        description:
-            'Miliki minimal 5 lencana.',
-
-        completed:
-            data.unlockedBadges.length >= 5,
-      ),
-    ];
-  }
-
   int completedMissionCount(
     SimulationProvider provider,
   ) {
-    return missions(provider)
-        .where((m) => m.completed)
+    final missions =
+        MissionEngine.generate(
+      provider.simulation,
+    );
+
+    return missions
+        .where(
+          (m) =>
+              m.status ==
+              MissionStatus.claimed,
+        )
         .length;
   }
 
   double progress(
     SimulationProvider provider,
   ) {
-    final list = missions(provider);
+    final list =
+        MissionEngine.generate(
+      provider.simulation,
+    );
 
     if (list.isEmpty) {
       return 0;
     }
 
-    return completedMissionCount(provider) /
+    return completedMissionCount(
+          provider,
+        ) /
         list.length;
   }
 
@@ -197,7 +104,9 @@ class MissionScreen extends StatelessWidget {
     }
 
     final missionList =
-        missions(simulationProvider);
+        MissionEngine.generate(
+          simulationProvider.simulation,
+        );
 
     return Scaffold(
       appBar:
@@ -312,7 +221,12 @@ class MissionScreen extends StatelessWidget {
             ),
 
             ...missionList.map(
-              buildMissionCard,
+              (mission) =>
+                  buildMissionCard(
+                    context,
+                    simulationProvider,
+                    mission,
+                  ),
             ),
           ],
         ),
@@ -321,87 +235,155 @@ class MissionScreen extends StatelessWidget {
   }
 
   Widget buildMissionCard(
+    BuildContext context,
+    SimulationProvider provider,
     MissionItem mission,
   ) {
+    final status = mission.status;
+
+    Color borderColor;
+
+    IconData icon;
+
+    switch (status) {
+      case MissionStatus.claimable:
+        borderColor = Colors.orange;
+        icon = Icons.card_giftcard;
+        break;
+
+      case MissionStatus.claimed:
+        borderColor = Colors.green;
+        icon = Icons.check_circle;
+        break;
+
+      case MissionStatus.incomplete:
+        borderColor = Colors.grey.shade300;
+        icon = Icons.radio_button_unchecked;
+        break;
+    }
 
     return Container(
-
       margin:
           const EdgeInsets.only(
         bottom: 12,
       ),
-
       padding:
           const EdgeInsets.all(16),
-
-      decoration:
-          BoxDecoration(
-
+      decoration: BoxDecoration(
         color: Colors.white,
-
         borderRadius:
-            BorderRadius.circular(
-          18,
-        ),
-
+            BorderRadius.circular(18),
         border: Border.all(
-
-          color: mission.completed
-              ? Colors.green.shade300
-              : Colors.grey.shade300,
+          color: borderColor,
         ),
       ),
-
-      child: Row(
-
+      child: Column(
         children: [
 
-          Icon(
+          Row(
+            children: [
 
-            mission.completed
-                ? Icons.check_circle
-                : Icons.radio_button_unchecked,
+              Icon(
+                icon,
+                color: borderColor,
+              ),
 
-            color: mission.completed
-                ? Colors.green
-                : Colors.grey,
+              const SizedBox(
+                width: 14,
+              ),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                  children: [
+
+                    Text(
+                      mission.title,
+                      style:
+                          const TextStyle(
+                        fontWeight:
+                            FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 4,
+                    ),
+
+                    Text(
+                      mission.description,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
 
-          const SizedBox(
-            width: 14,
-          ),
+          if (status ==
+              MissionStatus.claimable) ...[
 
-          Expanded(
-
-            child: Column(
-
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
-
-              children: [
-
-                Text(
-
-                  mission.title,
-
-                  style:
-                      const TextStyle(
-                    fontWeight:
-                        FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 4,
-                ),
-
-                Text(
-                  mission.description,
-                ),
-              ],
+            const SizedBox(
+              height: 14,
             ),
-          ),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: const Icon(
+                  Icons.card_giftcard,
+                ),
+                label: Text(
+                  'Klaim +${mission.rewardPoint} XP',
+                ),
+                onPressed: () async {
+
+                  final success =
+                      await provider
+                          .claimMission(
+                    mission,
+                  );
+
+                  if (!context.mounted) {
+                    return;
+                  }
+
+                  if (success) {
+
+                    showDialog(
+                      context: context,
+                      builder: (_) {
+                        return AlertDialog(
+                          title: const Text(
+                            '🎉 Selamat Misi Berhasil!',
+                          ),
+                          content:
+                              Text(
+                            'Anda mendapatkan +${mission.rewardPoint} Poin',
+                          ),
+                          actions: [
+
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(
+                                  context,
+                                );
+                              },
+                              child:
+                                  const Text(
+                                'OK',
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
         ],
       ),
     );
