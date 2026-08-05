@@ -6,6 +6,7 @@ import '../../widgets/custom_topbar.dart';
 import '../../services/auth/firebase_auth_service.dart';
 import 'package:provider/provider.dart';
 import '../../providers/session_provider.dart';
+import '../../providers/simulation_provider.dart';
 
 
 class SettingsScreen
@@ -158,6 +159,11 @@ class SettingsScreen
             subtitle: 'Keluar dari sesi saat ini',
             isLogout: true,
             onTap: () async {
+              final navigator = Navigator.of(context);
+              final sessionProvider = context.read<SessionProvider>();
+              final simulationProvider =
+                  context.read<SimulationProvider>();
+
               final confirm = await showDialog<bool>(
                 context: context,
                 builder: (_) => AlertDialog(
@@ -167,15 +173,11 @@ class SettingsScreen
                   ),
                   actions: [
                     TextButton(
-                      onPressed: () {
-                        Navigator.pop(context, false);
-                      },
+                      onPressed: () => Navigator.pop(context, false),
                       child: const Text('Batal'),
                     ),
                     FilledButton(
-                      onPressed: () {
-                        Navigator.pop(context, true);
-                      },
+                      onPressed: () => Navigator.pop(context, true),
                       child: const Text('Keluar'),
                     ),
                   ],
@@ -184,14 +186,12 @@ class SettingsScreen
 
               if (confirm != true) return;
 
+              simulationProvider.clear();
+              sessionProvider.clear();
+
               await FirebaseAuthService().logout();
 
-              if (!context.mounted) return;
-
-              context.read<SessionProvider>().clear();
-
-              Navigator.pushNamedAndRemoveUntil(
-                context,
+              navigator.pushNamedAndRemoveUntil(
                 AppRoutes.login,
                 (_) => false,
               );

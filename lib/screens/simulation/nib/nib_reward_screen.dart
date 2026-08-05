@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../../models/simulation/simulation_data.dart';
-import '../../../services/simulation/local_simulation_storage.dart';
+import '../../../providers/simulation_provider.dart';
 
 class NibRewardScreen extends StatefulWidget {
   const NibRewardScreen({
@@ -16,29 +16,6 @@ class NibRewardScreen extends StatefulWidget {
 class _NibRewardScreenState
     extends State<NibRewardScreen> {
 
-  final LocalSimulationStorage storage =
-      LocalSimulationStorage();
-
-  SimulationData? simulationData;
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSimulation();
-  }
-
-  Future<void> _loadSimulation() async {
-    final data = await storage.load();
-
-    if (!mounted) return;
-
-    setState(() {
-      simulationData = data;
-      isLoading = false;
-    });
-  }
-
   void _goToDashboard() {
     Navigator.popUntil(
       context,
@@ -46,9 +23,11 @@ class _NibRewardScreenState
     );
   }
 
-  String get _badgeTitle {
+  String badgeTitle(
+      SimulationProvider provider) {
+
     final count =
-        simulationData?.nibCompletedCount ?? 1;
+        provider.simulation.nibCompletedCount;
 
     if (count <= 1) {
       return '+1 Lencana';
@@ -57,9 +36,11 @@ class _NibRewardScreenState
     return 'Lencana NIB x$count';
   }
 
-  String get _badgeDescription {
+  String badgeDescription(
+      SimulationProvider provider) {
+
     final count =
-        simulationData?.nibCompletedCount ?? 1;
+        provider.simulation.nibCompletedCount;
 
     if (count <= 1) {
       return 'Menyelesaikan simulasi pembuatan NIB';
@@ -70,7 +51,10 @@ class _NibRewardScreenState
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
+    final simulationProvider =
+        context.watch<SimulationProvider>();
+
+    if (simulationProvider.isLoading) {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -164,8 +148,8 @@ class _NibRewardScreenState
                             Colors.amber.shade200,
                         iconPath:
                             'assets/images/icon_lencana.png',
-                        title: _badgeTitle,
-                        subtitle: _badgeDescription,
+                        title: badgeTitle(simulationProvider),
+                        subtitle: badgeDescription(simulationProvider),
                       ),
                     ),
                   ],

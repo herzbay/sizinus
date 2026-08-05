@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/custom_topbar.dart';
 import '../../routes/app_routes.dart';
-import '../../services/simulation/local_simulation_storage.dart';
-import '../../models/simulation/simulation_data.dart';
+import 'package:provider/provider.dart';
+import '../../providers/simulation_provider.dart';
 
 class SimulationListScreen extends StatefulWidget {
   const SimulationListScreen({
@@ -18,38 +18,15 @@ class SimulationListScreen extends StatefulWidget {
 class _SimulationListScreenState
     extends State<SimulationListScreen> {
 
-  final LocalSimulationStorage storage =
-      LocalSimulationStorage();
-
-  SimulationData? simulationData;
-
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadProgress();
-  }
-
-  Future<void> _loadProgress() async {
-
-    final data =
-        await storage.load();
-
-    if (!mounted) return;
-
-    setState(() {
-
-      simulationData = data;
-
-      isLoading = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final simulationProvider =
+        context.watch<SimulationProvider>();
 
-    if (isLoading) {
+    final simulation =
+        simulationProvider.simulation;
+
+    if (simulationProvider.isLoading) {
       return const Scaffold(
         body: Center(
           child:
@@ -59,12 +36,12 @@ class _SimulationListScreenState
     }
 
     final bool isCompleted =
-        simulationData?.nibCompleted ?? false;
+        simulation.nibCompleted;
 
     final int currentStep =
         isCompleted
             ? 7
-            : ((simulationData?.unlockedStep ?? 1) - 1)
+            : ((simulation.unlockedStep) - 1)
                 .clamp(0, 7);
 
     const int totalStep = 7;
@@ -470,8 +447,6 @@ class _SimulationListScreenState
                               context,
                               AppRoutes.nibDetail,
                             );
-
-                            _loadProgress();
                           },
 
                           style:
@@ -501,9 +476,9 @@ class _SimulationListScreenState
 
                               Icon(
 
-                                (simulationData?.nibCompleted ?? false)
+                                (simulation.nibCompleted)
                                     ? Icons.visibility_outlined
-                                    : ((simulationData?.unlockedStep ?? 1) > 1)
+                                    : ((simulation.unlockedStep) > 1)
                                         ? Icons.play_circle_outline
                                         : Icons.rocket_launch_outlined,
 
@@ -515,9 +490,9 @@ class _SimulationListScreenState
 
                               Text(
 
-                                (simulationData?.nibCompleted ?? false)
+                                (simulation.nibCompleted)
                                     ? 'Lihat Simulasi'
-                                    : ((simulationData?.unlockedStep ?? 1) > 1)
+                                    : ((simulation.unlockedStep) > 1)
                                         ? 'Lanjutkan Simulasi'
                                         : 'Mulai Simulasi',
 

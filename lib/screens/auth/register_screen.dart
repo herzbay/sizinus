@@ -5,6 +5,8 @@ import '../../routes/app_routes.dart';
 import '../../services/auth/firebase_auth_service.dart';
 import '../../services/user/firestore_user_service.dart';
 import '../../widgets/custom_textfield.dart';
+import '../../services/simulation/firestore_simulation_service.dart';
+import '../../models/simulation/simulation_data.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({
@@ -36,6 +38,9 @@ class _RegisterScreenState
 
   final FirestoreUserService userService =
       FirestoreUserService();
+
+  final FirestoreSimulationService simulationService =
+      FirestoreSimulationService();
 
   bool isLoading = false;
 
@@ -193,6 +198,30 @@ class _RegisterScreenState
         const SnackBar(
           content: Text(
             'Akun berhasil dibuat, tetapi data profil gagal disimpan.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    final simulationSuccess =
+        await simulationService.createSimulation(
+          uid: uid,
+          simulation: SimulationData(),
+        );
+
+    if (!mounted) return;
+
+    if (!simulationSuccess) {
+      setState(() {
+        isLoading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Gagal membuat data simulasi.',
           ),
         ),
       );

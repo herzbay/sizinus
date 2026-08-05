@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/session_provider.dart';
+import 'providers/simulation_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'themes/app_theme.dart';
@@ -42,6 +43,10 @@ Future<void> main() async {
 
         ChangeNotifierProvider(
           create: (_) => SessionProvider(),
+        ),
+
+        ChangeNotifierProvider(
+          create: (_) => SimulationProvider(),
         ),
       ],
       child: const MyApp(),

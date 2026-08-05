@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import '../../providers/session_provider.dart';
+import '../../providers/simulation_provider.dart';
 
 import '../../routes/app_routes.dart';
 
@@ -129,9 +130,14 @@ class _DashboardScreenState
   @override
   Widget build(BuildContext context) {
 
-    final session = context.watch<SessionProvider>();
+    final session =
+        context.watch<SessionProvider>();
 
-    if (!session.isLoggedIn || session.simulationData == null) {
+    final simulationProvider =
+        context.watch<SimulationProvider>();
+
+    if (!session.isLoggedIn ||
+        simulationProvider.isLoading) {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -175,7 +181,10 @@ class _DashboardScreenState
                 opacity: _fadeAnimation,
                 child: SlideTransition(
                   position: _slideAnimation,
-                  child: _buildHeroCard(session),
+                  child: _buildHeroCard(
+                            session,
+                            simulationProvider,
+                          ),
                 ),
               ),
 
@@ -254,7 +263,7 @@ class _DashboardScreenState
     );
   }
 
-  Widget _buildHeroCard(SessionProvider session,) {
+  Widget _buildHeroCard(SessionProvider session, SimulationProvider simulationProvider,) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -327,7 +336,7 @@ class _DashboardScreenState
 
                 _buildHeroStat(
                   image: 'assets/images/icon_level.png',
-                  value: 'Lv.${session.currentLevel}',
+                  value: 'Lv.${simulationProvider.currentLevel}',
                 ),
 
                 Container(
@@ -338,7 +347,7 @@ class _DashboardScreenState
 
                 _buildHeroStat(
                   image: 'assets/images/icon_xp.png',
-                  value: '${session.totalPoint} XP',
+                  value: '${simulationProvider.totalPoint} XP',
                 ),
 
                 Container(
@@ -349,7 +358,7 @@ class _DashboardScreenState
 
                 _buildHeroStat(
                   image: 'assets/images/icon_lencana.png',
-                  value: '${session.badgeCount}',
+                  value: '${simulationProvider.badgeCount}',
                 ),
               ],
             ),
@@ -364,7 +373,7 @@ class _DashboardScreenState
             children: [
 
               Text(
-                'Progres ke Level ${session.currentLevel + 1}',
+                'Progres ke Level ${simulationProvider.currentLevel + 1}',
                 style:
                     const TextStyle(
                   color: Colors.white,
@@ -374,7 +383,7 @@ class _DashboardScreenState
               ),
 
               Text(
-                '${(session.progress * 100).round()}%',
+                '${(simulationProvider.progress * 100).round()}%',
                 style:
                     const TextStyle(
                   color: Colors.white,
@@ -392,7 +401,7 @@ class _DashboardScreenState
                 BorderRadius.circular(20),
             child:
                 LinearProgressIndicator(
-              value: session.progress,
+              value: simulationProvider.progress,
               minHeight: 12,
               backgroundColor:
                   Colors.white24,
@@ -405,7 +414,7 @@ class _DashboardScreenState
 
           const SizedBox(height: 24),
 
-          session.latestBadges.isEmpty
+          simulationProvider.latestBadges.isEmpty
 
               ? Container(
                   width: double.infinity,
@@ -433,17 +442,17 @@ class _DashboardScreenState
 
               : Row(
                   children: List.generate(
-                    session.latestBadges.length,
+                    simulationProvider.latestBadges.length,
                     (index) {
                       final badge =
-                          session.latestBadges[index];
+                          simulationProvider.latestBadges[index];
 
                       return Expanded(
                         child: Container(
                           height: 60,
                           margin: EdgeInsets.only(
                             right: index ==
-                                    session.latestBadges.length - 1
+                                    simulationProvider.latestBadges.length - 1
                                 ? 0
                                 : 10,
                           ),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 import '../../../widgets/custom_topbar.dart';
 import '../../../widgets/nib_progress_stepper.dart';
 import '../../../widgets/dialogs/nib_published_dialog.dart';
 import '../../../widgets/dialogs/simulation_saved_dialog.dart';
 import '../../../models/simulation/simulation_data.dart';
-import '../../../services/simulation/local_simulation_storage.dart';
+import '../../../providers/simulation_provider.dart';
 import '../../../models/history/history_item.dart';
 
 import 'steps/step_1_business_category_screen.dart';
@@ -30,16 +30,17 @@ class NibStepperScreen extends StatefulWidget {
 }
 
 class _NibStepperScreenState extends State<NibStepperScreen> {
-  final LocalSimulationStorage storage =
-      LocalSimulationStorage();
-
-  SimulationData simulationData =
-      SimulationData();
 
   bool isLoading = true;
 
-  int currentStep = 1;
-  int unlockedStep = 1;
+  SimulationData get simulationData =>
+      context.read<SimulationProvider>().simulation;
+
+  int get currentStep =>
+      simulationData.currentStep;
+
+  int get unlockedStep =>
+      simulationData.unlockedStep;
 
   @override
   void initState() {
@@ -48,15 +49,12 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
   }
 
   Future<void> _loadSimulation() async {
-    final data = await storage.load();
+    final provider =
+        context.read<SimulationProvider>();
+
+    await provider.loadSimulation();
 
     if (!mounted) return;
-
-    if (data != null) {
-      simulationData = data;
-      currentStep = data.currentStep;
-      unlockedStep = data.unlockedStep;
-    }
 
     setState(() {
       isLoading = false;
@@ -64,10 +62,12 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
   }
 
   Future<void> _saveSimulation() async {
-    simulationData.currentStep = currentStep;
-    simulationData.unlockedStep = unlockedStep;
+    final provider =
+        context.read<SimulationProvider>();
 
-    await storage.save(simulationData);
+    provider.notifySimulationChanged();
+
+    await provider.saveSimulation();
   }
 
   void _showSnack(String message) {
@@ -138,6 +138,9 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
             }
 
             await _saveSimulation();
+
+            if (!mounted) return;
+
             setState(() {});
           },
         );
@@ -158,6 +161,9 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
             simulationData.businessScope = businessScope;
 
             await _saveSimulation();
+
+            if (!mounted) return;
+
             setState(() {});
           },
         );
@@ -183,6 +189,9 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
             simulationData.riskLevel = riskLevel;
 
             await _saveSimulation();
+
+            if (!mounted) return;
+
             setState(() {});
           },
         );
@@ -204,6 +213,9 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
             simulationData.employeeCount = employeeCount;
 
             await _saveSimulation();
+
+            if (!mounted) return;
+
             setState(() {});
           },
         );
@@ -220,6 +232,9 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
             simulationData.buildingConstruction = buildingConstruction;
 
             await _saveSimulation();
+
+            if (!mounted) return;
+
             setState(() {});
           },
         );
@@ -242,6 +257,9 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
             simulationData.hasHalalCertificate = hasHalalCertificate;
 
             await _saveSimulation();
+
+            if (!mounted) return;
+
             setState(() {});
           },
         );
@@ -348,12 +366,18 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
         return;
       }
 
-      setState(() {
-        currentStep = 2;
-        unlockedStep = unlockedStep < 2 ? 2 : unlockedStep;
-      });
+      simulationData.currentStep = 2;
+
+      if (simulationData.unlockedStep < 2) {
+        simulationData.unlockedStep = 2;
+      }
 
       await _saveSimulation();
+
+      if (!mounted) return;
+
+      setState(() {});
+
       return;
     }
 
@@ -377,12 +401,17 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
         return;
       }
 
-      setState(() {
-        currentStep = 3;
-        unlockedStep = unlockedStep < 3 ? 3 : unlockedStep;
-      });
+      simulationData.currentStep = 3;
+
+      if (simulationData.unlockedStep < 3) {
+        simulationData.unlockedStep = 3;
+      }
 
       await _saveSimulation();
+
+      if (!mounted) return;
+
+      setState(() {});
       return;
     }
 
@@ -393,12 +422,17 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
         return;
       }
 
-      setState(() {
-        currentStep = 4;
-        unlockedStep = unlockedStep < 4 ? 4 : unlockedStep;
-      });
+      simulationData.currentStep = 4;
+
+      if (simulationData.unlockedStep < 4) {
+        simulationData.unlockedStep = 4;
+      }
 
       await _saveSimulation();
+
+      if (!mounted) return;
+
+      setState(() {});
       return;
     }
 
@@ -422,12 +456,17 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
         return;
       }
 
-      setState(() {
-        currentStep = 5;
-        unlockedStep = unlockedStep < 5 ? 5 : unlockedStep;
-      });
+      simulationData.currentStep = 5;
+
+      if (simulationData.unlockedStep < 5) {
+        simulationData.unlockedStep = 5;
+      }
 
       await _saveSimulation();
+
+      if (!mounted) return;
+
+      setState(() {});
       return;
     }
 
@@ -451,12 +490,17 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
         return;
       }
 
-      setState(() {
-        currentStep = 6;
-        unlockedStep = unlockedStep < 6 ? 6 : unlockedStep;
-      });
+      simulationData.currentStep = 6;
+
+      if (simulationData.unlockedStep < 6) {
+        simulationData.unlockedStep = 6;
+      }
 
       await _saveSimulation();
+
+      if (!mounted) return;
+
+      setState(() {});
       return;
     }
 
@@ -474,13 +518,19 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
         return;
       }
 
-      setState(() {
-        currentStep = 7;
-        unlockedStep = unlockedStep < 7 ? 7 : unlockedStep;
-      });
+      simulationData.currentStep = 7;
+
+      if (simulationData.unlockedStep < 7) {
+        simulationData.unlockedStep = 7;
+      }
 
       simulationData.nibDraftGenerated = true;
       await _saveSimulation();
+
+      if (!mounted) return;
+
+      setState(() {});
+
       return;
     }
 
@@ -493,7 +543,10 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
+    final simulationProvider =
+      context.watch<SimulationProvider>();
+
+    if (isLoading || simulationProvider.isLoading) {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -516,10 +569,13 @@ class _NibStepperScreenState extends State<NibStepperScreen> {
                 unlockedStep: unlockedStep,
                 onStepTap: (step) async {
                   if (step <= unlockedStep) {
-                    setState(() {
-                      currentStep = step;
-                    });
+                    simulationData.currentStep = step;
+
                     await _saveSimulation();
+
+                    if (!mounted) return;
+
+                    setState(() {});
                   }
                 },
               ),

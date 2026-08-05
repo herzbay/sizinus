@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/simulation/simulation_data.dart';
 import '../../providers/session_provider.dart';
 import '../../routes/app_routes.dart';
 import '../../services/auth/firebase_auth_service.dart';
 import '../../services/user/firestore_user_service.dart';
-import '../../services/simulation/local_simulation_storage.dart';
+import '../../providers/simulation_provider.dart';
 import '../../widgets/custom_textfield.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -149,19 +148,37 @@ class _LoginScreenState
     }
 
     // ==========================
-    // LOAD SIMULATION LOCAL
+    // LOAD SIMULATION
     // ==========================
-    final simulation =
-        await LocalSimulationStorage().load();
+    final simulationProvider =
+        context.read<SimulationProvider>();
+
+    sessionProvider.setUser(currentUser);
+
+    try {
+      await simulationProvider.loadSimulation();
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Gagal memuat data simulasi.',
+          ),
+        ),
+      );
+
+      return;
+    }
 
     if (!mounted) return;
 
-    // ==========================
-    // RESTORE SESSION
-    // ==========================
-    sessionProvider.restoreSession(
-      user: currentUser,
-      simulation: simulation ?? SimulationData(),
+    sessionProvider.setSimulation(
+      simulationProvider.simulation,
     );
 
     setState(() {
@@ -175,6 +192,7 @@ class _LoginScreenState
       AppRoutes.dashboard,
     );
   }
+
   @override
   Widget build(BuildContext context) {
 
