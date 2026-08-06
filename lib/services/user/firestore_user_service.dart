@@ -1,8 +1,12 @@
+import 'dart:developer' as developer;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../models/auth/user_model.dart';
 
 class FirestoreUserService {
+  static const String _logTag = 'FirestoreUserService';
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   CollectionReference<Map<String, dynamic>> get _users {
@@ -25,14 +29,21 @@ class FirestoreUserService {
       });
 
       return true;
-    } on FirebaseException catch (e) {
-      print(
-        'Firestore createUser error: '
-        '${e.code} - ${e.message}',
+    } on FirebaseException catch (e, stackTrace) {
+      developer.log(
+        'createUser error: ${e.code} - ${e.message}',
+        name: _logTag,
+        error: e,
+        stackTrace: stackTrace,
       );
       return false;
-    } catch (e) {
-      print('Firestore createUser error: $e');
+    } catch (e, stackTrace) {
+      developer.log(
+        'createUser error: $e',
+        name: _logTag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return false;
     }
   }
@@ -59,14 +70,21 @@ class FirestoreUserService {
         email: data['email']?.toString() ?? '',
         password: '',
       );
-    } on FirebaseException catch (e) {
-      print(
-        'Firestore getUser error: '
-        '${e.code} - ${e.message}',
+    } on FirebaseException catch (e, stackTrace) {
+      developer.log(
+        'getUser error: ${e.code} - ${e.message}',
+        name: _logTag,
+        error: e,
+        stackTrace: stackTrace,
       );
       return null;
-    } catch (e) {
-      print('Firestore getUser error: $e');
+    } catch (e, stackTrace) {
+      developer.log(
+        'getUser error: $e',
+        name: _logTag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return null;
     }
   }
@@ -86,14 +104,21 @@ class FirestoreUserService {
       });
 
       return true;
-    } on FirebaseException catch (e) {
-      print(
-        'Firestore updateUser error: '
-        '${e.code} - ${e.message}',
+    } on FirebaseException catch (e, stackTrace) {
+      developer.log(
+        'updateUser error: ${e.code} - ${e.message}',
+        name: _logTag,
+        error: e,
+        stackTrace: stackTrace,
       );
       return false;
-    } catch (e) {
-      print('Firestore updateUser error: $e');
+    } catch (e, stackTrace) {
+      developer.log(
+        'updateUser error: $e',
+        name: _logTag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return false;
     }
   }
@@ -106,14 +131,21 @@ class FirestoreUserService {
       await _users.doc(uid).delete();
 
       return true;
-    } on FirebaseException catch (e) {
-      print(
-        'Firestore deleteUser error: '
-        '${e.code} - ${e.message}',
+    } on FirebaseException catch (e, stackTrace) {
+      developer.log(
+        'deleteUser error: ${e.code} - ${e.message}',
+        name: _logTag,
+        error: e,
+        stackTrace: stackTrace,
       );
       return false;
-    } catch (e) {
-      print('Firestore deleteUser error: $e');
+    } catch (e, stackTrace) {
+      developer.log(
+        'deleteUser error: $e',
+        name: _logTag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return false;
     }
   }
@@ -126,14 +158,21 @@ class FirestoreUserService {
       final document = await _users.doc(uid).get();
 
       return document.exists;
-    } on FirebaseException catch (e) {
-      print(
-        'Firestore userExists error: '
-        '${e.code} - ${e.message}',
+    } on FirebaseException catch (e, stackTrace) {
+      developer.log(
+        'userExists error: ${e.code} - ${e.message}',
+        name: _logTag,
+        error: e,
+        stackTrace: stackTrace,
       );
       return false;
-    } catch (e) {
-      print('Firestore userExists error: $e');
+    } catch (e, stackTrace) {
+      developer.log(
+        'userExists error: $e',
+        name: _logTag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return false;
     }
   }
